@@ -1,4 +1,4 @@
-<h1 align="center">MINTS</h1>
+<h1 align="center">Mesh-Integrated Network of Traffic Sensors (MINTS)</h1>
 
 <a id="readme-top"></a>
 
