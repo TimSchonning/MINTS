@@ -88,6 +88,10 @@ For questions, support, or collaboration, reach out to the team:
 Email:    filip.hellgren04@gmail.com
 LinkedIn: www.linkedin.com/in/filip-hellgren
 
+**David Olmedo**  
+Email:   david@olmedo.se
+LinkedIn: www.linkedin.com/in/davolm/
+
 Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimSchonning/MINTS)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
