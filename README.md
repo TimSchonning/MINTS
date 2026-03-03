@@ -45,56 +45,20 @@
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 (need to add hardware prereq.?)
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+
 
 ### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space.
 
 
 <!-- ROADMAP -->
@@ -119,25 +83,10 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 ## Contact
 For questions, support, or collaboration, reach out to the team:
 
-**Your Name**  
-Role/s:   
-Email:    email@email_client.com  
-LinkedIn: 
 
-**Your Name**  
-Role/s:   
-Email:    email@email_client.com  
-LinkedIn: 
-
-**Your Name**  
-Role/s:   
-Email:    email@email_client.com  
-LinkedIn: 
-
-**Your Name**  
-Role/s:   
-Email:    email@email_client.com  
-LinkedIn: 
+**Filip Hellgren**  
+Email:    filip.hellgren04@gmail.com
+LinkedIn: www.linkedin.com/in/filip-hellgren
 
 Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimSchonning/MINTS)
 
