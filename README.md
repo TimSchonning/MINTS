@@ -82,24 +82,24 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 For questions, support, or collaboration, reach out to the team:
 
 **Filip Hellgren**  
-Email:    filip.hellgren04@gmail.com
-Github:   https://github.com/Filip-Shellbranch
-LinkedIn: www.linkedin.com/in/filip-hellgren
+Email:    filip.hellgren04@gmail.com <br />
+Github:   https://github.com/Filip-Shellbranch <br />
+LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 
 **Jenny Nilsson**  
-Email:    nilssonjennylinnea@gmail.com
-Github:  https://github.com/jeni1263
-LinkedIn: 
+Email:    nilssonjennylinnea@gmail.com <br />
+Github:  https://github.com/jeni1263 <br />
+LinkedIn: <br />
 
 **David Olmedo**
-Email:    david@olmedo.se
-Github:   https://github.com/DaOl6717
-LinkedIn: www.linkedin.com/in/davolm/
+Email:    david@olmedo.se <br />
+Github:   https://github.com/DaOl6717 <br />
+LinkedIn: www.linkedin.com/in/davolm/ <br />
 
 **Tim Schönning**  
-Email:    timschonning@gmail.com
-Github:   https://github.com/TimSchonning
-LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning
+Email:    timschonning@gmail.com <br />
+Github:   https://github.com/TimSchonning <br />
+LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning <br />
 
 Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimSchonning/MINTS)
 
