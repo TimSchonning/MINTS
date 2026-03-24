@@ -7,8 +7,6 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![project_license][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -41,25 +39,29 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+MINTS is a network of small, energy-efficient measurement stations with sensors for monitoring air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central hub. The hub can, in turn, generate real-time heatmaps and visualizations, converting data into insights.
+
+The goal is to create a plug-and-play system that can identify problematic areas and enable the rerouting of traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to notice traffic patterns, which can be used to plan future development better and improve the quality of life in affected areas. Moreover, ongoing construction work, such as the tram in Uppsala, causes traffic disruptions. The MINTS system will give authorities the means to track these traffic jams.
+
+The primary beneficiaries of this project are the municipalities and the people, who are troubled by pollution and disturbances caused by traffic. Further, it provides the tools for responsive urbanism, making the day-to-day lives of citizens easier.
+
+
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
 ### Built With
 
+### Hardware used
+
 <!-- GETTING STARTED -->
 ## Getting Started
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these steps.
 
 ### Prerequisites
-(need to add hardware prereq.?)
-
 
 ### Installation
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space.
-
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -68,35 +70,40 @@ See the [Gantt chart/roadmap](https://github.com/users/TimSchonning/projects/2) 
 
 See also the [open issues](https://github.com/TimSchonning/MINTS/issues) for a full list of proposed features (and known issues).
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
-
-
 <!-- CONTACT -->
 ## Contact
 For questions, support, or collaboration, reach out to the team:
 
-
 **Filip Hellgren**  
 Email:    filip.hellgren04@gmail.com
+Github:   https://github.com/Filip-Shellbranch
 LinkedIn: www.linkedin.com/in/filip-hellgren
 
-**David Olmedo**  
-Email:   david@olmedo.se
+**Jenny Nilsson**  
+Email:    nilssonjennylinnea@gmail.com
+Github:  https://github.com/jeni1263
+LinkedIn: 
+
+**David Olmedo**
+Email:    david@olmedo.se
+Github:   https://github.com/DaOl6717
 LinkedIn: www.linkedin.com/in/davolm/
+
+**Tim Schönning**  
+Email:    timschonning@gmail.com
+Github:   https://github.com/TimSchonning
+LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning
 
 Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimSchonning/MINTS)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
