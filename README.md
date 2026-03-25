@@ -91,7 +91,7 @@ Email:    nilssonjennylinnea@gmail.com <br />
 Github:  https://github.com/jeni1263 <br />
 LinkedIn: <br />
 
-**David Olmedo**
+**David Olmedo**  
 Email:    david@olmedo.se <br />
 Github:   https://github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
