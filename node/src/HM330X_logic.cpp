@@ -1,4 +1,6 @@
 #include <Seeed_HM330X.h>
+#include <HM330X.h>
+
 
 /**
  * @brief Returns the average readings over a given period
