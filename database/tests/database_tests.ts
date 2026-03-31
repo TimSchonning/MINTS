@@ -1,0 +1,491 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as firebaseQueries from '../src/queries';
+import { initializeApp } from 'firebase/app';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  Timestamp
+} from 'firebase/firestore';
+
+// Mock Firebase
+vi.mock('firebase/app');
+vi.mock('firebase/firestore');
+
+describe('Firebase Database CRUD Operations', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('Database Connection', () => {
+    it('should connect to database successfully', async () => {
+      const mockInitializeApp = vi.mocked(initializeApp);
+      const mockGetFirestore = vi.mocked(getFirestore);
+
+      mockInitializeApp.mockReturnValue({} as any);
+      mockGetFirestore.mockReturnValue({} as any);
+
+      await firebaseQueries.connect_to_db();
+
+      expect(mockInitializeApp).toHaveBeenCalled();
+      expect(mockGetFirestore).toHaveBeenCalled();
+    });
+
+    it('should handle connection errors', async () => {
+      const mockInitializeApp = vi.mocked(initializeApp);
+      mockInitializeApp.mockImplementation(() => {
+        throw new Error('Firebase initialization failed');
+      });
+
+      await expect(firebaseQueries.connect_to_db()).rejects.toThrow('Firebase initialization failed');
+    });
+  });
+
+  describe('Station CRUD Operations', () => {
+    const testStationId = 1;
+    const testPosition = { lat: 40.7128, lng: -74.0060 };
+
+    describe('Create Station', () => {
+      it('should create a station with valid data', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.create_station(testStationId, testPosition);
+
+        expect(mockSetDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            station_id: testStationId,
+            position: testPosition
+          })
+        );
+      });
+
+      it('should handle creation errors', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockRejectedValue(new Error('Permission denied'));
+
+        await expect(
+          firebaseQueries.create_station(testStationId, testPosition)
+        ).rejects.toThrow('Permission denied');
+      });
+
+      it('should include created_at timestamp', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.create_station(testStationId, testPosition);
+
+        const callArgs = mockSetDoc.mock.calls[0][1];
+        expect(callArgs).toHaveProperty('created_at');
+      });
+    });
+
+    describe('Read Station', () => {
+      it('should read station position successfully', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        const mockDoc = vi.mocked(doc);
+        
+        mockGetDoc.mockResolvedValue({
+          exists: () => true,
+          data: () => ({ position: testPosition })
+        } as any);
+
+        const result = await firebaseQueries.read_station_position(testStationId);
+
+        expect(result).toEqual(testPosition);
+      });
+
+      it('should return null when station does not exist', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockResolvedValue({
+          exists: () => false,
+          data: () => undefined
+        } as any);
+
+        const result = await firebaseQueries.read_station_position(testStationId);
+
+        expect(result).toBeNull();
+      });
+
+      it('should handle read errors', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockRejectedValue(new Error('Network error'));
+
+        await expect(
+          firebaseQueries.read_station_position(testStationId)
+        ).rejects.toThrow('Network error');
+      });
+    });
+
+    describe('Update Station', () => {
+      const updatedPosition = { lat: 34.0522, lng: -118.2437 };
+
+      it('should update station position successfully', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.update_station(testStationId, updatedPosition);
+
+        expect(mockUpdateDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            position: updatedPosition
+          })
+        );
+      });
+
+      it('should include updated_at timestamp', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.update_station(testStationId, updatedPosition);
+
+        const callArgs = mockUpdateDoc.mock.calls[0][1];
+        expect(callArgs).toHaveProperty('updated_at');
+      });
+
+      it('should handle update errors', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockRejectedValue(new Error('Document not found'));
+
+        await expect(
+          firebaseQueries.update_station(testStationId, updatedPosition)
+        ).rejects.toThrow('Document not found');
+      });
+    });
+
+    describe('Delete Station', () => {
+      it('should delete station successfully', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.delete_station(testStationId);
+
+        expect(mockDeleteDoc).toHaveBeenCalled();
+      });
+
+      it('should handle delete errors', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockRejectedValue(new Error('Permission denied'));
+
+        await expect(
+          firebaseQueries.delete_station(testStationId)
+        ).rejects.toThrow('Permission denied');
+      });
+    });
+  });
+
+  describe('Measurement CRUD Operations', () => {
+    const testMeasurementId = 1;
+    const testStationId = 1;
+    const testValue = { humidity: 65, temperature: 22 };
+    const testTimestamp = new Date('2025-01-01T12:00:00Z');
+    const testMeasurementType = 'climate';
+
+    describe('Create Measurement', () => {
+      it('should create a measurement with valid data', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.create_measurement(
+          testMeasurementId,
+          testStationId,
+          testValue,
+          testTimestamp,
+          testMeasurementType
+        );
+
+        expect(mockSetDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            measurement_id: testMeasurementId,
+            station_id: testStationId,
+            value: testValue,
+            measurement_type: testMeasurementType
+          })
+        );
+      });
+
+      it('should handle creation errors', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockRejectedValue(new Error('Invalid data'));
+
+        await expect(
+          firebaseQueries.create_measurement(
+            testMeasurementId,
+            testStationId,
+            testValue,
+            testTimestamp,
+            testMeasurementType
+          )
+        ).rejects.toThrow('Invalid data');
+      });
+    });
+
+    describe('Read Measurement', () => {
+      it('should read measurement data successfully', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        const mockData = {
+          measurement_id: testMeasurementId,
+          station_id: testStationId,
+          value: testValue,
+          measurement_type: testMeasurementType
+        };
+
+        mockGetDoc.mockResolvedValue({
+          exists: () => true,
+          data: () => mockData
+        } as any);
+
+        const result = await firebaseQueries.read_measurement_data(testMeasurementId);
+
+        expect(result).toEqual(mockData);
+      });
+
+      it('should return null when measurement does not exist', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockResolvedValue({
+          exists: () => false,
+          data: () => undefined
+        } as any);
+
+        const result = await firebaseQueries.read_measurement_data(testMeasurementId);
+
+        expect(result).toBeNull();
+      });
+
+      it('should handle read errors', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockRejectedValue(new Error('Read failed'));
+
+        await expect(
+          firebaseQueries.read_measurement_data(testMeasurementId)
+        ).rejects.toThrow('Read failed');
+      });
+    });
+
+    describe('Update Measurement', () => {
+      const updatedValue = { humidity: 70, temperature: 25 };
+
+      it('should update measurement data successfully', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.update_measurement_data(
+          testMeasurementId,
+          testStationId,
+          updatedValue,
+          testTimestamp,
+          testMeasurementType
+        );
+
+        expect(mockUpdateDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            value: updatedValue,
+            station_id: testStationId
+          })
+        );
+      });
+
+      it('should handle update errors', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockRejectedValue(new Error('Update failed'));
+
+        await expect(
+          firebaseQueries.update_measurement_data(
+            testMeasurementId,
+            testStationId,
+            updatedValue,
+            testTimestamp,
+            testMeasurementType
+          )
+        ).rejects.toThrow('Update failed');
+      });
+    });
+
+    describe('Delete Measurement', () => {
+      it('should delete measurement successfully', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.delete_measurement(testMeasurementId);
+
+        expect(mockDeleteDoc).toHaveBeenCalled();
+      });
+
+      it('should handle delete errors', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockRejectedValue(new Error('Delete failed'));
+
+        await expect(
+          firebaseQueries.delete_measurement(testMeasurementId)
+        ).rejects.toThrow('Delete failed');
+      });
+    });
+  });
+
+  describe('Measurement Type CRUD Operations', () => {
+    const testTypeId = 1;
+    const testType = 'air_quality';
+    const testValues = {
+      low: 0,
+      medium: 50,
+      high: 100
+    };
+
+    describe('Create Measurement Type', () => {
+      it('should create a measurement type with valid data', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.create_measurementType(
+          testTypeId,
+          testType,
+          testValues.low,
+          testValues.medium,
+          testValues.high
+        );
+
+        expect(mockSetDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            measurementType_id: testTypeId,
+            measurement_type: testType,
+            low_value: testValues.low,
+            medium_value: testValues.medium,
+            high_value: testValues.high
+          })
+        );
+      });
+
+      it('should handle creation errors', async () => {
+        const mockSetDoc = vi.mocked(setDoc);
+        mockSetDoc.mockRejectedValue(new Error('Invalid type'));
+
+        await expect(
+          firebaseQueries.create_measurementType(
+            testTypeId,
+            testType,
+            testValues.low,
+            testValues.medium,
+            testValues.high
+          )
+        ).rejects.toThrow('Invalid type');
+      });
+    });
+
+    describe('Read Measurement Type', () => {
+      it('should read measurement type data successfully', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        const mockData = {
+          measurementType_id: testTypeId,
+          measurement_type: testType,
+          low_value: testValues.low,
+          medium_value: testValues.medium,
+          high_value: testValues.high
+        };
+
+        mockGetDoc.mockResolvedValue({
+          exists: () => true,
+          data: () => mockData
+        } as any);
+
+        const result = await firebaseQueries.read_measurementType_data(testTypeId);
+
+        expect(result).toEqual(mockData);
+      });
+
+      it('should return null when measurement type does not exist', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockResolvedValue({
+          exists: () => false,
+          data: () => undefined
+        } as any);
+
+        const result = await firebaseQueries.read_measurementType_data(testTypeId);
+
+        expect(result).toBeNull();
+      });
+
+      it('should handle read errors', async () => {
+        const mockGetDoc = vi.mocked(getDoc);
+        mockGetDoc.mockRejectedValue(new Error('Read failed'));
+
+        await expect(
+          firebaseQueries.read_measurementType_data(testTypeId)
+        ).rejects.toThrow('Read failed');
+      });
+    });
+
+    describe('Update Measurement Type', () => {
+      const updatedValues = {
+        low: 10,
+        medium: 60,
+        high: 110
+      };
+
+      it('should update measurement type data successfully', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.update_measurementType_data(
+          testTypeId,
+          testType,
+          updatedValues.low,
+          updatedValues.medium,
+          updatedValues.high
+        );
+
+        expect(mockUpdateDoc).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            low_value: updatedValues.low,
+            medium_value: updatedValues.medium,
+            high_value: updatedValues.high
+          })
+        );
+      });
+
+      it('should handle update errors', async () => {
+        const mockUpdateDoc = vi.mocked(updateDoc);
+        mockUpdateDoc.mockRejectedValue(new Error('Update failed'));
+
+        await expect(
+          firebaseQueries.update_measurementType_data(
+            testTypeId,
+            testType,
+            updatedValues.low,
+            updatedValues.medium,
+            updatedValues.high
+          )
+        ).rejects.toThrow('Update failed');
+      });
+    });
+
+    describe('Delete Measurement Type', () => {
+      it('should delete measurement type successfully', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockResolvedValue(undefined);
+
+        await firebaseQueries.delete_measurementType(testTypeId);
+
+        expect(mockDeleteDoc).toHaveBeenCalled();
+      });
+
+      it('should handle delete errors', async () => {
+        const mockDeleteDoc = vi.mocked(deleteDoc);
+        mockDeleteDoc.mockRejectedValue(new Error('Delete failed'));
+
+        await expect(
+          firebaseQueries.delete_measurementType(testTypeId)
+        ).rejects.toThrow('Delete failed');
+      });
+    });
+  });
+});
+
