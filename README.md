@@ -92,6 +92,8 @@ tsc --v
 
 ### Installation
 
+Navigate to the part of the project you want to run and follow the specific instructions in the respective README:s.
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
