@@ -1,77 +1,33 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import mapboxgl from 'mapbox-gl';
+  import 'mapbox-gl/dist/mapbox-gl.css';
 
-  interface MapLocation {
-    lat: number;
-    lng: number;
-  }
-
-  let map: google.maps.Map | null = null;
-  let error: string | null = $state(null);
-  let loading = $state(true);
-
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  let map : mapboxgl.Map;
 
   onMount(() => {
-    (async () => {
-      try {
-        console.log('Map component mounting, apiKey present:', !!apiKey);
-        
-        if (!apiKey) {
-          throw new Error(
-            'Google Maps API key is not configured. Add VITE_GOOGLE_MAPS_API_KEY to your .env.local file.'
-          );
-        }
+      mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-        const mapElement = document.getElementById('map');
-        if (!mapElement) {
-          throw new Error('Map container element not found');
-        }
+      map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/standard',
+          // style: 'mapbox://styles/mapbox/streets-v11',
+          // style: 'mapbox://styles/mapbox/dark-v11',
+          // style: 'mapbox://styles/mapbox/light-v11',
+          center: [17.635488, 59.843905],
+          zoom: 12
+      });
 
-        // Load the Google Maps API script dynamically
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-
-        // Wait for the script to load
-        await new Promise((resolve, reject) => {
-          script.onload = resolve;
-          script.onerror = reject;
-        });
-
-        console.log('Google Maps library loaded');
-
-        const location: MapLocation = { lat: 59.844603, lng: 17.630702 };
-
-        // Use the global google.maps object
-        const { Map, Marker } = window.google.maps;
-
-        map = new Map(mapElement, {
-          center: location,
-          zoom: 15
-        });
-
-        new Marker({
-          position: location,
-          map
-        });
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load map';
-      console.error('Map initialization error:', err);
-    } finally {
-      loading = false;
-    }
-    })();
-
-    return () => {
-      map = null;
-    };
+      map.addControl(new mapboxgl.NavigationControl());
+      
+      map.on('style.load', () => {
+          map.setFog({}); // Set the default atmosphere style
+      });
   });
+
 </script>
 
-{#if loading}
+<!-- {#if loading}
   <div id="map" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;">
     <p>Loading map...</p>
   </div>
@@ -84,4 +40,6 @@
   </div>
 {:else}
   <div id="map" style="width: 100vw; height: 100vh;"></div>
-{/if}
+{/if} -->
+
+<div id="map" style="width: 100vw; height: 100vh;"></div>
