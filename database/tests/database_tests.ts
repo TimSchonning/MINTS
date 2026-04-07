@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as firebaseQueries from '../src/queries';
+import * as db_connection from '../src/database_connection.ts'
+
+import * as station_repo from '../src/station_repository.ts'
+import * as measurement_repo from '../src/measurement_repository.ts'
+import * as sensor_type_repo from '../src/measurement_type_repository.ts'
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -40,7 +44,7 @@ describe("Firebase initialization", () => {
       mockInitializeApp.mockReturnValue({} as any);
       mockGetFirestore.mockReturnValue({} as any);
 
-      await firebaseQueries.connect_to_db();
+      await db_connection.connect_to_db();
 
       expect(mockInitializeApp).toHaveBeenCalled();
       expect(mockGetFirestore).toHaveBeenCalled();
@@ -54,7 +58,7 @@ describe("Firebase initialization", () => {
         throw new Error('Firebase initialization failed');
       });
 
-      await expect(firebaseQueries.connect_to_db()).rejects.toThrow('Firebase initialization failed');
+      await expect(db_connection.connect_to_db()).rejects.toThrow('Firebase initialization failed');
       consoleSpy.mockRestore();
     });
   });
@@ -73,7 +77,7 @@ describe('Firebase Database CRUD Operations', () => {
       it('should create a station with valid data', async () => {
         const mockSetDoc = vi.mocked(setDoc);
 
-        await firebaseQueries.create_station(testStationId, testPosition);
+        await station_repo.create_station(testStationId, testPosition);
 
         expect(mockSetDoc).toHaveBeenCalledWith(
           expect.anything(),
@@ -88,10 +92,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockSetDoc = vi.mocked(setDoc);
-        mockSetDoc.mockRejectedValue(new Error('Permission denied'));
+        mockSetDoc.mockRejectedValueOnce(new Error('Permission denied'));
 
         await expect(
-          firebaseQueries.create_station(testStationId, testPosition)
+          station_repo.create_station(testStationId, testPosition)
         ).rejects.toThrow('Permission denied');
         consoleSpy.mockRestore();
       });
@@ -99,7 +103,7 @@ describe('Firebase Database CRUD Operations', () => {
       it('should include created_at timestamp', async () => {
         const mockSetDoc = vi.mocked(setDoc);
 
-        await firebaseQueries.create_station(testStationId, testPosition);
+        await station_repo.create_station(testStationId, testPosition);
 
         const callArgs = mockSetDoc.mock.calls[0][1];
         expect(callArgs).toHaveProperty('created_at');
@@ -115,7 +119,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => ({ position: testPosition })
         } as any);
 
-        const result = await firebaseQueries.read_station_position(testStationId);
+        const result = await station_repo.read_station_position(testStationId);
 
         expect(result).toEqual(testPosition);
       });
@@ -127,7 +131,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => undefined
         } as any);
 
-        const result = await firebaseQueries.read_station_position(testStationId);
+        const result = await station_repo.read_station_position(testStationId);
 
         expect(result).toBeNull();
       });
@@ -136,10 +140,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockGetDoc = vi.mocked(getDoc);
-        mockGetDoc.mockRejectedValue(new Error('Network error'));
+        mockGetDoc.mockRejectedValueOnce(new Error('Network error'));
 
         await expect(
-          firebaseQueries.read_station_position(testStationId)
+          station_repo.read_station_position(testStationId)
         ).rejects.toThrow('Network error');
 
         consoleSpy.mockRestore();
@@ -153,7 +157,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
         mockUpdateDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.update_station(testStationId, updatedPosition);
+        await station_repo.update_station(testStationId, updatedPosition);
 
         expect(mockUpdateDoc).toHaveBeenCalledWith(
           expect.anything(),
@@ -167,7 +171,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
         mockUpdateDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.update_station(testStationId, updatedPosition);
+        await station_repo.update_station(testStationId, updatedPosition);
 
         const callArgs = mockUpdateDoc.mock.calls[0][1];
         expect(callArgs).toHaveProperty('updated_at');
@@ -177,10 +181,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockUpdateDoc = vi.mocked(updateDoc);
-        mockUpdateDoc.mockRejectedValue(new Error('Document not found'));
+        mockUpdateDoc.mockRejectedValueOnce(new Error('Document not found'));
 
         await expect(
-          firebaseQueries.update_station(testStationId, updatedPosition)
+          station_repo.update_station(testStationId, updatedPosition)
         ).rejects.toThrow('Document not found');
         consoleSpy.mockRestore();
       });
@@ -191,7 +195,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockDeleteDoc = vi.mocked(deleteDoc);
         mockDeleteDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.delete_station(testStationId);
+        await station_repo.delete_station(testStationId);
 
         expect(mockDeleteDoc).toHaveBeenCalled();
       });
@@ -200,10 +204,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockDeleteDoc = vi.mocked(deleteDoc);
-        mockDeleteDoc.mockRejectedValue(new Error('Permission denied'));
+        mockDeleteDoc.mockRejectedValueOnce(new Error('Permission denied'));
 
         await expect(
-          firebaseQueries.delete_station(testStationId)
+          station_repo.delete_station(testStationId)
         ).rejects.toThrow('Permission denied');
 
         consoleSpy.mockRestore();
@@ -223,7 +227,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockSetDoc = vi.mocked(setDoc);
         mockSetDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.create_measurement(
+        await measurement_repo.create_measurement(
           testMeasurementId,
           testStationId,
           testValue,
@@ -246,10 +250,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockSetDoc = vi.mocked(setDoc);
-        mockSetDoc.mockRejectedValue(new Error('Invalid data'));
+        mockSetDoc.mockRejectedValueOnce(new Error('Invalid data'));
 
         await expect(
-          firebaseQueries.create_measurement(
+          measurement_repo.create_measurement(
             testMeasurementId,
             testStationId,
             testValue,
@@ -277,7 +281,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => mockData
         } as any);
 
-        const result = await firebaseQueries.read_measurement_data(testMeasurementId);
+        const result = await measurement_repo.read_measurement_data(testMeasurementId);
 
         expect(result).toEqual(mockData);
       });
@@ -289,7 +293,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => undefined
         } as any);
 
-        const result = await firebaseQueries.read_measurement_data(testMeasurementId);
+        const result = await measurement_repo.read_measurement_data(testMeasurementId);
 
         expect(result).toBeNull();
       });
@@ -298,10 +302,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockGetDoc = vi.mocked(getDoc);
-        mockGetDoc.mockRejectedValue(new Error('Read failed'));
+        mockGetDoc.mockRejectedValueOnce(new Error('Read failed'));
 
         await expect(
-          firebaseQueries.read_measurement_data(testMeasurementId)
+          measurement_repo.read_measurement_data(testMeasurementId)
         ).rejects.toThrow('Read failed');
 
         consoleSpy.mockRestore();
@@ -315,7 +319,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
         mockUpdateDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.update_measurement_data(
+        await measurement_repo.update_measurement_data(
           testMeasurementId,
           testStationId,
           updatedValue,
@@ -336,10 +340,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockUpdateDoc = vi.mocked(updateDoc);
-        mockUpdateDoc.mockRejectedValue(new Error('Update failed'));
+        mockUpdateDoc.mockRejectedValueOnce(new Error('Update failed'));
 
         await expect(
-          firebaseQueries.update_measurement_data(
+          measurement_repo.update_measurement_data(
             testMeasurementId,
             testStationId,
             updatedValue,
@@ -356,7 +360,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockDeleteDoc = vi.mocked(deleteDoc);
         mockDeleteDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.delete_measurement(testMeasurementId);
+        await measurement_repo.delete_measurement(testMeasurementId);
 
         expect(mockDeleteDoc).toHaveBeenCalled();
       });
@@ -365,10 +369,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockDeleteDoc = vi.mocked(deleteDoc);
-        mockDeleteDoc.mockRejectedValue(new Error('Delete failed'));
+        mockDeleteDoc.mockRejectedValueOnce(new Error('Delete failed'));
 
         await expect(
-          firebaseQueries.delete_measurement(testMeasurementId)
+          measurement_repo.delete_measurement(testMeasurementId)
         ).rejects.toThrow('Delete failed');
         consoleSpy.mockRestore();
       });
@@ -389,7 +393,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockSetDoc = vi.mocked(setDoc);
         mockSetDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.create_measurementType(
+        await sensor_type_repo.create_measurementType(
           testTypeId,
           testType,
           testValues.low,
@@ -413,10 +417,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockSetDoc = vi.mocked(setDoc);
-        mockSetDoc.mockRejectedValue(new Error('Invalid type'));
+        mockSetDoc.mockRejectedValueOnce(new Error('Invalid type'));
 
         await expect(
-          firebaseQueries.create_measurementType(
+          sensor_type_repo.create_measurementType(
             testTypeId,
             testType,
             testValues.low,
@@ -445,7 +449,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => mockData
         } as any);
 
-        const result = await firebaseQueries.read_measurementType_data(testTypeId);
+        const result = await sensor_type_repo.read_measurementType_data(testTypeId);
 
         expect(result).toEqual(mockData);
       });
@@ -457,7 +461,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => undefined
         } as any);
 
-        const result = await firebaseQueries.read_measurementType_data(testTypeId);
+        const result = await sensor_type_repo.read_measurementType_data(testTypeId);
 
         expect(result).toBeNull();
       });
@@ -466,10 +470,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockGetDoc = vi.mocked(getDoc);
-        mockGetDoc.mockRejectedValue(new Error('Read failed'));
+        mockGetDoc.mockRejectedValueOnce(new Error('Read failed'));
 
         await expect(
-          firebaseQueries.read_measurementType_data(testTypeId)
+          sensor_type_repo.read_measurementType_data(testTypeId)
         ).rejects.toThrow('Read failed');
 
         consoleSpy.mockRestore();
@@ -487,7 +491,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
         mockUpdateDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.update_measurementType_data(
+        await sensor_type_repo.update_measurementType_data(
           testTypeId,
           testType,
           updatedValues.low,
@@ -509,10 +513,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockUpdateDoc = vi.mocked(updateDoc);
-        mockUpdateDoc.mockRejectedValue(new Error('Update failed'));
+        mockUpdateDoc.mockRejectedValueOnce(new Error('Update failed'));
 
         await expect(
-          firebaseQueries.update_measurementType_data(
+          sensor_type_repo.update_measurementType_data(
             testTypeId,
             testType,
             updatedValues.low,
@@ -530,7 +534,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockDeleteDoc = vi.mocked(deleteDoc);
         mockDeleteDoc.mockResolvedValue(undefined);
 
-        await firebaseQueries.delete_measurementType(testTypeId);
+        await sensor_type_repo.delete_measurementType(testTypeId);
 
         expect(mockDeleteDoc).toHaveBeenCalled();
       });
@@ -539,10 +543,10 @@ describe('Firebase Database CRUD Operations', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         const mockDeleteDoc = vi.mocked(deleteDoc);
-        mockDeleteDoc.mockRejectedValue(new Error('Delete failed'));
+        mockDeleteDoc.mockRejectedValueOnce(new Error('Delete failed'));
 
         await expect(
-          firebaseQueries.delete_measurementType(testTypeId)
+          sensor_type_repo.delete_measurementType(testTypeId)
         ).rejects.toThrow('Delete failed');
 
         consoleSpy.mockRestore();

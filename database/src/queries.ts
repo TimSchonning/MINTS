@@ -1,5 +1,5 @@
 // Firebase database queries
-import { initializeApp } from 'firebase/app';
+/*import { initializeApp } from 'firebase/app';
 import {
     getFirestore,
     Firestore,
@@ -246,4 +246,4 @@ export async function delete_measurementType(measurementType_id: number) {
         console.error('Error deleting measurement type:', error);
         throw error;
     }
-}
+}*/
