@@ -1,8 +1,4 @@
 // functions to edit heatmap
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&loading=async&libraries=visualization&callback=initMap">
-</script>
-
 type WeightCoord = [lat: number, lng: number, weight: number];
 
 // Array of exactly 1440 coordinates (one per minute in a 24-hour day)
