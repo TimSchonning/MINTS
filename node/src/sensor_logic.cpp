@@ -53,3 +53,12 @@
     
     return false;
  }
+
+/**
+ * @brief TODO: sound sensor
+ * * @note 
+ */
+
+bool get_all_ss_averages(ss_avg* state, ss_res* results, uint16_t duration_ms, uint16_t target_samples) {
+    return true;
+}
