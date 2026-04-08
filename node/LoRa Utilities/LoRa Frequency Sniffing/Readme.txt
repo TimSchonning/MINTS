@@ -1,0 +1,3 @@
+The Python file "monitor" is for reading the data and making a noise when LoRa packets are found. Change COM5 in the file to the port you are using. If you get "permission denied" error, make sure you are not uploading to the Arduino, using Serial Monitor, or anything else using the port. 
+
+The Arduino file "heltec_LoRa_sniffer" is the actual sniffing code. Upload to arduino and change pins to fit your setup. 
