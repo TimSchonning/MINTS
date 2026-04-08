@@ -1,7 +1,7 @@
 import serial
 import winsound
 
-port = 'COM5' 
+port = 'COM3' 
 baud = 115200
 
 freq = 2500
