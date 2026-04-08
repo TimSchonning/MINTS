@@ -58,7 +58,41 @@ To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
+To run the project you need to have npm, NodeJS and TypeScript installed. Below is an example of how to set them up in Ubuntu using Windows Subsystem for Linux (WSL) if they are not yet installed.
+
+### Step 1
+Install Node Version Manager (nvm) using the following command.
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+```
+
+Restart your terminal and then verify installation by typing:
+```
+nvm -v
+```
+
+### Step 2
+Use nvm to install npm and NodeJS LTS by using the following command. At the time of writing the version of node is "v24.14.1" and npm is version "11.11.0".
+
+```
+nvm install --lts
+```
+
+### Step 3
+Install TypeScript using npm by using the command:
+```
+npm install -g typescript
+```
+
+Verify by typing 
+´´´
+tsc --v
+´´´
+
+
 ### Installation
+
+Navigate to the part of the project you want to run and follow the specific instructions in the respective README:s.
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -91,7 +125,7 @@ Email:    nilssonjennylinnea@gmail.com <br />
 Github:  https://github.com/jeni1263 <br />
 LinkedIn: <br />
 
-**David Olmedo**
+**David Olmedo**  
 Email:    david@olmedo.se <br />
 Github:   https://github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
