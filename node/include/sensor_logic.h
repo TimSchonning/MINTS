@@ -31,14 +31,14 @@ typedef struct {
     uint16_t sample_count;
     bool is_active;
 
-    uint16_t sum_ss10;
+    uint16_t sum_ss;
 } ss_avg;
 
 /**
  * @brief Stores the final calculated averages.
  */
 typedef struct {
-    uint16_t pm10;
+    uint16_t noise;
 } ss_res;
 
 /* Resets the structs */
@@ -64,6 +64,5 @@ bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, u
  * @return Success indicator
  */
 bool get_all_ss_averages(ss_avg* state, ss_res* results, uint16_t duration_ms, uint16_t target_samples);
-
 
 #endif

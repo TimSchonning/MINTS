@@ -32,4 +32,4 @@ HM330XErrorCode parse_result(uint8_t* data);
  */
 HM330XErrorCode parse_result_value(uint8_t* data);
 
-#endif // HM330X_PARSER_H
+#endif

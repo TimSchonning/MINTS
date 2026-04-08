@@ -1,13 +1,7 @@
 #include <Seeed_HM330X.h>
 #include <HM330X.h>
 
-
-/**
- * @brief Returns the average readings over a given period
- * * @note Use within an "if" statement within the main loop
- */
-
- bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, uint16_t target_samples) {
+bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, uint16_t target_samples) {
     uint16_t sample_interval = duration_ms / target_samples;
     uint32_t now = millis();
     
@@ -52,12 +46,7 @@
     }
     
     return false;
- }
-
-/**
- * @brief TODO: sound sensor
- * * @note 
- */
+}
 
 bool get_all_ss_averages(ss_avg* state, ss_res* results, uint16_t duration_ms, uint16_t target_samples) {
     return true;
