@@ -1,5 +1,5 @@
-#ifndef HM330X_LOGIC_H
-#define HM330X_LOGIC_H
+#ifndef SENSOR_LOGIC_H
+#define SENSOR_LOGIC_H
 
 #include <stdint.h>
 #include <stdbool.h>
