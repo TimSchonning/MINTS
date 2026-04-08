@@ -6,7 +6,7 @@ export async function create_measurement(
     station_id: number,
     value: any,
     timestamp: Date,
-    measurement_type: any
+    sensor_type: any
 ) {
     try {
         const measurementRef = doc(db, 'measurements', measurement_id.toString());
@@ -15,7 +15,7 @@ export async function create_measurement(
             station_id,
             value,
             timestamp: Timestamp.fromDate(timestamp),
-            measurement_type,
+            sensor_type,
             created_at: Timestamp.now()
         });
         console.log('Measurement created:', measurement_id);
@@ -47,7 +47,7 @@ export async function update_measurement_data(
     station_id: number,
     value: any,
     timestamp: Date,
-    measurement_type: any
+    sensor_type: any
 ) {
     try {
         const measurementRef = doc(db, 'measurements', measurement_id.toString());
@@ -55,7 +55,7 @@ export async function update_measurement_data(
             station_id,
             value,
             timestamp: Timestamp.fromDate(timestamp),
-            measurement_type,
+            sensor_type,
             updated_at: Timestamp.now()
         });
         console.log('Measurement updated:', measurement_id);

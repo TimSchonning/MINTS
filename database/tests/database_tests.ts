@@ -3,7 +3,7 @@ import * as db_connection from '../src/database_connection.ts'
 
 import * as station_repo from '../src/station_repository.ts'
 import * as measurement_repo from '../src/measurement_repository.ts'
-import * as sensor_type_repo from '../src/measurement_type_repository.ts'
+import * as sensor_type_repo from '../src/sensor_type_repository.ts'
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -241,7 +241,7 @@ describe('Firebase Database CRUD Operations', () => {
             measurement_id: testMeasurementId,
             station_id: testStationId,
             value: testValue,
-            measurement_type: testMeasurementType
+            sensor_type: testMeasurementType
           })
         );
       });
@@ -273,7 +273,7 @@ describe('Firebase Database CRUD Operations', () => {
           measurement_id: testMeasurementId,
           station_id: testStationId,
           value: testValue,
-          measurement_type: testMeasurementType
+          sensor_type: testMeasurementType
         };
 
         mockGetDoc.mockResolvedValue({
@@ -393,7 +393,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockSetDoc = vi.mocked(setDoc);
         mockSetDoc.mockResolvedValue(undefined);
 
-        await sensor_type_repo.create_measurementType(
+        await sensor_type_repo.create_sensor_type(
           testTypeId,
           testType,
           testValues.low,
@@ -404,8 +404,8 @@ describe('Firebase Database CRUD Operations', () => {
         expect(mockSetDoc).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            measurementType_id: testTypeId,
-            measurement_type: testType,
+            sensor_type_id: testTypeId,
+            sensor_type: testType,
             low_value: testValues.low,
             medium_value: testValues.medium,
             high_value: testValues.high
@@ -420,7 +420,7 @@ describe('Firebase Database CRUD Operations', () => {
         mockSetDoc.mockRejectedValueOnce(new Error('Invalid type'));
 
         await expect(
-          sensor_type_repo.create_measurementType(
+          sensor_type_repo.create_sensor_type(
             testTypeId,
             testType,
             testValues.low,
@@ -437,8 +437,8 @@ describe('Firebase Database CRUD Operations', () => {
       it('should read measurement type data successfully', async () => {
         const mockGetDoc = vi.mocked(getDoc);
         const mockData = {
-          measurementType_id: testTypeId,
-          measurement_type: testType,
+          sensor_type_id: testTypeId,
+          sensor_type: testType,
           low_value: testValues.low,
           medium_value: testValues.medium,
           high_value: testValues.high
@@ -449,7 +449,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => mockData
         } as any);
 
-        const result = await sensor_type_repo.read_measurementType_data(testTypeId);
+        const result = await sensor_type_repo.read_sensor_type_data(testTypeId);
 
         expect(result).toEqual(mockData);
       });
@@ -461,7 +461,7 @@ describe('Firebase Database CRUD Operations', () => {
           data: () => undefined
         } as any);
 
-        const result = await sensor_type_repo.read_measurementType_data(testTypeId);
+        const result = await sensor_type_repo.read_sensor_type_data(testTypeId);
 
         expect(result).toBeNull();
       });
@@ -473,7 +473,7 @@ describe('Firebase Database CRUD Operations', () => {
         mockGetDoc.mockRejectedValueOnce(new Error('Read failed'));
 
         await expect(
-          sensor_type_repo.read_measurementType_data(testTypeId)
+          sensor_type_repo.read_sensor_type_data(testTypeId)
         ).rejects.toThrow('Read failed');
 
         consoleSpy.mockRestore();
@@ -491,7 +491,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
         mockUpdateDoc.mockResolvedValue(undefined);
 
-        await sensor_type_repo.update_measurementType_data(
+        await sensor_type_repo.update_sensor_type_data(
           testTypeId,
           testType,
           updatedValues.low,
@@ -516,7 +516,7 @@ describe('Firebase Database CRUD Operations', () => {
         mockUpdateDoc.mockRejectedValueOnce(new Error('Update failed'));
 
         await expect(
-          sensor_type_repo.update_measurementType_data(
+          sensor_type_repo.update_sensor_type_data(
             testTypeId,
             testType,
             updatedValues.low,
@@ -534,7 +534,7 @@ describe('Firebase Database CRUD Operations', () => {
         const mockDeleteDoc = vi.mocked(deleteDoc);
         mockDeleteDoc.mockResolvedValue(undefined);
 
-        await sensor_type_repo.delete_measurementType(testTypeId);
+        await sensor_type_repo.delete_sensor_type(testTypeId);
 
         expect(mockDeleteDoc).toHaveBeenCalled();
       });
@@ -546,7 +546,7 @@ describe('Firebase Database CRUD Operations', () => {
         mockDeleteDoc.mockRejectedValueOnce(new Error('Delete failed'));
 
         await expect(
-          sensor_type_repo.delete_measurementType(testTypeId)
+          sensor_type_repo.delete_sensor_type(testTypeId)
         ).rejects.toThrow('Delete failed');
 
         consoleSpy.mockRestore();
