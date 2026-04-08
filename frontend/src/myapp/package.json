@@ -47,7 +47,8 @@
 	},
 	"dependencies": {
 		"@googlemaps/js-api-loader": "^2.0.2",
-		"firebase": "^12.11.0"
+		"firebase": "^12.11.0",
+		"mapbox-gl": "^3.21.0"
 	},
 	"description": "Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).",
 	"main": "eslint.config.js",
