@@ -13,15 +13,15 @@ typedef struct {
     uint16_t sample_count;
     bool is_active;
 
-    uint16_t sum_pm10, sum_pm25, sum_pm100;
-} pm_avg;
+    uint8_t sum_pm10, sum_pm25;
+} pm_avg_t;
 
 /**
  * @brief Stores the final calculated averages.
  */
 typedef struct {
-    uint16_t pm10, pm25, pm100;
-} pm_res;
+    uint8_t pm10, pm25;
+} pm_res_t;
 
 /**
  * @brief Stores the running totals and timing state for noise averaging.
@@ -32,18 +32,18 @@ typedef struct {
     bool is_active;
 
     uint16_t sum_ss;
-} ss_avg;
+} ss_avg_t;
 
 /**
  * @brief Stores the final calculated averages.
  */
 typedef struct {
     uint16_t noise;
-} ss_res;
+} ss_res_t;
 
 /* Resets the structs */
-pm_avg particle_sensor_stats = {0};
-ss_avg sound_sensor_stats = {0};
+pm_avg_t particle_sensor_stats = {0};
+ss_avg_t sound_sensor_stats = {0};
 
 /**
  * @brief  Calculates the average PM concentration.
@@ -53,7 +53,7 @@ ss_avg sound_sensor_stats = {0};
  * @param  target_samples: number of samples to take.
  * @return Success indicator
  */
-bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, uint16_t target_samples);
+bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
 /**
  * @brief  Calculates the average PM concentration.
@@ -63,6 +63,6 @@ bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, u
  * @param  target_samples: number of samples to take.
  * @return Success indicator
  */
-bool get_all_ss_averages(ss_avg* state, ss_res* results, uint16_t duration_ms, uint16_t target_samples);
+bool get_all_ss_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
 #endif

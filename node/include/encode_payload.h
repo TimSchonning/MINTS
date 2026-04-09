@@ -9,9 +9,10 @@
  * @brief Stores the results as a sendable LoRa payload.
  */
 typedef struct {
-    uint16_t sum_pm10, sum_pm25, sum_pm100;
+    uint8_t id;
+    uint8_t sum_pm10, sum_pm25;
     uint16_t noise;
-} payload;
+} payload_t;
 
 /**
  * @brief  Returns the encoded payload.
@@ -20,6 +21,6 @@ typedef struct {
  * @param  ss_results: Sound sensor results.
  * @return Success indicator
  */
-bool encode_payload(payload* payload, pm_res* pm_results, ss_res* ss_results);
+bool encode_payload(payload_t* payload, pm_res_t* pm_results, ss_res_t* ss_results);
 
 #endif

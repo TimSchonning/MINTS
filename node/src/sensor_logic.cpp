@@ -1,7 +1,7 @@
 #include <Seeed_HM330X.h>
 #include <HM330X.h>
 
-bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, uint16_t target_samples) {
+bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples) {
     uint16_t sample_interval = duration_ms / target_samples;
     uint32_t now = millis();
     
@@ -48,6 +48,6 @@ bool get_all_pm_averages(pm_avg* state, pm_res* results, uint16_t duration_ms, u
     return false;
 }
 
-bool get_all_ss_averages(ss_avg* state, ss_res* results, uint16_t duration_ms, uint16_t target_samples) {
+bool get_all_ss_averages(ss_avg_t* state, ss_res_t* results, uint16_t duration_ms, uint16_t target_samples) {
     return true;
 }
