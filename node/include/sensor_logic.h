@@ -27,18 +27,17 @@ typedef struct {
  * @brief Stores the running totals and timing state for noise averaging.
  */
 typedef struct {
-    uint16_t start_time, last_sample_time;
-    uint8_t sample_count;
-    bool is_active;
+    uint16_t start_time;
+    uint16_t signal_max, signal_min;
 
-    uint16_t sum_ss;
+    bool is_active;
 } ss_avg_t;
 
 /**
- * @brief Stores the final calculated averages.
+ * @brief Stores the final calculated peak to peak amplitude.
  */
 typedef struct {
-    uint16_t noise;
+    uint16_t noise_peak;
 } ss_res_t;
 
 /* Resets the structs */
@@ -51,18 +50,23 @@ ss_avg_t sound_sensor_stats = {0};
  * @param  results: the accumulated totals.
  * @param  duration_ms: duration in ms the sampling runs for.
  * @param  target_samples: number of samples to take.
- * @return Success indicator
+ * @return is done
+ * 
+ * @note Sensor needs to heat up for about 30s
  */
 bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
 /**
- * @brief  Calculates the average PM concentration.
- * @param  state: the state/running totals.
- * @param  results: the accumulated totals.
+ * @brief  Calculates the peak to peak sound amplitude
+ * @param  SENSOR_PIN: Analog data output pin.
+ * @param  state: the state.
+ * @param  results: the result (peak volume).
  * @param  duration_ms: duration in ms the sampling runs for.
- * @param  target_samples: number of samples to take.
- * @return Success indicator
+ * @return is done
+ * 
+ * @note Avoid any delay() when using this function since it depends heavily on being called at a high sample rate
+ * @note Hard-coded to an ADC which returns a 1024 bit value. Change if possible/needed
  */
-bool get_all_ss_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
+bool get_ss_averages(int SENSOR_PIN, ss_avg_t* state, ss_res_t* results, uint16_t duration_ms);
 
 #endif
