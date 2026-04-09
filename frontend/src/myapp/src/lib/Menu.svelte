@@ -19,7 +19,7 @@ let menuItems = [
         },
     ]
 
-    let showMenu = $state(false);
+    let showMenu = $state(true);
     let content;
 
     function handleClick(event: Event) {
