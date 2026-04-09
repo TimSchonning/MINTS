@@ -47,25 +47,6 @@ void receiverMode() {
   Serial.println("Changing to receiver mode.");
   display.drawString(0, 2, "LoRa Receiver");
   display.drawString(0, 4, (String("Freq: ") + (set_frequency/1000000) + " MHz").c_str());
-
-  int packetSize = LoRa.parsePacket();
-  if (packetSize) {
-    Serial.print("Received packet '");
-    
-    display.clearLine(2);
-    display.clearLine(4);
-    display.drawString(0, 0, "Packet received!");
-
-    while(LoRa.available()) {
-      Serial.print((char)LoRa.read());
-    }
-
-    Serial.print("' with RSSI "); // RSSI = Received Signal Strength Indicator
-    Serial.println(LoRa.packetRssi() + " dBm");
-
-    delay(1000);
-    display.clearLine(0);
-  }
 }
 
 void setup() {
@@ -100,5 +81,24 @@ void loop() {
     delay(300);
     while(digitalRead(PRG_BTN) == LOW); // Wait for button to be released
     receiverMode();
+  }
+  
+  int packetSize = LoRa.parsePacket();
+  if (packetSize) {
+    Serial.println("Received packet '");
+    
+    display.clearLine(2);
+    display.clearLine(4);
+    display.drawString(0, 0, "Packet received!");
+
+    while(LoRa.available()) {
+      Serial.print((char)LoRa.read());
+    }
+
+    Serial.print("' with RSSI "); // RSSI = Received Signal Strength Indicator
+    Serial.println(LoRa.packetRssi() + " dBm");
+
+    delay(1000);
+    display.clearLine(0);
   }
 }
