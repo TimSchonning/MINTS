@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { Firestore, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -10,15 +10,6 @@ const firebaseConfig = {
     appId: process.env.FIREBASE_APP_ID
 };
 
-export let db: Firestore;
+const app = getApps().length == 0 ? initializeApp(firebaseConfig) : getApp();
 
-export async function connect_to_db() {
-    try {
-        initializeApp(firebaseConfig);
-        db = getFirestore();
-        console.log('Connected to Firebase');
-    } catch (error) {
-        console.error('Error connecting to Firebase:', error);
-        throw error;
-    }
-}
+export const db: Firestore = getFirestore(app);

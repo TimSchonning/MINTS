@@ -31,39 +31,6 @@ vi.mock('firebase/firestore', () => ({
   },
 }));
 
-describe("Firebase initialization", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe('Database Connection', () => {
-    it('should connect to database successfully', async () => {
-      const mockInitializeApp = vi.mocked(initializeApp);
-      const mockGetFirestore = vi.mocked(getFirestore);
-
-      mockInitializeApp.mockReturnValue({} as any);
-      mockGetFirestore.mockReturnValue({} as any);
-
-      await db_connection.connect_to_db();
-
-      expect(mockInitializeApp).toHaveBeenCalled();
-      expect(mockGetFirestore).toHaveBeenCalled();
-    });
-
-    it('should handle connection errors', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
-
-      const mockInitializeApp = vi.mocked(initializeApp);
-      mockInitializeApp.mockImplementation(() => {
-        throw new Error('Firebase initialization failed');
-      });
-
-      await expect(db_connection.connect_to_db()).rejects.toThrow('Firebase initialization failed');
-      consoleSpy.mockRestore();
-    });
-  });
-});
-
 describe('Firebase Database CRUD Operations', () => {
   beforeEach(() => {
     vi.clearAllMocks();
