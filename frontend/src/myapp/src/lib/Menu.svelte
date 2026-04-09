@@ -1,4 +1,6 @@
 <script lang="ts">
+import { addLayer, removeLayer } from '../../../../../backend/src/heatmap.ts';
+
 let menuItems = [
         {
             'name': 'Noise',
@@ -25,11 +27,9 @@ let menuItems = [
     }
     function handleToggle(item: any) {
     if (item.checked) {
-        console.log(`Turning ON ${item.name}`);
-        // item.addLayer(item.name);
+        addLayer(item.name);
     } else {
-        console.log(`Turning OFF ${item.name}`);
-        // removeLayer(item.name);
+        removeLayer(item.name);
     }
 }
 </script>

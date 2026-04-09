@@ -1,15 +1,14 @@
 <script lang="ts">
-
+    import { startAnimation, pauseAnimation } from '../../../../../backend/src/heatmap';
+    
     let isPlaying = $state(false);
 
     function handleClick(event: Event) {
         isPlaying = !isPlaying;
         if (isPlaying) {
-            console.log('Playing animation');
-            // startAnimation();
+            startAnimation();
         } else {
-            console.log('Pausing animation');
-            // pauseAnimation();
+            pauseAnimation();
         }
     }
 
