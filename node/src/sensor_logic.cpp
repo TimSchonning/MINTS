@@ -15,7 +15,7 @@ bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_m
     uint32_t now = millis();
     
     if (!state->is_active) {
-        memset(state, 0, sizeof(pm_avg));
+        memset(state, 0, sizeof(pm_avg_t));
         state->start_time = now;
         state->is_active = true;
     }
@@ -40,22 +40,50 @@ bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_m
             state->sample_count++;
             state->last_sample_time = now;
         }
+        return false;
     }
 
     /* Calculates the averages */
-    if (now - state->startTime >= duration_ms) {
-        uint8_t n = state->sample_count;
-        if (n > 0) {
-            results->pm10  = pm_average(n, state->sum_pm10);
-            results->pm25  = pm_average(n, state->sum_pm25);
-        }
-        state->is_active = false;
-        return true;
-    }
-    
-    return false;
+    results->pm10 = pm_average(state->sample_count, state->sum_pm10);
+    results->pm25 = pm_average(state->sample_count, state->sum_pm25);
+    state->is_active = false;
+    return true;
 }
 
-bool get_all_ss_averages(ss_avg_t* state, ss_res_t* results, uint16_t duration_ms, uint16_t target_samples) {
+bool get_ss_averages(int SENSOR_PIN, ss_avg_t* state, ss_res_t* results, uint16_t duration_ms) {
+    uint16_t sample_interval = duration_ms / target_samples;
+    uint32_t now = millis();
+    
+
+    if (!state->is_active) {
+        memset(state, 0, sizeof(ss_avg_t));
+        state->start_time = now;
+        state->is_active = true;
+        state->signal_max = 0;
+        state->signal_min = 1024;
+    }
+
+    /* Sums the readings over the given time period */
+    if (now - state->start_time < duration_ms) {
+        uint16_t sample = analogRead(SENSOR_PIN);
+
+        if (sample < 1024) {
+            if (sample > state->signal_max) state->signal_max = sample;
+            if (sample < state->signal_min) state->signal_min = sample;
+        }
+
+        state->sample_count++;
+        state->last_sample_time = now;
+        return false;
+    }
+
+    if (state->signal_max <= state->signal_min) {
+        /* ie, no readings were made */
+        results->peak = 0;
+    } else {
+        results->peak = state->signal_max - state->signal_min;
+    }
+
+    state->is_active = false;
     return true;
 }

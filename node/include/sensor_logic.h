@@ -51,7 +51,7 @@ ss_avg_t sound_sensor_stats = {0};
  * @param  results: the accumulated totals.
  * @param  duration_ms: duration in ms the sampling runs for.
  * @param  target_samples: number of samples to take.
- * @return Success indicator
+ * @return is done
  */
 bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
@@ -61,7 +61,7 @@ bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_m
  * @param  results: the accumulated totals.
  * @param  duration_ms: duration in ms the sampling runs for.
  * @param  target_samples: number of samples to take.
- * @return Success indicator
+ * @return is done
  */
 bool get_all_ss_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
