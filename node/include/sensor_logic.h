@@ -10,10 +10,10 @@
  */
 typedef struct {
     uint16_t start_time, last_sample_time;
-    uint16_t sample_count;
+    uint8_t sample_count;
     bool is_active;
 
-    uint8_t sum_pm10, sum_pm25;
+    uint16_t sum_pm10, sum_pm25;
 } pm_avg_t;
 
 /**
@@ -28,7 +28,7 @@ typedef struct {
  */
 typedef struct {
     uint16_t start_time, last_sample_time;
-    uint16_t sample_count;
+    uint8_t sample_count;
     bool is_active;
 
     uint16_t sum_ss;
