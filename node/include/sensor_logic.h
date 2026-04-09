@@ -37,7 +37,7 @@ typedef struct {
  * @brief Stores the final calculated peak to peak amplitude.
  */
 typedef struct {
-    uint16_t peak;
+    uint16_t noise_peak;
 } ss_res_t;
 
 /* Resets the structs */

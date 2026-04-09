@@ -79,9 +79,9 @@ bool get_ss_averages(int SENSOR_PIN, ss_avg_t* state, ss_res_t* results, uint16_
 
     if (state->signal_max <= state->signal_min) {
         /* ie, no readings were made */
-        results->peak = 0;
+        results->noise_peak = 0;
     } else {
-        results->peak = state->signal_max - state->signal_min;
+        results->noise_peak = state->signal_max - state->signal_min;
     }
 
     state->is_active = false;
