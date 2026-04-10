@@ -40,10 +40,6 @@ typedef struct {
     uint16_t noise_peak;
 } ns_result_t;
 
-/* Resets the structs */
-ps_state_t particle_sensor_stats = {0};
-ns_state_t sound_sensor_stats = {0};
-
 /**
  * @brief  Calculates the average PM concentration.
  * @param  sensor_buf: Buffer containing the readings of the sensor. (uint8_t sensor_buf[30];)
