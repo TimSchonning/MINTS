@@ -21,6 +21,6 @@ typedef struct {
  * @param  ns_results: Sound sensor results.
  * @return Success indicator
  */
-bool encode_payload(payload_t* payload, pm_res_t* pm_results, ns_res_t* ns_results);
+bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ns_results);
 
 #endif
