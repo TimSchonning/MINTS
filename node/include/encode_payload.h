@@ -10,7 +10,7 @@
  */
 typedef struct {
     uint8_t id;
-    uint8_t sum_pm10, sum_pm25;
+    uint8_t pm10, pm25;
     uint16_t noise_peak;
 } payload_t;
 
@@ -18,9 +18,9 @@ typedef struct {
  * @brief  Returns the encoded payload.
  * @param  payload: the payload.
  * @param  pm_results: PM results.
- * @param  ss_results: Sound sensor results.
+ * @param  ns_results: Sound sensor results.
  * @return Success indicator
  */
-bool encode_payload(payload_t* payload, pm_res_t* pm_results, ss_res_t* ss_results);
+bool encode_payload(payload_t* payload, pm_res_t* pm_results, ns_res_t* ns_results);
 
 #endif

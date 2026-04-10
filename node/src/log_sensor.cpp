@@ -1,8 +1,8 @@
 #include <sensor_logic.h>
 #include <SPI.h>
 
-void log_ps(uint8_t* sensor_buf, pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples) {
-    bool is_done = get_all_pm_averages(sensor_buf, state, results, duration_ms, target_samples);
+void ps_log(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint16_t duration_ms, uint16_t target_samples) {
+    bool is_done = ps_parse(sensor_buf, state, results, duration_ms, target_samples);
 
     if (is_done) {
         Serial.println(__func__);
@@ -12,8 +12,8 @@ void log_ps(uint8_t* sensor_buf, pm_avg_t* state, pm_res_t* results, uint16_t du
     }
 }
 
-void log_ns(int SENSOR_PIN, ss_avg_t* state, ss_res_t* results, uint16_t duration_ms) {
-    bool is_done = get_ss_averages(SENSOR_PIN, state, results, duration_ms);
+void ns_log(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t duration_ms) {
+    bool is_done = ns_parse(SENSOR_PIN, state, results, duration_ms);
     
     if (is_done) {
         Serial.println(__func__);
