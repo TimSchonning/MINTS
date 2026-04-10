@@ -46,6 +46,7 @@ ss_avg_t sound_sensor_stats = {0};
 
 /**
  * @brief  Calculates the average PM concentration.
+ * @param  sensor_buf: Buffer containing the readings of the sensor. (uint8_t sensor_buf[30];)
  * @param  state: the state/running totals.
  * @param  results: the accumulated totals.
  * @param  duration_ms: duration in ms the sampling runs for.
@@ -62,7 +63,7 @@ ss_avg_t sound_sensor_stats = {0};
  * @note| 12-13 | PM2.5 (ATM)   | PM2.5 Atmospheric environment (ug/m3)          |
  * @note| 14-15 | PM10  (ATM)   | PM10  Atmospheric environment (ug/m3)          |
  */
-bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
+bool get_all_pm_averages(uint8_t* sensor_buf, pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
 /**
  * @brief  Calculates the peak to peak sound amplitude
