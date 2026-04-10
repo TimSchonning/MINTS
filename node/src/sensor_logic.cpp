@@ -24,16 +24,6 @@ bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_m
     if (now - state->last_sample_time >= sample_interval && state->sample_count < target_samples) {
         if (sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
 
-            /* 
-             * @brief HM330X Sensor Data Buffer Mapping (29 Bytes)
-                * * The sensor transmits a 29-byte packet via I2C. Data is sent as Big-Endian 
-                * (High Byte followed by Low Byte) for each 16-bit measurement.
-                * | Index | Name          | Description                                    |
-                * | 10-11 | PM1.0 (ATM)   | PM1.0 Atmospheric environment (ug/m3)          |
-                * | 12-13 | PM2.5 (ATM)   | PM2.5 Atmospheric environment (ug/m3)          |
-                * | 14-15 | PM10  (ATM)   | PM10  Atmospheric environment (ug/m3)          |
-            */
-            
             state->sum_pm10  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
             state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
 

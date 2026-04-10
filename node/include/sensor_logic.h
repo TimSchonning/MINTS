@@ -53,6 +53,14 @@ ss_avg_t sound_sensor_stats = {0};
  * @return is done
  * 
  * @note Sensor needs to heat up for about 30s
+ * @note
+ * HM330X Sensor Data Buffer Mapping (29 Bytes).
+ * The sensor transmits a 29-byte packet via I2C. Data is sent as Big-Endian 
+ * (High Byte followed by Low Byte) for each 16-bit measurement.
+ * @note| Index | Name          | Description                                    |
+ * @note| 10-11 | PM1.0 (ATM)   | PM1.0 Atmospheric environment (ug/m3)          |
+ * @note| 12-13 | PM2.5 (ATM)   | PM2.5 Atmospheric environment (ug/m3)          |
+ * @note| 14-15 | PM10  (ATM)   | PM10  Atmospheric environment (ug/m3)          |
  */
 bool get_all_pm_averages(pm_avg_t* state, pm_res_t* results, uint16_t duration_ms, uint16_t target_samples);
 
