@@ -11,7 +11,7 @@
 typedef struct {
     uint8_t id;
     uint8_t sum_pm10, sum_pm25;
-    uint16_t noise;
+    uint16_t noise_peak;
 } payload_t;
 
 /**
