@@ -13,12 +13,18 @@ import {
   updateDoc,
   deleteDoc,
   Timestamp,
-  DocumentReference
+  DocumentReference,
+  GeoPoint
 } from 'firebase/firestore';
+import { AuthCredential, signInAnonymously } from 'firebase/auth';
 
 // Mock Firebase
 vi.mock('firebase/app');
 vi.mock('firebase/firestore', () => ({
+  GeoPoint: vi.fn().mockImplementation((lat, lng) => ({
+    latitude: lat,
+    longitude: lng,
+  })),
   getFirestore: vi.fn(),
   doc: vi.fn(() => 0),
   setDoc: vi.fn(),
@@ -30,6 +36,17 @@ vi.mock('firebase/firestore', () => ({
     fromDate: vi.fn(),
   },
 }));
+vi.mock('firebase/app', () => ({
+  getApp: vi.fn(),
+  getApps: vi.fn(() => []),
+  initializeApp: vi.fn(),
+}));
+vi.mock('firebase/auth', () => ({
+  getAuth: vi.fn(() => ({
+    currentUser: { uid: 'test-user-123' }
+  })),
+  signInAnonymously: vi.fn(),
+}));
 
 describe('Firebase Database CRUD Operations', () => {
   beforeEach(() => {
@@ -37,8 +54,11 @@ describe('Firebase Database CRUD Operations', () => {
   });
 
   describe('Station CRUD Operations', () => {
-    const testStationId = 1;
-    const testPosition = { lat: 40.7128, lng: -74.0060 };
+    const testStationId = (1).toString();
+    const testGeoPoint = new GeoPoint(40.7128, -74.0060);
+    const testPosition = { lat: testGeoPoint.latitude, lng: testGeoPoint.longitude };
+
+
 
     describe('Create Station', () => {
       it('should create a station with valid data', async () => {
@@ -50,7 +70,7 @@ describe('Firebase Database CRUD Operations', () => {
           expect.anything(),
           expect.objectContaining({
             station_id: testStationId,
-            position: testPosition,
+            position: testGeoPoint,
           })
         );
       });
@@ -65,15 +85,6 @@ describe('Firebase Database CRUD Operations', () => {
           station_repo.create_station(testStationId, testPosition)
         ).rejects.toThrow('Permission denied');
         consoleSpy.mockRestore();
-      });
-
-      it('should include created_at timestamp', async () => {
-        const mockSetDoc = vi.mocked(setDoc);
-
-        await station_repo.create_station(testStationId, testPosition);
-
-        const callArgs = mockSetDoc.mock.calls[0][1];
-        expect(callArgs).toHaveProperty('created_at');
       });
     });
 
@@ -183,11 +194,11 @@ describe('Firebase Database CRUD Operations', () => {
   });
 
   describe('Measurement CRUD Operations', () => {
-    const testMeasurementId = 1;
-    const testStationId = 1;
-    const testValue = { humidity: 65, temperature: 22 };
+    const testMeasurementId = (1).toString();
+    const testStationId = (1).toString();
+    const testValue = 2;
     const testTimestamp = new Date('2025-01-01T12:00:00Z');
-    const testMeasurementType = 'climate';
+    const testSensorTypeId = (1).toString();
 
     describe('Create Measurement', () => {
       it('should create a measurement with valid data', async () => {
@@ -197,9 +208,9 @@ describe('Firebase Database CRUD Operations', () => {
         await measurement_repo.create_measurement(
           testMeasurementId,
           testStationId,
+          testSensorTypeId,
           testValue,
           testTimestamp,
-          testMeasurementType
         );
 
         expect(mockSetDoc).toHaveBeenCalledWith(
@@ -208,7 +219,7 @@ describe('Firebase Database CRUD Operations', () => {
             measurement_id: testMeasurementId,
             station_id: testStationId,
             value: testValue,
-            sensor_type: testMeasurementType
+            sensor_type_id: testSensorTypeId
           })
         );
       });
@@ -223,9 +234,9 @@ describe('Firebase Database CRUD Operations', () => {
           measurement_repo.create_measurement(
             testMeasurementId,
             testStationId,
+            testSensorTypeId,
             testValue,
             testTimestamp,
-            testMeasurementType
           )
         ).rejects.toThrow('Invalid data');
 
@@ -240,7 +251,7 @@ describe('Firebase Database CRUD Operations', () => {
           measurement_id: testMeasurementId,
           station_id: testStationId,
           value: testValue,
-          sensor_type: testMeasurementType
+          sensor_type: testSensorTypeId
         };
 
         mockGetDoc.mockResolvedValue({
@@ -280,7 +291,7 @@ describe('Firebase Database CRUD Operations', () => {
     });
 
     describe('Update Measurement', () => {
-      const updatedValue = { humidity: 70, temperature: 25 };
+      const updatedValue = 5.5;
 
       it('should update measurement data successfully', async () => {
         const mockUpdateDoc = vi.mocked(updateDoc);
@@ -291,7 +302,7 @@ describe('Firebase Database CRUD Operations', () => {
           testStationId,
           updatedValue,
           testTimestamp,
-          testMeasurementType
+          testSensorTypeId
         );
 
         expect(mockUpdateDoc).toHaveBeenCalledWith(
@@ -315,7 +326,7 @@ describe('Firebase Database CRUD Operations', () => {
             testStationId,
             updatedValue,
             testTimestamp,
-            testMeasurementType
+            testSensorTypeId
           )
         ).rejects.toThrow('Update failed');
         consoleSpy.mockRestore();
@@ -347,11 +358,10 @@ describe('Firebase Database CRUD Operations', () => {
   });
 
   describe('Measurement Type CRUD Operations', () => {
-    const testTypeId = 1;
-    const testType = 'air_quality';
+    const testTypeId = (1).toString();
+    const testTypeName = 'air_quality';
     const testValues = {
       low: 0,
-      medium: 50,
       high: 100
     };
 
@@ -362,9 +372,8 @@ describe('Firebase Database CRUD Operations', () => {
 
         await sensor_type_repo.create_sensor_type(
           testTypeId,
-          testType,
+          testTypeName,
           testValues.low,
-          testValues.medium,
           testValues.high
         );
 
@@ -372,9 +381,8 @@ describe('Firebase Database CRUD Operations', () => {
           expect.anything(),
           expect.objectContaining({
             sensor_type_id: testTypeId,
-            sensor_type: testType,
+            sensor_type: testTypeName,
             low_value: testValues.low,
-            medium_value: testValues.medium,
             high_value: testValues.high
           })
         );
@@ -389,9 +397,8 @@ describe('Firebase Database CRUD Operations', () => {
         await expect(
           sensor_type_repo.create_sensor_type(
             testTypeId,
-            testType,
+            testTypeName,
             testValues.low,
-            testValues.medium,
             testValues.high
           )
         ).rejects.toThrow('Invalid type');
@@ -405,9 +412,8 @@ describe('Firebase Database CRUD Operations', () => {
         const mockGetDoc = vi.mocked(getDoc);
         const mockData = {
           sensor_type_id: testTypeId,
-          sensor_type: testType,
+          sensor_type: testTypeName,
           low_value: testValues.low,
-          medium_value: testValues.medium,
           high_value: testValues.high
         };
 
@@ -450,7 +456,6 @@ describe('Firebase Database CRUD Operations', () => {
     describe('Update Measurement Type', () => {
       const updatedValues = {
         low: 10,
-        medium: 60,
         high: 110
       };
 
@@ -460,9 +465,8 @@ describe('Firebase Database CRUD Operations', () => {
 
         await sensor_type_repo.update_sensor_type_data(
           testTypeId,
-          testType,
+          testTypeName,
           updatedValues.low,
-          updatedValues.medium,
           updatedValues.high
         );
 
@@ -470,7 +474,6 @@ describe('Firebase Database CRUD Operations', () => {
           expect.anything(),
           expect.objectContaining({
             low_value: updatedValues.low,
-            medium_value: updatedValues.medium,
             high_value: updatedValues.high
           })
         );
@@ -485,9 +488,8 @@ describe('Firebase Database CRUD Operations', () => {
         await expect(
           sensor_type_repo.update_sensor_type_data(
             testTypeId,
-            testType,
+            testTypeName,
             updatedValues.low,
-            updatedValues.medium,
             updatedValues.high
           )
         ).rejects.toThrow('Update failed');

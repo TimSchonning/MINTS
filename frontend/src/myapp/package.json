@@ -46,6 +46,7 @@
 		"vitest-browser-svelte": "^2.0.2"
 	},
 	"dependencies": {
+		"@my-app/database": "file:../../../database",
 		"@googlemaps/js-api-loader": "^2.0.2",
 		"firebase": "^12.11.0",
 		"mapbox-gl": "^3.21.0"
