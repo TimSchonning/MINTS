@@ -3,11 +3,12 @@ import { db } from "./database_connection";
 
 export async function create_station(station_id: number, position: { lat: number; lng: number }) {
     try {
-        const stationRef = doc(db, 'stations', station_id.toString());
+        const id = station_id.toString();
+        const stationRef = doc(db, 'Stations', id);
+        console.log("try create");
         await setDoc(stationRef, {
-            station_id,
-            position,
-            created_at: Timestamp.now()
+            station_id: id,
+            position: position,
         });
         console.log('Station created:', station_id);
     } catch (error) {
