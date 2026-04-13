@@ -12,17 +12,18 @@
 #define PRG_BTN 0
 
 long freqs[] = {868100000, 868300000, 868500000, 867100000, 867400000}; // Frequencies for Schweden (EU)
-int set_frequency = freqs[0]; // Change between 0 to 4 for different frequencies.
-char *user = "David"; // Change to the correct user
-char *msg = "Hejsan!"; // Message to send
-int mode = 0; // 0 is receiver mode, 1 is transmitter mode. Don't change.
+int set_frequency = freqs[0];                                           // Change between 0 to 4 for different frequencies.
+char *user = "David";                                                   // Change to the correct user
+char *msg = "Hejsan!";                                                  // Message to send
+int mode = 0;                                                           // 0 is receiver mode, 1 is transmitter mode. Don't change.
 
 U8X8_SSD1306_128X64_NONAME_SW_I2C display(15, 4, 16);
 
-void transmitterMode() {
+void transmitterMode()
+{
   Serial.println("Changing to transmitter mode.");
   display.drawString(0, 2, "LoRa Transmitter");
-  display.drawString(0, 4, (String("Freq: ") + (set_frequency/1000000.0) + " MHz").c_str());
+  display.drawString(0, 4, (String("Freq: ") + (set_frequency / 1000000.0) + " MHz").c_str());
 
   delay(5000);
 
@@ -43,15 +44,18 @@ void transmitterMode() {
   display.clearLine(0);
 }
 
-void receiverMode() {
+void receiverMode()
+{
   Serial.println("Changing to receiver mode.");
   display.drawString(0, 2, "LoRa Receiver");
-  display.drawString(0, 4, (String("Freq: ") + (set_frequency/1000000) + " MHz").c_str());
+  display.drawString(0, 4, (String("Freq: ") + (set_frequency / 1000000) + " MHz").c_str());
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-  while(!Serial);
+  while (!Serial)
+    ;
   pinMode(PRG_BTN, INPUT_PULLUP);
 
   display.begin();
@@ -64,9 +68,11 @@ void setup() {
   delay(3000);
   display.clearLine(0);
 
-  if(!LoRa.begin(set_frequency)) {
+  if (!LoRa.begin(set_frequency))
+  {
     display.drawString(0, 2, "LoRa FAILED :()");
-    while(1);
+    while (1)
+      ;
   }
 
   Serial.println("System ready.");
@@ -74,24 +80,29 @@ void setup() {
   receiverMode();
 }
 
-void loop() {
-  if (digitalRead(PRG_BTN) == LOW) { // Button press, change mode
+void loop()
+{
+  if (digitalRead(PRG_BTN) == LOW)
+  { // Button press, change mode
     transmitterMode();
 
     delay(300);
-    while(digitalRead(PRG_BTN) == LOW); // Wait for button to be released
+    while (digitalRead(PRG_BTN) == LOW)
+      ; // Wait for button to be released
     receiverMode();
   }
-  
+
   int packetSize = LoRa.parsePacket();
-  if (packetSize) {
+  if (packetSize)
+  {
     Serial.println("Received packet '");
-    
+
     display.clearLine(2);
     display.clearLine(4);
     display.drawString(0, 0, "Packet received!");
 
-    while(LoRa.available()) {
+    while (LoRa.available())
+    {
       Serial.print((char)LoRa.read());
     }
 
