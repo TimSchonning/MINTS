@@ -42,6 +42,7 @@ void receiverMode()
     if (state == RADIOLIB_ERR_NONE)
     {
         Serial.print(F("Received message "));
+
         Serial.println(packet);
 
         radio.startReceive();
@@ -72,7 +73,8 @@ void setup()
     {
         Serial.print(F("Initialisation failed: "));
         Serial.println(radioState);
-        while (true);
+        while (true)
+            ;
     }
 }
 
@@ -83,7 +85,8 @@ void loop()
         transmitterMode(msg);
         delay(300);
 
-        while (digitalRead(PRG_BTN) == LOW);
+        while (digitalRead(PRG_BTN) == LOW)
+            ;
         delay(100);
 
         receiveState = receiverModeNotification();
