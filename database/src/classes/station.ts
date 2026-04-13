@@ -3,7 +3,6 @@ import { Measurement } from "./measurement";
 
 
 export class Station {
-    //measurements: 
     id: string;
     measurements: Measurement[] = [];
     position: GeoPoint;
