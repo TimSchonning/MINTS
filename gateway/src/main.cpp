@@ -1,11 +1,11 @@
-
+#include <iostream>
 
 
 void setup() {
-    Serial.begin(115200);
+    printf("Hej");
 
 }
 
 void loop() {
-    delay(5000);
+
 }
