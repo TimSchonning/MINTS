@@ -7,7 +7,7 @@
 		Interval,
 		get_measurements_in_interval
 	} from '@my-app/database';
-	import { load_interval } from '../map_controller';
+	import { load_interval, sensor_type_map } from '../map_controller';
 
 	let isStationAdded: boolean = $state(false);
 	let isMeasurementAdded: boolean = $state(false);
@@ -29,7 +29,7 @@
 	async function testStoringSensorType() {
 		console.log('Attempting to create a sensor type');
 
-		await create_sensor_type('PM2.5', 1, 5);
+		await create_sensor_type('PM5', 100, 520);
 		isSensorTypeAdded = true;
 	}
 
@@ -65,6 +65,13 @@
 
 		console.log('Fetching done!');
 	}
+
+	async function printSensorTypes() {
+		const sensor_types = sensor_type_map.values().toArray();
+		sensor_types.forEach((sensor_type) => {
+			console.log(sensor_type.toString());
+		});
+	}
 </script>
 
 {#if isStationAdded}
@@ -98,3 +105,4 @@
 <button onclick={loadInterval} style="cursor: pointer;">
 	Load stations with measurements for interval</button
 >
+<button onclick={printSensorTypes} style="cursor: pointer;"> Print all sensor types</button>

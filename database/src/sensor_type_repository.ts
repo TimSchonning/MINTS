@@ -1,5 +1,6 @@
-import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "./database_connection";
+import { SensorType } from "./classes/sensor_type";
 
 const SENSOR_TYPE_COLLECTION = 'SensorTypes';
 
@@ -65,6 +66,17 @@ export async function delete_sensor_type(sensor_type_id: string) {
         console.log('Sensor type deleted:', sensor_type_id);
     } catch (error) {
         console.error('Error deleting sensor type:', error);
+        throw error;
+    }
+}
+
+export async function get_all_sensor_types(): Promise<SensorType[]> {
+    try {
+        const snapshot = await getDocs(collection(db, SENSOR_TYPE_COLLECTION))
+        let sensor_types = snapshot.docs.map((doc) => SensorType.fromDocument(doc));
+        return sensor_types;
+    } catch (error) {
+        console.error('Error fetching all sensor types: ', error);
         throw error;
     }
 }
