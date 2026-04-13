@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { create_station, create_measurement, create_sensor_type } from '@my-app/database';
+	import {
+		create_station,
+		create_measurement,
+		create_sensor_type,
+		get_all_stations
+	} from '@my-app/database';
 
 	let isStationAdded: boolean = $state(false);
 	let isMeasurementAdded: boolean = $state(false);
@@ -23,6 +28,15 @@
 
 		await create_sensor_type('PM2.5', 1, 5);
 		isSensorTypeAdded = true;
+	}
+
+	async function fetchStations() {
+		console.log('Attempting to fetch sensors');
+
+		let stations = await get_all_stations();
+		stations.forEach((station) => {
+			console.log(station.toString());
+		});
 	}
 </script>
 
@@ -48,3 +62,5 @@
 		Click me to test adding a sensor type to firebase
 	</button>
 {/if}
+
+<button onclick={fetchStations} style="cursor: pointer;"> Fetch all stations </button>
