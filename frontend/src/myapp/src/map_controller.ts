@@ -30,6 +30,10 @@ export async function load_interval(interval: Interval): Promise<Station[]> {
     return stations;
 }
 
+export function get_sensor_type_info(sensor_type_id: string): SensorType | undefined {
+    return sensor_type_map.get(sensor_type_id);
+}
+
 async function load_sensor_types() {
     const sensor_types = await get_all_sensor_types();
     const map = new Map<string, SensorType>();
