@@ -2,21 +2,20 @@ import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/f
 import { db } from "./database_connection";
 
 export async function create_measurement(
-    measurement_id: number,
-    station_id: number,
-    value: any,
-    timestamp: Date,
-    sensor_type: any
+    measurement_id: string,
+    station_id: string,
+    sensor_type_id: string,
+    value: number,
+    date: Date,
 ) {
     try {
-        const measurementRef = doc(db, 'measurements', measurement_id.toString());
+        const measurementRef = doc(db, 'measurements', measurement_id);
         await setDoc(measurementRef, {
             measurement_id,
             station_id,
+            sensor_type_id,
             value,
-            timestamp: Timestamp.fromDate(timestamp),
-            sensor_type,
-            created_at: Timestamp.now()
+            timestamp: Timestamp.fromDate(date),
         });
         console.log('Measurement created:', measurement_id);
     } catch (error) {
@@ -25,9 +24,9 @@ export async function create_measurement(
     }
 }
 
-export async function read_measurement_data(measurement_id: number) {
+export async function read_measurement_data(measurement_id: string) {
     try {
-        const measurementRef = doc(db, 'measurements', measurement_id.toString());
+        const measurementRef = doc(db, 'measurements', measurement_id);
         const measurementSnap = await getDoc(measurementRef);
 
         if (measurementSnap.exists()) {
@@ -43,20 +42,19 @@ export async function read_measurement_data(measurement_id: number) {
 }
 
 export async function update_measurement_data(
-    measurement_id: number,
-    station_id: number,
-    value: any,
+    measurement_id: string,
+    station_id: string,
+    value: number,
     timestamp: Date,
-    sensor_type: any
+    sensor_type_id: string,
 ) {
     try {
-        const measurementRef = doc(db, 'measurements', measurement_id.toString());
+        const measurementRef = doc(db, 'measurements', measurement_id);
         await updateDoc(measurementRef, {
             station_id,
             value,
             timestamp: Timestamp.fromDate(timestamp),
-            sensor_type,
-            updated_at: Timestamp.now()
+            sensor_type_id,
         });
         console.log('Measurement updated:', measurement_id);
     } catch (error) {
@@ -65,9 +63,9 @@ export async function update_measurement_data(
     }
 }
 
-export async function delete_measurement(measurement_id: number) {
+export async function delete_measurement(measurement_id: string) {
     try {
-        const measurementRef = doc(db, 'measurements', measurement_id.toString());
+        const measurementRef = doc(db, 'measurements', measurement_id);
         await deleteDoc(measurementRef);
         console.log('Measurement deleted:', measurement_id);
     } catch (error) {

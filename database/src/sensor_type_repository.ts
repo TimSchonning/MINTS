@@ -2,76 +2,71 @@ import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/f
 import { db } from "./database_connection";
 
 export async function create_sensor_type(
-    sensor_type_id: number,
+    sensor_type_id: string,
     sensor_type: any,
     low_value: number,
-    medium_value: number,
     high_value: number
 ) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id.toString());
+        const typeRef = doc(db, 'SensorTypes', sensor_type_id);
         await setDoc(typeRef, {
             sensor_type_id,
             sensor_type,
             low_value,
-            medium_value,
             high_value,
             created_at: Timestamp.now()
         });
-        console.log('Measurement type created:', sensor_type_id);
+        console.log('Sensor type created:', sensor_type_id);
     } catch (error) {
-        console.error('Error creating measurement type:', error);
+        console.error('Error creating sensor type:', error);
         throw error;
     }
 }
 
-export async function read_sensor_type_data(sensor_type_id: number) {
+export async function read_sensor_type_data(sensor_type_id: string) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id.toString());
+        const typeRef = doc(db, 'sensor_types', sensor_type_id);
         const typeSnap = await getDoc(typeRef);
 
         if (typeSnap.exists()) {
             return typeSnap.data();
         } else {
-            console.warn('Measurement type not found:', sensor_type_id);
+            console.warn('Sensor type not found:', sensor_type_id);
             return null;
         }
     } catch (error) {
-        console.error('Error reading measurement type data:', error);
+        console.error('Error reading sensor type data:', error);
         throw error;
     }
 }
 
 export async function update_sensor_type_data(
-    sensor_type_id: number,
-    sensor_type: any,
+    sensor_type_id: string,
+    sensor_type: string,
     low_value: number,
-    medium_value: number,
     high_value: number
 ) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id.toString());
+        const typeRef = doc(db, 'sensor_types', sensor_type_id);
         await updateDoc(typeRef, {
             sensor_type,
             low_value,
-            medium_value,
             high_value,
-            updated_at: Timestamp.now()
         });
-        console.log('Measurement type updated:', sensor_type_id);
+        console.log('Sensor type updated:', sensor_type_id);
     } catch (error) {
-        console.error('Error updating measurement type data:', error);
+        console.error('Error updating sensor type data:', error);
         throw error;
     }
 }
 
-export async function delete_sensor_type(sensor_type_id: number) {
+export async function delete_sensor_type(sensor_type_id: string) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id.toString());
+        const typeRef = doc(db, 'sensor_types', sensor_type_id);
         await deleteDoc(typeRef);
-        console.log('Measurement type deleted:', sensor_type_id);
+        console.log('Sensor type deleted:', sensor_type_id);
     } catch (error) {
-        console.error('Error deleting measurement type:', error);
+        console.error('Error deleting sensor type:', error);
         throw error;
     }
 }
