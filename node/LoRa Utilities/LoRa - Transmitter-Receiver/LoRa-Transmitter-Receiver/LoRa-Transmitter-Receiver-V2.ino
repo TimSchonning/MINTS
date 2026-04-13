@@ -31,7 +31,7 @@ void transmitterMode(String message)
 int receiverModeNotification()
 {
     Serial.println("Changing to receiver mode.");
-    receiveState = radio.startReceive();
+    // receiveState = radio.startReceive();
 }
 
 void receiverMode()
@@ -72,8 +72,7 @@ void setup()
     {
         Serial.print(F("Initialisation failed: "));
         Serial.println(radioState);
-        while (true)
-            ;
+        while (true);
     }
 }
 
@@ -84,8 +83,7 @@ void loop()
         transmitterMode(msg);
         delay(300);
 
-        while (digitalRead(PRG_BTN) == LOW)
-            ;
+        while (digitalRead(PRG_BTN) == LOW);
         delay(100);
 
         receiveState = receiverModeNotification();
