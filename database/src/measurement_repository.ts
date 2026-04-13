@@ -1,5 +1,8 @@
-import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, Timestamp, updateDoc, where } from "firebase/firestore";
 import { db } from "./database_connection";
+import { Interval } from "./classes/interval";
+import { Station } from "./classes/station";
+import { Measurement } from "./classes/measurement";
 
 const MEASUREMENT_COLLECTION = 'Measurements';
 
@@ -72,6 +75,20 @@ export async function delete_measurement(measurement_id: string) {
         console.log('Measurement deleted:', measurement_id);
     } catch (error) {
         console.error('Error deleting measurement:', error);
+        throw error;
+    }
+}
+
+export async function get_measurements_in_interval(interval: Interval) {
+    try {
+        const q = query(collection(db, MEASUREMENT_COLLECTION),
+            where("timestamp", ">=", interval.d1),
+            where("timestamp", "<=", interval.d2));
+        const snapshot = await getDocs(q);
+        let measurements = snapshot.docs.map((doc) => Measurement.fromDocument(doc));
+        return measurements;
+    } catch (error) {
+        console.error('Error fetching measurements in an interval: ', error);
         throw error;
     }
 }

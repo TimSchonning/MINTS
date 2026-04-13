@@ -3,8 +3,11 @@
 		create_station,
 		create_measurement,
 		create_sensor_type,
-		get_all_stations
+		get_all_stations,
+		Interval,
+		get_measurements_in_interval
 	} from '@my-app/database';
+	import { load_interval } from '../map_controller';
 
 	let isStationAdded: boolean = $state(false);
 	let isMeasurementAdded: boolean = $state(false);
@@ -19,7 +22,7 @@
 	async function testStoreMeasurement() {
 		console.log('Attempting to create a measurement');
 
-		await create_measurement('1', '1', 'PM2.5', 5.3, new Date(10, 2, 4));
+		await create_measurement('1', '1', 'PM2.5', 5.3, new Date(2010, 2, 4));
 		isMeasurementAdded = true;
 	}
 
@@ -37,6 +40,30 @@
 		stations.forEach((station) => {
 			console.log(station.toString());
 		});
+	}
+
+	async function fetchMeasurementsInInterval() {
+		console.log('Attempting to fetch measurement data for an interval');
+
+		let interval = new Interval(new Date(2000), new Date(2030, 0, 0));
+		let measurements = await get_measurements_in_interval(interval);
+		measurements.forEach((measurement) => {
+			console.log(measurement.toString());
+		});
+
+		console.log('Fetching done!');
+	}
+
+	async function loadInterval() {
+		console.log('Attempting to fetch measurement data for an interval');
+
+		let interval = new Interval(new Date(2000), new Date(2030, 0, 0));
+		let stations = await load_interval(interval);
+		stations.forEach((station) => {
+			console.log(station.toString());
+		});
+
+		console.log('Fetching done!');
 	}
 </script>
 
@@ -64,3 +91,10 @@
 {/if}
 
 <button onclick={fetchStations} style="cursor: pointer;"> Fetch all stations </button>
+<button onclick={fetchMeasurementsInInterval} style="cursor: pointer;">
+	Fetch measurements in interval
+</button>
+
+<button onclick={loadInterval} style="cursor: pointer;">
+	Load stations with measurements for interval</button
+>

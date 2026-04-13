@@ -67,7 +67,7 @@ export async function get_all_stations(): Promise<Station[]> {
         let stations = snapshot.docs.map((doc) => Station.fromDocument(doc));
         return stations;
     } catch (error) {
-        console.error('Error fetchign all stations: ', error);
+        console.error('Error fetching all stations: ', error);
         throw error;
     }
 }
