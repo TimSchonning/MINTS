@@ -1,20 +1,19 @@
 import { deleteDoc, doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "./database_connection";
 
+const DOC_NAME = 'SensorTypes';
+
 export async function create_sensor_type(
     sensor_type_id: string,
-    sensor_type: any,
     low_value: number,
     high_value: number
 ) {
     try {
-        const typeRef = doc(db, 'SensorTypes', sensor_type_id);
+        const typeRef = doc(db, DOC_NAME, sensor_type_id);
         await setDoc(typeRef, {
-            sensor_type_id,
-            sensor_type,
-            low_value,
-            high_value,
-            created_at: Timestamp.now()
+            sensor_type_id: sensor_type_id,
+            low: low_value,
+            high: high_value,
         });
         console.log('Sensor type created:', sensor_type_id);
     } catch (error) {
@@ -25,7 +24,7 @@ export async function create_sensor_type(
 
 export async function read_sensor_type_data(sensor_type_id: string) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id);
+        const typeRef = doc(db, DOC_NAME, sensor_type_id);
         const typeSnap = await getDoc(typeRef);
 
         if (typeSnap.exists()) {
@@ -42,16 +41,15 @@ export async function read_sensor_type_data(sensor_type_id: string) {
 
 export async function update_sensor_type_data(
     sensor_type_id: string,
-    sensor_type: string,
     low_value: number,
     high_value: number
 ) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id);
+        const typeRef = doc(db, DOC_NAME, sensor_type_id);
         await updateDoc(typeRef, {
-            sensor_type,
-            low_value,
-            high_value,
+            sensor_type_id: sensor_type_id,
+            low: low_value,
+            high: high_value,
         });
         console.log('Sensor type updated:', sensor_type_id);
     } catch (error) {
@@ -62,7 +60,7 @@ export async function update_sensor_type_data(
 
 export async function delete_sensor_type(sensor_type_id: string) {
     try {
-        const typeRef = doc(db, 'sensor_types', sensor_type_id);
+        const typeRef = doc(db, DOC_NAME, sensor_type_id);
         await deleteDoc(typeRef);
         console.log('Sensor type deleted:', sensor_type_id);
     } catch (error) {

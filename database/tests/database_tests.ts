@@ -358,8 +358,7 @@ describe('Firebase Database CRUD Operations', () => {
   });
 
   describe('Measurement Type CRUD Operations', () => {
-    const testTypeId = (1).toString();
-    const testTypeName = 'air_quality';
+    const testTypeId = 'PM5';
     const testValues = {
       low: 0,
       high: 100
@@ -372,7 +371,6 @@ describe('Firebase Database CRUD Operations', () => {
 
         await sensor_type_repo.create_sensor_type(
           testTypeId,
-          testTypeName,
           testValues.low,
           testValues.high
         );
@@ -381,9 +379,8 @@ describe('Firebase Database CRUD Operations', () => {
           expect.anything(),
           expect.objectContaining({
             sensor_type_id: testTypeId,
-            sensor_type: testTypeName,
-            low_value: testValues.low,
-            high_value: testValues.high
+            low: testValues.low,
+            high: testValues.high
           })
         );
       });
@@ -397,7 +394,6 @@ describe('Firebase Database CRUD Operations', () => {
         await expect(
           sensor_type_repo.create_sensor_type(
             testTypeId,
-            testTypeName,
             testValues.low,
             testValues.high
           )
@@ -412,9 +408,8 @@ describe('Firebase Database CRUD Operations', () => {
         const mockGetDoc = vi.mocked(getDoc);
         const mockData = {
           sensor_type_id: testTypeId,
-          sensor_type: testTypeName,
-          low_value: testValues.low,
-          high_value: testValues.high
+          low: testValues.low,
+          high: testValues.high
         };
 
         mockGetDoc.mockResolvedValue({
@@ -465,7 +460,6 @@ describe('Firebase Database CRUD Operations', () => {
 
         await sensor_type_repo.update_sensor_type_data(
           testTypeId,
-          testTypeName,
           updatedValues.low,
           updatedValues.high
         );
@@ -473,8 +467,9 @@ describe('Firebase Database CRUD Operations', () => {
         expect(mockUpdateDoc).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            low_value: updatedValues.low,
-            high_value: updatedValues.high
+            sensor_type_id: testTypeId,
+            low: updatedValues.low,
+            high: updatedValues.high
           })
         );
       });
@@ -488,7 +483,6 @@ describe('Firebase Database CRUD Operations', () => {
         await expect(
           sensor_type_repo.update_sensor_type_data(
             testTypeId,
-            testTypeName,
             updatedValues.low,
             updatedValues.high
           )
