@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "deck.gl": "^9.2.11",
+    "mapbox-gl": "^3.21.0",
+    "svelte": "^5.55.2"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16"
+  }
+}
