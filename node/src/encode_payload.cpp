@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <sensor_logic.h>
 #include <encode_payload.h>
+#include <RadioLib.h>
+
+#include "debug_macros.h"
 
 bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ss_results, uint8_t id) {
     if (!payload || !pm_results || !ss_results || !id) return false;
