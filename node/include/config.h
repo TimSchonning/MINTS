@@ -1,8 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <Arduino.h>
-
 //// General config
 const uint64_t uS_TO_S          = 1000000;
 const uint64_t mS_TO_S          = 1000;

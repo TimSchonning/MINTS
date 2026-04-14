@@ -6,6 +6,7 @@
 #include <SPI.h>
 #include <RadioLib.h>
 
+#include "config.h"
 #include "encode_payload.h"
 #include "sensor_logic.h"
 
