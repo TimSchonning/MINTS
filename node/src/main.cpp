@@ -34,7 +34,7 @@ void setup() {
 
     //// Data collection
     sample_particle_sensor();
-    delay(1 * mS_TO_S);
+    delay(1000 * mS_TO_S);
     sample_noise_sensor();
     
     //// TODO: Power down sensors
