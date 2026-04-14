@@ -13,8 +13,8 @@
 #define DEBUG_MODE // Comment this to disable debug mode
 
 #ifdef DEBUG_MODE
-  #define DEBUG_FPRINT(x) Serial.print(F(x))
-  #define DEBUG_FPRINTLN(x) Serial.println(F(x))
+  #define DEBUG_PRINT(x) Serial.print(x)
+  #define DEBUG_PRINTLN(x) Serial.println(x)
   #define DEBUG_BEGIN(x) Serial.begin(x)
 #else
   #define DEBUG_PRINT(x)
@@ -44,7 +44,7 @@ void setup() {
     
     DEBUG_BEGIN(BAUD); // Dont set the baud before the cpu frequency change
     if (particle_sensor.init()) {
-        DEBUG_FPRINTLN("[ERROR] PS INIT FAILED");
+        DEBUG_PRINTLN("[ERROR] PS INIT FAILED");
         #ifdef DEBUG_MODE
             while (1);
         #endif
@@ -54,9 +54,9 @@ void setup() {
     boot_count++;
 
     //// Data collection
-    DEBUG_FPRINTLN("[START] Particle sensor sampling");
-    DEBUG_FPRINT("Heating particle sensor for: ");
-    DEBUG_FPRINTLN(PS_HEAT_UP_TIME * mS_TO_S);
+    DEBUG_PRINTLN("[START] Particle sensor sampling");
+    DEBUG_PRINT("Heating particle sensor for: ");
+    DEBUG_PRINTLN(PS_HEAT_UP_TIME * mS_TO_S);
     delay(PS_HEAT_UP_TIME * mS_TO_S);
     
     bool is_done = false;
@@ -71,9 +71,9 @@ void setup() {
         delay(1);
     }
 
-    DEBUG_FPRINTLN("[END]   Particle sensor done");
+    DEBUG_PRINTLN("[END]   Particle sensor done");
     delay(1 * mS_TO_S);
-    DEBUG_FPRINTLN("[START] Noise sensor sampling");
+    DEBUG_PRINTLN("[START] Noise sensor sampling");
 
     is_done = false;
     while (!is_done) {
@@ -82,32 +82,43 @@ void setup() {
             &ns_state,
             &ns_results,
             NS_SAMPLE_TIME_mS - 1
-        )
+        );
         delay(1);
     }
 
-    DEBUG_FPRINTLN("[END]   Noise sensor done");
+    DEBUG_PRINTLN("[END]   Noise sensor done");
     //// Power down sensors
     //// send data
-    DEBUG_FPRINTLN("[START] LoRa transmission");
+    DEBUG_PRINTLN("[START] LoRa transmission");
     encode_payload(&payload, &ps_results, &ns_results);
 
-    int state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
+    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     if (state == RADIOLIB_ERR_NONE) {
-        DEBUG_FPRINTLN("[SUCCESS] LoRa radiolib initialisation");
+        DEBUG_PRINTLN("[SUCCESS] LoRa radiolib initialisation");
     } else {
-        DEBUG_FPRINTLN("[ERROR] LoRa radiolib initialisation");
-        DEBUG_FPRINTLN("[ERROR] Error code: ");
-        DEBUG_FPRINT(state);
+        DEBUG_PRINTLN("[ERROR] LoRa radiolib initialisation");
+        DEBUG_PRINTLN("[ERROR] Error code: ");
+        DEBUG_PRINT(state);
         #ifdef DEBUG_MODE
             while (1);
         #endif
     }
-    radio.startTransmit(payload);
-    DEBUG_FPRINTLN("[END]   LoRa transmission sent");
+
+    state = radio.transmit((uint8_t*)&payload, sizeof(payload_t));
+    if (state == RADIOLIB_ERR_NONE) {
+        DEBUG_PRINTLN("[SUCCESS] LoRa transmission sent");
+    } else {
+        DEBUG_PRINTLN("[ERROR] LoRa transmission NOT sent");
+        DEBUG_PRINTLN("[ERROR] Error code: ");
+        DEBUG_PRINT(state);
+        #ifdef DEBUG_MODE
+            while (1);
+        #endif    
+    }
 
     //// Sleep
-    DEBUG_FPRINTLN("[END]   Entering sleep");
+    DEBUG_PRINTLN("[END]   Entering sleep");
+    radio.sleep();
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP_S * uS_TO_S);
     esp_deep_sleep_start();
 }
