@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "debug_macros.h"
+#include "utils.h"
 
 void error_handler(int16_t state, const char* message) {
     if (state != RADIOLIB_ERR_NONE) {

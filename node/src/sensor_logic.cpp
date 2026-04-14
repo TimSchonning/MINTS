@@ -3,6 +3,7 @@
 #include <sensor_logic.h>
 
 #include "debug_macros.h"
+#include "utils.h"
 
 uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = input / count;

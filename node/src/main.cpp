@@ -10,6 +10,7 @@
 #include "debug_macros.h"
 #include "encode_payload.h"
 #include "sensor_logic.h"
+#include "utils.h"
 
 HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
