@@ -6,7 +6,8 @@
                 "\"includePath\": [",
                 "    \"${workspaceFolder}/**\",",
                 "    \"${workspaceFolder}/RadioLib/src\"",
-                "],"
+                "],",
+                "${workspaceFolder}/node/include"
             ],
             "defines": [
                 "_DEBUG",

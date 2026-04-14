@@ -5,6 +5,22 @@
 #include <esp_bt.h>
 #include <SPI.h>
 
+#include "encode_payload.h"
+#include "sensor_logic.h"
+
+// Comment this to disable debug mode
+#define DEBUG_MODE 
+
+#ifdef DEBUG_MODE
+  #define DEBUG_PRINT(x) Serial.print(x)
+  #define DEBUG_PRINTLN(x) Serial.println(x)
+  #define DEBUG_BEGIN(x) Serial.begin(x)
+#else
+  #define DEBUG_PRINT(x)
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_BEGIN(x)
+#endif
+
 // Config
 // ps = particle sensor
 // ns = noise sensor
@@ -28,23 +44,35 @@ ns_state_t  ns_state;
 ns_result_t ns_results;
 
 void setup() {
-    Serial.begin(BAUD);
-
-    setCpuFrequencyMhz(CPU_FREQ_MHZ);
     WiFi.mode(WIFI_OFF);
     btStop();
     esp_wifi_stop();
     esp_bt_controller_disable();
-
+    
+    setCpuFrequencyMhz(CPU_FREQ_MHZ);
+    
+    // Dont set the baud before the cpu frequency change
+    Serial.begin(BAUD);
     Serial.println("Serial start");
     if (particle_sensor.init()) {
         Serial.println("PS INIT FAILED");
         while (1);
     }
 
+    // 3. COLLECT DATA
+    // readParticleSensor();
+    // readNoiseSensor();
+
+    // 4. POWER DOWN PERIPHERALS
+    // If your sensors have an 'enable' pin, pull it LOW here
+    
+    // 5. SEND DATA
+    // (Turn on WiFi briefly, send, then turn off)
+
+    // 6. CONFIGURE & START SLEEP
+
 }
 
 void loop() {
-
-    delay(5000);
+    // keep empty
 }
