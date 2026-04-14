@@ -10,4 +10,8 @@ export class Interval {
         this.d1 = d1;
         this.d2 = d2;
     }
+
+    contains_date(date: Date): boolean {
+        return this.d1 <= date && date <= this.d2;
+    }
 }
