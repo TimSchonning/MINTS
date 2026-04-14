@@ -7,9 +7,9 @@
 #include <RadioLib.h>
 
 #include "config.h"
+#include "debug_macros.h"
 #include "encode_payload.h"
 #include "sensor_logic.h"
-#include "debug_macros.h"
 
 HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
@@ -50,23 +50,4 @@ void setup() {
 
 void loop() {
     // keep empty
-}
-
-void error_handler(int16_t state, const char* message) {
-    if (state != RADIOLIB_ERR_NONE) {
-        DEBUG_PRINT("[ERROR] ");
-        DEBUG_PRINT(message);
-        DEBUG_PRINT(" Code: ");
-        DEBUG_PRINTLN(state);
-        #ifdef DEBUG_MODE
-            while (1); 
-        #endif
-    }
-}
-
-void power_down_radios() {
-    WiFi.mode(WIFI_OFF);
-    btStop();
-    esp_wifi_stop();
-    esp_bt_controller_disable();
 }

@@ -23,4 +23,6 @@ typedef struct {
  */
 bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ns_results);
 
+void transmit_payload();
+
 #endif
