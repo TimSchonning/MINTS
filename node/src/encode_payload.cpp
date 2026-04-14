@@ -13,3 +13,16 @@ bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ss
     payload->noise_peak = ss_results->noise_peak;
     return true;
 }
+
+void transmit_payload() {
+    DEBUG_PRINTLN("[START] LoRa transmission");
+    encode_payload(&payload, &ps_results, &ns_results);
+
+    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
+    error_handler(state, "LoRa initialisation");
+
+    state = radio.transmit((uint8_t*)&payload, sizeof(payload_t));
+    error_handler(state, "LoRa transmission");
+
+    DEBUG_PRINTLN("[SUCCESS] LoRa transmission completed");
+}
