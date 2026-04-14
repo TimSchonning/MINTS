@@ -9,18 +9,7 @@
 #include "config.h"
 #include "encode_payload.h"
 #include "sensor_logic.h"
-
-#define DEBUG_MODE // Comment this to disable debug mode
-
-#ifdef DEBUG_MODE
-  #define DEBUG_PRINT(x) Serial.print(x)
-  #define DEBUG_PRINTLN(x) Serial.println(x)
-  #define DEBUG_BEGIN(x) Serial.begin(x)
-#else
-  #define DEBUG_PRINT(x)
-  #define DEBUG_PRINTLN(x)
-  #define DEBUG_BEGIN(x)
-#endif
+#include "debug_macros.h"
 
 HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
