@@ -52,7 +52,7 @@ The primary beneficiaries of this project are the municipalities and the people,
 
 ### Hardware used
 
-// temp
+// temp <br />
     https://www.electrokit.com/optisk-damm-partikelsensor-2.5/5/10-um-hm3301 <br />
     https://www.electrokit.com/en/sound-detector <br />
     https://www.electrokit.com/en/arduino-nano-esp32-with-headers <br />
