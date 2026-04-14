@@ -34,4 +34,7 @@ const int PIN_DIO0 = 0;
 const int PIN_NRST = 0;
 const int PIN_DIO1 = 0;
 
+//// ESP specific
+RTC_DATA_ATTR int boot_count = 0;
+
 #endif

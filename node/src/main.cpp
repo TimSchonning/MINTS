@@ -50,6 +50,9 @@ void setup() {
         #endif
     }
 
+    // Count of how many times the device has booted, stored in the ESP32s RTC
+    boot_count++;
+
     //// Data collection
     DEBUG_FPRINTLN("[START] Particle sensor sampling");
     DEBUG_FPRINT("Heating particle sensor for: ");
@@ -105,7 +108,8 @@ void setup() {
 
     //// Sleep
     DEBUG_FPRINTLN("[END]   Entering sleep");
-
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP_S * uS_TO_S);
+    esp_deep_sleep_start();
 }
 
 void loop() {
