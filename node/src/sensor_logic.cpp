@@ -40,6 +40,13 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint
     results->pm10 = pm_average(state->sample_count, state->sum_pm10);
     results->pm25 = pm_average(state->sample_count, state->sum_pm25);
     state->is_active = false;
+
+    #ifdef DEBUG_MODE
+        Serial.println("Avg PM1 reading:   " + String(results->pm10));
+        Serial.println("Avg PM2.5 reading: " + String(results->pm25));
+        Serial.println("");
+    #endif
+
     return true;
 }
 
@@ -74,5 +81,12 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t 
     }
 
     state->is_active = false;
+
+    #ifdef DEBUG_MODE
+        Serial.println(__func__);
+        Serial.println("Peak to peak:      " + String(results->noise_peak));
+        Serial.println("");
+    #endif
+
     return true;
 }
