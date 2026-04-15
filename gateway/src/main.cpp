@@ -7,7 +7,7 @@ bool toPython = false; // Temporary variable. Decides if print from c++ or from 
 
 int main() {
     // Open the COM port (remove when Raspberry is used)
-    HANDLE hSerial = CreateFileW(L"\\\\.\\COM3", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hSerial = CreateFileW(L"\\\\.\\COM3", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); // Current port is COM3, change to your setup
 
     if (hSerial == INVALID_HANDLE_VALUE) {
         std::cerr << "Error: could not open COM port." << std::endl;
@@ -43,18 +43,22 @@ int main() {
 
             if (ReadFile(hSerial, remainingData, remainingSize, &bytesRead, NULL)) {
 
-                if (!toPython) {
+                if (toPython) {
+                    std::cout << packet.nodeID << ","
+                              << packet.pm10 << ","
+                              << packet.pm25 << ","
+                              << packet.noise_peak << std::endl;
+                    std::cout.flush;
+                } else {
                     std::cout << "Node: " << packet.nodeID
                           << " | PM10: " << packet.pm10 
                           << " | PM5" << packet.pm25 
                           << " | Peak Noise: " << packet.noise_peak << std::endl;
-                } else {
-                    return; //TODO
                 }
                 
             }
         }
     }
-    
+
     return 0;
 }
