@@ -42,10 +42,16 @@ int main() {
             size_t remainingSize = sizeof(packet) - sizeof(uint32_t);
 
             if (ReadFile(hSerial, remainingData, remainingSize, &bytesRead, NULL)) {
-                std::cout << "Node: " << packet.nodeID
+
+                if (!toPython) {
+                    std::cout << "Node: " << packet.nodeID
                           << " | PM10: " << packet.pm10 
                           << " | PM5" << packet.pm25 
                           << " | Peak Noise: " << packet.noise_peak << std::endl;
+                } else {
+                    return; //TODO
+                }
+                
             }
         }
     }
