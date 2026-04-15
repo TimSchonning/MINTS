@@ -35,7 +35,7 @@ void setup() {
 
     //// Data collection
     sample_particle_sensor();
-    delay(1000 * mS_TO_S);
+    delay(1 * S_TO_mS);
     sample_noise_sensor();
     
     //// TODO: Power down sensors
@@ -45,7 +45,7 @@ void setup() {
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP_S * uS_TO_S);
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP_S * S_TO_uS);
     esp_deep_sleep_start();
 }
 

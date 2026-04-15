@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 //// General config
-const uint64_t uS_TO_S          = 1000000;
-const uint64_t mS_TO_S          = 1000;
+const uint64_t S_TO_uS          = 1000000;
+const uint64_t S_TO_mS          = 1000;
 const uint8_t  CPU_FREQ_MHZ     = 10;
 const uint32_t BAUD             = 115200;
 const uint64_t TIME_TO_SLEEP_S  = 524
