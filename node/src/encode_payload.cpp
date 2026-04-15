@@ -28,7 +28,7 @@ void transmit_payload() {
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     error_handler(state, "LoRa initialisation");
 
-    state = radio.transmit((uint8_t*)&payload, sizeof(payload_t));
+    state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
     error_handler(state, "LoRa transmission");
 
     DEBUG_PRINTLN("[SUCCESS] LoRa transmission completed");

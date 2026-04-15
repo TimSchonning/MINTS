@@ -20,7 +20,6 @@ ps_result_t ps_result;
 ns_state_t  ns_state;
 ns_result_t ns_result;
 
-// LoRa config
 payload_t payload;
 
 SX1276 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
@@ -31,12 +30,14 @@ void setup() {
     DEBUG_BEGIN(BAUD);
     
     if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");
-    boot_count++; // Count of how many times the device has booted/woken from sleep, stored in the ESP32s RTC
-
+    
     //// Data collection
     sample_particle_sensor();
     delay(1 * S_TO_mS);
     sample_noise_sensor();
+
+    //// Update RTC
+    boot_count++;
     
     //// TODO: Power down sensors
     //// send data
