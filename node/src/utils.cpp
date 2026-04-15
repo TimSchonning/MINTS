@@ -3,6 +3,8 @@
 
 #include "config.h"
 #include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
 #include "utils.h"
 
 void error_handler(int16_t state, const char* message) {

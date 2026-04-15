@@ -59,7 +59,7 @@ typedef struct {
  * @note| 12-13 | PM2.5 (ATM)   | PM2.5 Atmospheric environment (ug/m3)          |
  * @note| 14-15 | PM10  (ATM)   | PM10  Atmospheric environment (ug/m3)          |
  */
-bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint16_t duration_ms, uint16_t target_samples);
+bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples);
 
 /**
  * @brief  Calculates the peak to peak sound amplitude
@@ -72,7 +72,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint
  * @note Avoid any delay() when using this function since it depends heavily on being called at a high sample rate
  * @note Hard-coded to an ADC which returns a 10 bit value. Change if possible/needed
  */
-bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t duration_ms);
+bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms);
 
 void sample_particle_sensor();
 void sample_noise_sensor();

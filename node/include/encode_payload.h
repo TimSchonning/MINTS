@@ -17,11 +17,11 @@ typedef struct {
 /**
  * @brief  Returns the encoded payload.
  * @param  payload: the payload.
- * @param  pm_results: PM results.
- * @param  ns_results: Sound sensor results.
+ * @param  ps_result: PM results.
+ * @param  ns_result: Sound sensor results.
  * @return Success indicator
  */
-bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ns_results);
+bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result);
 
 void transmit_payload();
 
