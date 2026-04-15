@@ -20,19 +20,17 @@
 </script>
 
 <div class="slidecontainer">
-	<label for="time-slider">Select Time (15m intervals):</label>
 	<input
 		id="time-slider"
 		type="range"
 		min="0"
 		max="1425"
-		step="15"
+		step={time_resolution}
 		bind:value={sliderMinutes}
 		class="slider"
 	/>
 
 	<p>Selected Time: <strong>{displayTime}</strong></p>
-	<p><small>Raw Minutes: {sliderMinutes}</small></p>
 </div>
 
 <style>

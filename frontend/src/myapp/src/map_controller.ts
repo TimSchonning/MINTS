@@ -3,7 +3,8 @@ import { SvelteDate } from "svelte/reactivity";
 import { verifySignedIn } from "../../../../database/src/database_connection";
 
 export const shown_date = new SvelteDate();
-export const time_resolution = 15;
+
+export const time_resolution = 60;
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
 
@@ -38,7 +39,7 @@ export function get_sensor_type_info(sensor_type_id: string): SensorType | undef
     return sensor_type_map.get(sensor_type_id);
 }
 
-async function load_sensor_types() {
+export async function load_sensor_types() {
     await verifySignedIn();
     const sensor_types = await get_all_sensor_types();
     const map = new Map<string, SensorType>();

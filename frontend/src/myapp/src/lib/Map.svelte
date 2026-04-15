@@ -2,9 +2,16 @@
 	import { onMount } from 'svelte';
 	import mapboxgl from 'mapbox-gl';
 	import 'mapbox-gl/dist/mapbox-gl.css';
-	import { toGeoJSON, testData, Data } from '../heatmap.ts';
+	import { toGeoJSON, testData, Data, show_heatmap } from '../heatmap.ts';
+	import { shown_date } from '../map_controller.ts';
 
 	let map: mapboxgl.Map;
+
+	$effect(() => {
+		console.log('Update heatmap');
+		console.log(shown_date);
+		show_heatmap(shown_date);
+	});
 
 	onMount(() => {
 		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
