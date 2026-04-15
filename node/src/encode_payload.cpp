@@ -10,12 +10,12 @@
 #include "utils.h"
 
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result, uint8_t id) {
-    if (!payload || !pm_results || !ss_results || !id) return false;
+    if (!payload || !ps_result || !ns_result || !id) return false;
 
     payload->id  = id;
 
-    payload->pm10  = pm_results->pm10;
-    payload->pm25  = pm_results->pm25;
+    payload->pm10  = ps_result->pm10;
+    payload->pm25  = ps_result->pm25;
 
     payload->noise_peak = ns_result->noise_peak;
     return true;
@@ -23,7 +23,7 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
 
 void transmit_payload() {
     DEBUG_PRINTLN("[START] LoRa transmission");
-    encode_payload(&payload, &ps_results, &ns_results);
+    encode_payload(&payload, &ps_result, &ns_result);
 
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     error_handler(state, "LoRa initialisation");
