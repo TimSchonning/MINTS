@@ -5,6 +5,10 @@ function add_hours(date: Date, hours: number): Date {
     return new Date(date.getTime() + hours * 60 * 60 * 1000);
 }
 
+function add_minutes(date: Date, minutes: number): Date {
+    return new Date(date.getTime() - minutes * 60 * 1000);
+}
+
 export class TimeLapse {
     loaded_data: Station[] = [];
     loaded_interval: Interval | undefined;
@@ -24,15 +28,24 @@ export class TimeLapse {
         this.hours_to_preload = hours_to_preload;
     }
 
-    private is_date_loaded(time: Date): boolean {
+    private calc_resolution_bounds(time: Date): Interval {
+        const res_start = add_minutes(time, -this.resolution / 2);
+        const res_end = add_minutes(time, this.resolution / 2);
+        return new Interval(res_start, res_end);
+    }
+
+    private is_date_loaded(bounds: Interval): boolean {
         if (this.loaded_interval == undefined) {
             return false;
         }
-        return this.loaded_interval.contains_date(time); //TODO: Add checks that all date within resolution is also in the interval.
+
+        return this.loaded_interval.contains_date(bounds.d1) && this.loaded_interval.contains_date(bounds.d2);
     }
 
     async get_measurement_data(time: Date): Promise<Station[]> {
-        if (!this.is_date_loaded(time)) {
+        const bounds = this.calc_resolution_bounds(time);
+        if (!this.is_date_loaded(bounds)) {
+            console.log("Requested time not preloaded, fetching from database.")
             // Preload from database.
             const interval_to_load = new Interval(
                 add_hours(time, -this.hours_to_preload),
@@ -41,7 +54,18 @@ export class TimeLapse {
             this.loaded_interval = interval_to_load;
         }
 
+        const requested_data: Station[] = [];
+        this.loaded_data.forEach((station: Station) => {
+            const new_station = station.copyWithoutMeasurements();
+            station.measurements.forEach((measurement) => {
+                if (bounds.contains_date(measurement.timestamp.toDate())) {
+                    new_station.add_measurement(measurement);
+                }
+            });
+            requested_data.push(new_station);
+        });
+
         // TODO: Pickout measurements from the loaded data around the requested time.
-        return [];
+        return requested_data;
     }
 }

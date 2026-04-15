@@ -24,4 +24,8 @@ export class Station {
     public toString(): String {
         return `Station Id: ${this.id} Lat: ${this.position.latitude} Lng: ${this.position.longitude} Num_Measurements: ${this.measurements.length}`;
     }
+
+    public copyWithoutMeasurements(): Station {
+        return new Station(this.id, this.position);
+    }
 }
