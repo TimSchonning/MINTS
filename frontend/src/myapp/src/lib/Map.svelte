@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import mapboxgl from 'mapbox-gl';
 	import 'mapbox-gl/dist/mapbox-gl.css';
-	import { toGeoJSON, testData } from '../heatmap';
+	import { toGeoJSON, testData, Data } from '../heatmap.ts';
 
 	let map: mapboxgl.Map;
 
@@ -33,7 +33,7 @@
 					'heatmap-radius': 20
 				}
 			});
-			testData.subscribe((data) => {
+			Data.subscribe((data) => {
 				const source = map.getSource('heat') as mapboxgl.GeoJSONSource;
 				if (source) {
 					source.setData(toGeoJSON(data));
