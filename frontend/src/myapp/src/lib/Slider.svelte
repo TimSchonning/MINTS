@@ -5,6 +5,7 @@
 	const elapsedMinutes = now.getHours() * 60 + now.getMinutes();
 	const mappedMinutes = Math.round(elapsedMinutes / time_resolution) * time_resolution;
 	let sliderMinutes = $state(mappedMinutes);
+	let showTooltip = $state(false);
 
 	$effect(() => {
 		shown_date.setHours(0, sliderMinutes, 0, 0);
@@ -20,6 +21,12 @@
 </script>
 
 <div class="slidecontainer">
+	{#if showTooltip}
+		<div class="tooltip" style="left: {sliderMinutes / 1425 * 100}%">
+			{displayTime}
+		</div>
+	{/if}
+
 	<input
 		id="time-slider"
 		type="range"
@@ -28,9 +35,13 @@
 		step={time_resolution}
 		bind:value={sliderMinutes}
 		class="slider"
+		onmouseenter={() => showTooltip = true}
+    	onmouseleave={() => showTooltip = false}
+    	onmousedown={() => showTooltip = true}
+    	onmouseup={() => showTooltip = false}
 	/>
 
-	<p>Selected Time: <strong>{displayTime}</strong></p>
+	<!-- <p>Selected Time: <strong>{displayTime}</strong></p> -->
 </div>
 
 <style>
@@ -62,4 +73,25 @@
 		background: #000000;
 		cursor: pointer;
 	}
+
+	/* Tooltip */
+	.tooltip {
+    	position: absolute;
+    	top: -35px;
+    	transform: translateX(-50%);
+
+    	padding: 4px 8px;
+    	border-radius: 8px;
+
+    	font-size: 12px;
+    	font-weight: 500;
+
+    	background: rgba(0, 0, 0, 0.75);
+    	color: white;
+
+    	pointer-events: none;
+
+    	transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+
 </style>

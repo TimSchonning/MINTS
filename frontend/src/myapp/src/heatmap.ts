@@ -59,6 +59,21 @@ function create_coordinates_heatmap(lat: number, lng: number, intensity: number)
     return { lat, lng, intensity };
 }
 
+function add_extra_points(data: Heatpoint[]): Heatpoint[] {
+    // add extra points around each point to make the heatmap smoother
+    const extra_points: Heatpoint[] = [];
+    const radius = 0.0005;
+    data.forEach(point => {
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * 2 * Math.PI;
+            const new_lat = point.lat + radius * Math.sin(angle);
+            const new_lng = point.lng + radius * Math.cos(angle);
+            extra_points.push(create_coordinates_heatmap(new_lat, new_lng, (point.intensity) * 0.5));
+        }
+    });
+    return [...data, ...extra_points];
+}
+
 export async function show_heatmap(date: Date): Promise<void> {
     // Process the stations and their measurements to create heatmap data
     const heatmapData: Heatpoint[] = [];
@@ -74,8 +89,9 @@ export async function show_heatmap(date: Date): Promise<void> {
             }
         });
     });
+    const expanded_data = add_extra_points(heatmapData);
     console.log(heatmapData.length)
-    Data.set(heatmapData);
+    Data.set(expanded_data);
 }
 
 export function addLayer(item: string): void {
