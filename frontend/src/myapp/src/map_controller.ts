@@ -1,5 +1,4 @@
-import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, Station } from "@my-app/database";
-import type { SensorType } from "../../../../database/src/classes/sensor_type";
+import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, SensorType, Station } from "@my-app/database";
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
 
