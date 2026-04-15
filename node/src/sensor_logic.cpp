@@ -1,5 +1,4 @@
 #include <Seeed_HM330X.h>
-#include <HM330X.h>
 #include <sensor_logic.h>
 
 #include "config.h"
@@ -7,6 +6,8 @@
 #include "encode_payload.h"
 #include "sensor_logic.h"
 #include "utils.h"
+
+extern HM330X particle_sensor;
 
 uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = input / count;
@@ -30,7 +31,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
     /* Sums the readings over the given time period */
     if (state->sample_count < target_samples) {
         if (now - state->last_sample_time >= sample_interval) {
-            if (sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
+            if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
 
                 state->sum_pm10  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
                 state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
@@ -100,9 +101,9 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
 void sample_particle_sensor() {
     DEBUG_PRINTLN("[START] Particle sensor sampling");
     DEBUG_PRINT("Heating particle sensor for: ");
-    DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * mS_TO_S);
+    DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * S_TO_mS);
 
-    delay(PS_HEAT_UP_TIME_S * mS_TO_S);
+    delay(PS_HEAT_UP_TIME_S * S_TO_mS);
     bool is_done = false;
     while (!ps_parse(ps_sensor_buf, &ps_state, &ps_result, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {
         delay(1);

@@ -1,5 +1,4 @@
 #include <Seeed_HM330X.h>
-#include <HM330X.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include <esp_bt.h>
@@ -16,6 +15,7 @@ HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
 ps_state_t  ps_state;
 ps_result_t ps_result;
+
 
 ns_state_t  ns_state;
 ns_result_t ns_result;
@@ -38,7 +38,6 @@ void setup() {
     //// Data collection
     sample_particle_sensor();
     delay(1 * S_TO_mS);
-
     sample_noise_sensor();
 
     //// Update RTC
