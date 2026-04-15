@@ -30,7 +30,7 @@ void setup() {
     DEBUG_BEGIN(BAUD);
 
     //// Node initialisation
-    if (init_flag) initialise_node();
+    if (needs_initialisation) initialise_node();
 
     // Initialise sensors
     if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");

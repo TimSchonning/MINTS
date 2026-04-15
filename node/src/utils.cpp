@@ -35,7 +35,7 @@ void initialise_node() {
 
     uint8_t id_attempts = 0;
 
-    while (init_flag && id_attempts < MAX_ID_ATTEMPTS) {
+    while (needs_initialisation && id_attempts < MAX_ID_ATTEMPTS) {
         DEBUG_PRINTLN("Pinging gateway for ID");
 
         // Pings the gateway
@@ -59,7 +59,7 @@ void initialise_node() {
                 uint8_t ack_payload[] = {ACK_BYTE, NODE_ID};
                 radio.transmit(ack_payload, 2);
                 
-                init_flag = false;
+                needs_initialisation = false;
             }
         }
     }

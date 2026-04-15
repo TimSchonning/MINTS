@@ -40,7 +40,7 @@ const uint8_t PING_BYTE       = 0x4;
 const uint8_t ACK_BYTE        = 0x8;
 
 //// ESP specific
-RTC_DATA_ATTR bool init_flag    = true;
-RTC_DATA_ATTR int  boot_count   = 0;
-RTC_DATA_ATTR int  NODE_ID      = 0;
+RTC_DATA_ATTR bool needs_initialisation = true;
+RTC_DATA_ATTR int  boot_count           = 0;
+RTC_DATA_ATTR int  node_id              = 0;
 #endif
