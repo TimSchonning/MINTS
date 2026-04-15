@@ -3,8 +3,10 @@
 
 #include <cstdint>
 
-void error_handler(int16_t state, const char* message);
+bool error_handler(int16_t state, const char* message);
 
 void power_down_radios();
+
+void initialise_node();
 
 #endif

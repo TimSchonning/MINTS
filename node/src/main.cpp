@@ -28,12 +28,17 @@ void setup() {
     power_down_radios();
     setCpuFrequencyMhz(CPU_FREQ_MHZ);
     DEBUG_BEGIN(BAUD);
-    
+
+    //// Node initialisation
+    if (init_flag) initialise_node();
+
+    // Initialise sensors
     if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");
     
     //// Data collection
     sample_particle_sensor();
     delay(1 * S_TO_mS);
+
     sample_noise_sensor();
 
     //// Update RTC

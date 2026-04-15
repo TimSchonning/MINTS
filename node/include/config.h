@@ -34,7 +34,13 @@ const int PIN_DIO0 = 0;
 const int PIN_NRST = 0;
 const int PIN_DIO1 = 0;
 
-//// ESP specific
-RTC_DATA_ATTR int boot_count = 0;
+//// Initialisation config
+const uint8_t MAX_ID_ATTEMPTS = 0;
+const uint8_t PING_BYTE       = 0x4;
+const uint8_t ACK_BYTE        = 0x8;
 
+//// ESP specific
+RTC_DATA_ATTR bool init_flag    = true;
+RTC_DATA_ATTR int  boot_count   = 0;
+RTC_DATA_ATTR int  NODE_ID      = 0;
 #endif
