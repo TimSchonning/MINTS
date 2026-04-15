@@ -1,12 +1,15 @@
 // Denna kod är för tillfället gjord för en Arduino och går inte att köra här. Måste köras i Arduino IDE.
 // Detta är endast temporärt för teständamål.
-// När koden väl ska användas "på riktigt", ta bort serial.print och modifera koden lite så bör den gå att köra här.
+// När koden väl ska användas "på riktigt", ta bort DEBUG_PRINT och modifera koden lite så bör den gå att köra här.
 
 #include <RadioLib.h>
+#include "debug_macros.h"
 
 // Packet data format
-typedef struct
+typedef struct // OBS! Byt inte ut, behåll som det är för tillfället.
 {
+    uint32_t signature = 0x12;
+    uint16_t nodeID;
     int pm10, pm25;
     int noise_peak;
 } __attribute__((packed)) payload_t;
@@ -16,31 +19,30 @@ typedef struct
 SX1276 radio = new Module(18, 26, 14, 35);
 
 float FREQ = 868.1; // Frequency
-float BW = 125.0;   // Bandwidth
-int SF = 7;         // Spreading Factor
-int CR = 8;         // Coding Rate
-int SYNC = 0x12;    // Sync word
-int PWR = 10;       // Power
-int PRE = 8;        // Preamble
+float BW   = 125.0; // Bandwidth
+int   SF   = 7;     // Spreading Factor
+int   CR   = 8;     // Coding Rate
+int   SYNC = 0x12;  // Sync word
+int   PWR  = 10;    // Power
+int   PRE  = 8;     // Preamble
 
 void setup()
 {
-    Serial.begin(115200);
+    DEBUG_BEGIN(115200);
 
-    Serial.print(F("[SX1276] Initializing ... "));
+    DEBUG_PRINT(F("[SX1276] Initializing ... "));
 
     int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE);
 
     if (state == RADIOLIB_ERR_NONE)
     {
-        Serial.println(F("LoRa initiated."));
+        DEBUG_PRINTLN(F("LoRa initiated."));
     }
     else
     {
-        Serial.print(F("LoRa failed, code "));
-        Serial.println(state);
-        while (true)
-            ;
+        DEBUG_PRINT(F("LoRa failed, code "));
+        DEBUG_PRINTLN(state);
+        while (true);
     }
 }
 
@@ -51,13 +53,14 @@ void loop()
 
     if (state == RADIOLIB_ERR_NONE)
     {
-        Serial.println("Packet Received.");
-        Serial.println(payload.pm10);
-        Serial.println(payload.pm25);
-        Serial.println(payload.noise_peak);
-        Serial.print("RSSI: ");
-        Serial.print(radio.getRSSI());
-        Serial.println(" dBm");
+        if (incoming.signature == 0xDEADBEEF) {
+            Serial.write((uint8_t*)&payload, sizeof(payload_t));
+            DEBUG_PRINTLN("Packet Received.");
+            DEBUG_PRINT("RSSI: ");
+            DEBUG_PRINT(radio.getRSSI());
+            DEBUG_PRINTLN(" dBm");
+        }
+        
     }
     else if (state == RADIOLIB_ERR_RX_TIMEOUT)
     {
@@ -65,10 +68,10 @@ void loop()
     }
     else if (state == RADIOLIB_ERR_CRC_MISMATCH)
     {
-        Serial.println("CRC error! (Corrupt packet)");
+        DEBUG_PRINTLN("CRC error! (Corrupt packet)");
     }
     else
     {
-        Serial.println("Unknown error.");
+        DEBUG_PRINTLN("Unknown error.");
     }
 }
