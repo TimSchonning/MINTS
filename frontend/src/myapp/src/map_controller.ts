@@ -1,4 +1,9 @@
 import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, SensorType, Station } from "@my-app/database";
+import { SvelteDate } from "svelte/reactivity";
+import { verifySignedIn } from "../../../../database/src/database_connection";
+
+export const shown_date = new SvelteDate();
+export const time_resolution = 15;
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
 
@@ -34,6 +39,7 @@ export function get_sensor_type_info(sensor_type_id: string): SensorType | undef
 }
 
 async function load_sensor_types() {
+    await verifySignedIn();
     const sensor_types = await get_all_sensor_types();
     const map = new Map<string, SensorType>();
     sensor_types.forEach((sensor_type) => {

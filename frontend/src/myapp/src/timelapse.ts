@@ -1,5 +1,5 @@
 import { Interval, type Station } from "@my-app/database";
-import { load_interval } from "./map_controller";
+import { load_interval, time_resolution } from "./map_controller";
 
 function add_hours(date: Date, hours: number): Date {
     return new Date(date.getTime() + hours * 60 * 60 * 1000);
@@ -23,7 +23,7 @@ export class TimeLapse {
      * Loads data this number of hours both earlier and later than the requested time. 
      * For example, if hours_to_preload is 2 and measurements at 15 PM is requested, data between 13 and 17 PM will be loaded.
      */
-    constructor(resolution: number = 15, hours_to_preload: number = 2) {
+    constructor(resolution: number = time_resolution, hours_to_preload: number = 2) {
         this.resolution = resolution;
         this.hours_to_preload = hours_to_preload;
     }
