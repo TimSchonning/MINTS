@@ -91,9 +91,9 @@ export async function show_heatmap(date: Date): Promise<void> {
             }
         });
     });
-    const expanded_data = add_extra_points(heatmapData);
-    console.log(heatmapData.length)
-    Data.set(expanded_data);
+    //const expanded_data = add_extra_points(heatmapData);
+    //console.log(heatmapData.length)
+    Data.set(heatmapData);
 }
 
 export function addLayer(item: string): void {

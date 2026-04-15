@@ -50,6 +50,7 @@ export class TimeLapse {
             const interval_to_load = new Interval(
                 add_hours(time, -this.hours_to_preload),
                 add_hours(time, this.hours_to_preload));
+            console.log(`Preloading new interval: ${interval_to_load.start.toLocaleTimeString()} to ${interval_to_load.end.toLocaleTimeString()}`);
             this.loaded_data = await load_interval(interval_to_load);
             this.loaded_interval = interval_to_load;
         }

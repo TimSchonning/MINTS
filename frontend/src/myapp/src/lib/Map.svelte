@@ -38,7 +38,7 @@
 					'heatmap-radius': 20
 				}
 			});
-			testData.subscribe((data) => {
+			Data.subscribe((data) => {
 				const source = map.getSource('heat') as mapboxgl.GeoJSONSource;
 				if (source) {
 					source.setData(toGeoJSON(data));
