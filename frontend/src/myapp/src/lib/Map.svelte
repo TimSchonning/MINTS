@@ -8,8 +8,6 @@
 	let map: mapboxgl.Map;
 
 	$effect(() => {
-		console.log('Update heatmap');
-		console.log(shown_date);
 		show_heatmap(shown_date);
 	});
 

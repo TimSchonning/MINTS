@@ -23,7 +23,7 @@ export class TimeLapse {
      * Loads data this number of hours both earlier and later than the requested time. 
      * For example, if hours_to_preload is 2 and measurements at 15 PM is requested, data between 13 and 17 PM will be loaded.
      */
-    constructor(resolution: number = time_resolution, hours_to_preload: number = 2) {
+    constructor(resolution: number = time_resolution, hours_to_preload: number = 4) {
         this.resolution = resolution;
         this.hours_to_preload = hours_to_preload;
     }
@@ -39,7 +39,7 @@ export class TimeLapse {
             return false;
         }
 
-        return this.loaded_interval.contains_date(bounds.d1) && this.loaded_interval.contains_date(bounds.d2);
+        return this.loaded_interval.contains_date(bounds.start) && this.loaded_interval.contains_date(bounds.end);
     }
 
     async get_measurement_data(time: Date): Promise<Station[]> {

@@ -63,18 +63,19 @@ export async function show_heatmap(date: Date): Promise<void> {
     // Process the stations and their measurements to create heatmap data
     const heatmapData: Heatpoint[] = [];
     const data_span = await timelapse_controller.get_measurement_data(date);
-    console.log(data_span.length);
     data_span.forEach(station => {
-        console.log(station.measurements.length == 0);
         station.measurements.forEach(measurement => {
             const sensor_type = get_sensor_type_info(measurement.sensor_type);
-            if (sensor_type != undefined && sens_types.some(x => x === sensor_type.sensor_id)) {
+            if (sensor_type == undefined) {
+                console.warn(`Sensor type "${measurement.sensor_type}" is unknown.`);
+            }
+
+            if (sensor_type != undefined && sens_types.some(x => x == sensor_type.sensor_id)) {
                 const intensity = normalize_weight(measurement.value, sensor_type.low, sensor_type.high);
                 heatmapData.push(create_coordinates_heatmap(station.position.latitude, station.position.longitude, intensity));
             }
         });
     });
-    console.log(heatmapData.length)
     Data.set(heatmapData);
 }
 
