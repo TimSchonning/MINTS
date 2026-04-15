@@ -1,11 +1,13 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
-#include "../gateway/include/DataPacket.h"
+#include "../include/DataPacket.h"
+
+bool toPython = false; // Temporary variable. Decides if print from c++ or from a separate python file.
 
 int main() {
     // Open the COM port (remove when Raspberry is used)
-    HANDLE hSerial = CreateFile("\\\\.\\COM3", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hSerial = CreateFileW(L"\\\\.\\COM3", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hSerial == INVALID_HANDLE_VALUE) {
         std::cerr << "Error: could not open COM port." << std::endl;
@@ -25,7 +27,7 @@ int main() {
     payload_t packet;
     DWORD bytesRead;
 
-    std::cout << "Listening for LoRa packets..." << std:endl;
+    std::cout << "Listening for LoRa packets..." << std::endl;
 
     while (true) {
         uint32_t syncCheck = 0;
@@ -43,7 +45,7 @@ int main() {
                 std::cout << "Node: " << packet.nodeID
                           << " | PM10: " << packet.pm10 
                           << " | PM5" << packet.pm25 
-                          << " | Peak Noise: " << packet.noise_peak << std.endl;
+                          << " | Peak Noise: " << packet.noise_peak << std::endl;
             }
         }
     }
