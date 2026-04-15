@@ -97,9 +97,9 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t 
 void sample_particle_sensor() {
     DEBUG_PRINTLN("[START] Particle sensor sampling");
     DEBUG_PRINT("Heating particle sensor for: ");
-    DEBUG_PRINTLN(PS_HEAT_UP_TIME * mS_TO_S);
+    DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * mS_TO_S);
 
-    delay(PS_HEAT_UP_TIME * mS_TO_S);
+    delay(PS_HEAT_UP_TIME_S * mS_TO_S);
     bool is_done = false;
     while (!ps_parse(ps_sensor_buf, &ps_state, &ps_results, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {
         delay(1);

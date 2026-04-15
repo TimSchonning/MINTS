@@ -11,7 +11,7 @@ const uint64_t TIME_TO_SLEEP_S  = 524
 //// Particle config
 // ps = particle sensor
 // ns = noise sensor
-const uint8_t  PS_HEAT_UP_TIME   = 35;  // set to 35 to "guarantee" sufficient heat-up
+const uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" sufficient heat-up
 const uint16_t PS_SAMPLE_TIME_mS = 0;   // must be > 1
 const uint16_t PS_TARGET_SAMPLES = 0;
 
