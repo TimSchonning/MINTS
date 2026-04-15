@@ -39,13 +39,13 @@ void initialise_node() {
         DEBUG_PRINTLN("Pinging gateway for ID");
 
         // Pings the gateway
-        state = radio.transmit(&PING_BYTE, 1);
+        state = radio.transmit(&MSG_TYPE_PING, 1);
         id_attempts++;
         DEBUG_PRINT("Ping attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
 
         if (!error_handler(state, "LoRa_init failed to ping the gateway")) {
-            // Receives the ID from the gateway
+            // Receives the (return ping) ID from the gateway
             uint8_t received_id[1];
             state = radio.receive(received_id, 1);
     
@@ -56,7 +56,7 @@ void initialise_node() {
                 DEBUG_PRINTLN(NODE_ID);
 
                 // ACK to gateway
-                uint8_t ack_payload[] = {ACK_BYTE, NODE_ID};
+                uint8_t ack_payload[] = {MSG_TYPE_ACK, NODE_ID};
                 radio.transmit(ack_payload, 2);
                 
                 needs_initialisation = false;

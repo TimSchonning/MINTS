@@ -23,6 +23,10 @@ typedef struct {
  */
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result);
 
+/**
+ * @brief High-level function.
+ * Initializes radio, encodes current data, and transmits via LoRa.
+ */
 void transmit_payload();
 
 #endif

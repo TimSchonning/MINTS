@@ -9,7 +9,7 @@
 
 extern HM330X particle_sensor;
 
-uint8_t pm_average(uint8_t count, uint16_t input) {
+static uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = input / count;
     if (average_pm > 255) {
         return 255;
