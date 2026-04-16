@@ -64,3 +64,10 @@ void initialise_node() {
         }
     }
 }
+
+void standby_mode() {
+    
+    // wait for clearance from gateway
+    // init "boot_count" to appropriate val / calc it based on the time received
+    // disable radio
+}
