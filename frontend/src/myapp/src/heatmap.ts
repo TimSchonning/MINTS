@@ -1,9 +1,7 @@
 // functions to edit heatmap
 import { writable } from 'svelte/store';
 import type { FeatureCollection, Point } from 'geojson';
-import test from 'node:test';
-import { get_sensor_type_info, load_interval, sensor_type_map, load_sensor_types, shown_date } from './map_controller';
-import { TimeLapse } from './timelapse';
+import { get_sensor_type_info, load_sensor_types, timelapse_controller } from './map_controller';
 
 type Heatpoint = {
     lat: number;
@@ -27,7 +25,6 @@ export function toGeoJSON(data: Heatpoint[]): FeatureCollection<Point> {
     };
 }
 
-const timelapse_controller = new TimeLapse();
 const sensors = await load_sensor_types();
 const sens_types = Array.from(sensors.keys());
 
@@ -37,27 +34,25 @@ export const testData = writable<Heatpoint[]>([
     //   { lat: 59.843905, lng: 17.635488, intensity: 1 },
     { lat: 59.844905, lng: 17.636488, intensity: 0.1 },
     { lat: 59.844905, lng: 17.636488, intensity: 0.1 },
-
-
 ]);
 const list = [];
 for (let index = 0; index < 50; index++) {
-    const element = { lat: 59.844905 + 0.0005 * index, lng: 17.636488, intensity: (0.02 * index) };
+    const element = { lat: 59.844905 + 0.05 * index, lng: 17.636488, intensity: (0.02 * index) };
     list.push(element);
 }
 testData.set(list);
 
 function normalize_weight(intensity: number, lowval: number, highval: number): number {
-    // returns value between 0-100, where 0 is low and 100 is high
+    // returns value between 0-1, where 0 is low and 1 is high
     if (intensity <= lowval) {
         return 0;
     }
     else if (intensity >= highval) {
-        return 100;
+        return 1;
     }
     else {
         // min-max scaling normalization
-        return ((intensity - lowval) / (highval - lowval)) * 100;
+        return ((intensity - lowval) / (highval - lowval));
     }
 }
 
