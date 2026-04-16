@@ -1,8 +1,8 @@
 <script lang="ts">
-    let station_id: string;
-    let noise: number;
-    let pm25: number;
-    let pm5: number;
+    let station_id: string | undefined;
+    let noise: number | undefined;
+    let pm25: number | undefined;
+    let pm5: number | undefined;
 </script>
 
 <div class= "marker">
