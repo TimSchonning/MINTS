@@ -75,11 +75,16 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
 bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms);
 
 /**
- * @brief High-level wrappers that manage sensor sampling.
- * @note Is blocking
- * @note sample_particle_sensor includes the heat-up delay
+ * @brief High-level sampler for the particle sensor.
+ * @note Is blocking.
+ * @note Includes heat-up delay
  */
 void sample_particle_sensor();
+
+/**
+ * @brief High-level sampler for the noise sensor.
+ * @note Is blocking.
+ */
 void sample_noise_sensor();
 
 #endif
