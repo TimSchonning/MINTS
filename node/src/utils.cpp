@@ -52,7 +52,9 @@ bool standby_mode() {
 
         //// Sleeps till the closest window
         esp_sleep_enable_timer_wakeup(sleep_time_ms);
-        esp_deep_sleep_start();
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -89,7 +91,8 @@ void initialise_node() {
                 needs_initialisation = false;
                 
                 //// Enters standby mode
-                standby_mode();
+                while (!standby_mode());
+                esp_deep_sleep_start();
             }
         }
     }

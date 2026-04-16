@@ -9,6 +9,9 @@
 #include "sensor_logic.h"
 #include "utils.h"
 
+/**
+ * @brief Structure for gateway synchronization clearance
+ */
 typedef struct {
     uint8_t msg_type;
     uint32_t time_stamp;
@@ -33,5 +36,12 @@ void power_down_radios();
  * @note Sets init_flag to false upon success.
  */
 void initialise_node();
+
+/**
+ * @brief Synchronizes with the gateway and sets a Deep Sleep timer until the next window.
+ * @return success
+ * @note Is blocking.
+ */
+bool standby_mode();
 
 #endif
