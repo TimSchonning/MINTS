@@ -30,29 +30,32 @@ void power_down_radios() {
     esp_bt_controller_disable();
 }
 
-bool standby_mode() {
+static bool standby_mode() {
     clearance_msg clearance;
-    state = radio.receive(clearance, 2);
+    int16_t state = radio.receive((uint8_t*)&clearance, sizeof(clearance_msg));
 
     if (!error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
+        uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, node_id};
+        radio.transmit(ack_payload, sizeof(ack_payload));
         radio.sleep();
         
         //// Initialises the boot count
         uint32_t now_ms                 = clearance.time_stamp;
         uint32_t measurement_windows_ms = MEASUREMENT_WINDOW_S * S_TO_mS;
         uint32_t time_past_in_window_ms = now_ms % measurement_windows_ms;
-        uint32_t time_to_sleep_ms       = measurement_windows_ms - time_past_in_window_ms;
+        uint32_t time_to_sleep_us       = (measurement_windows_ms - time_past_in_window_ms) * 1000ULL;
         
-        boot_count = floor(now_ms / meas_win_ms);
+        boot_count = floor(now_ms / measurement_windows_ms);
         DEBUG_PRINT("[STANDBY] Init boot_count set to: ");
         DEBUG_PRINTLN(boot_count);
 
-        DEBUG_PRINT("[STANDBY] Will sleep for: ");
-        DEBUG_PRINTLN(time_to_sleep_ms);
+        DEBUG_PRINT("[STANDBY] Will sleep for (seconds): ");
+        DEBUG_PRINTLN(time_to_sleep_us / S_TO_uS);
 
         //// Sleeps till the closest window
-        esp_sleep_enable_timer_wakeup(sleep_time_ms);
-        return true;
+        esp_sleep_enable_timer_wakeup(time_to_sleep_us);
+        esp_deep_sleep_start();
+        // wont be reached
     } else {
         return false;
     }
@@ -68,7 +71,7 @@ void initialise_node() {
         DEBUG_PRINTLN("Pinging gateway for ID");
 
         // Pings the gateway
-        state = radio.transmit(&MSG_TYPE_ID_PING, 1);
+        state = radio.transmit(&MSG_TYPE_ID_PING, sizeof(MSG_TYPE_ID_PING));
         id_attempts++;
         DEBUG_PRINT("Ping attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
@@ -76,7 +79,7 @@ void initialise_node() {
         if (!error_handler(state, "LoRa_init failed to ping the gateway")) {
             // Receives the (return ping) ID from the gateway
             uint8_t received_id[1];
-            state = radio.receive(received_id, 1);
+            state = radio.receive(received_id, sizeof(received_id));
     
             if (!error_handler(state, "LoRa_init failed to receive id from gateway")) {
                 // Assigns the ID
@@ -86,13 +89,12 @@ void initialise_node() {
 
                 // ACK to gateway
                 uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, node_id};
-                radio.transmit(ack_payload, 2);
+                radio.transmit(ack_payload, sizeof(ack_payload));
                 
                 needs_initialisation = false;
                 
                 //// Enters standby mode
-                while (!standby_mode());
-                esp_deep_sleep_start();
+                standby_mode();
             }
         }
     }
