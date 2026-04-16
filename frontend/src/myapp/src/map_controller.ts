@@ -1,12 +1,14 @@
 import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, SensorType, Station } from "@my-app/database";
 import { SvelteDate } from "svelte/reactivity";
 import { verifySignedIn } from "../../../../database/src/database_connection";
+import { TimeLapse } from "./timelapse";
 
 export const shown_date = new SvelteDate();
 
 export const time_resolution = 15;
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
+export const timelapse_controller: TimeLapse = new TimeLapse();
 
 export async function load_interval(interval: Interval): Promise<Station[]> {
     const [stations, measurements] = await Promise.all([
