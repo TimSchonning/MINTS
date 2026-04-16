@@ -1,17 +1,12 @@
-// Denna kod är för tillfället gjord för en Arduino och går inte att köra här. Måste köras i Arduino IDE.
-// Detta är endast temporärt för teständamål.
-// När koden väl ska användas "på riktigt", ta bort DEBUG_PRINT och modifera koden lite så bör den gå att köra här.
-
 #include <RadioLib.h>
-#include "debug_macros.h"
 
 // Packet data format
-typedef struct // OBS! Byt inte ut, behåll som det är för tillfället.
+typedef struct
 {
-    uint32_t signature = 0x12;
-    uint16_t nodeID;
-    int pm10, pm25;
-    int noise_peak;
+    uint32_t signature = 0xDEADBEEF;
+    uint8_t nodeID;
+    uint8_t pm10, pm25;
+    uint16_t noise_peak;
 } __attribute__((packed)) payload_t;
 
 // Heltec V2 Pin Definitions
@@ -19,30 +14,25 @@ typedef struct // OBS! Byt inte ut, behåll som det är för tillfället.
 SX1276 radio = new Module(18, 26, 14, 35);
 
 float FREQ = 868.1; // Frequency
-float BW   = 125.0; // Bandwidth
-int   SF   = 7;     // Spreading Factor
-int   CR   = 8;     // Coding Rate
-int   SYNC = 0x12;  // Sync word
-int   PWR  = 10;    // Power
-int   PRE  = 8;     // Preamble
+float BW = 125.0;   // Bandwidth
+int SF = 7;         // Spreading Factor
+int CR = 8;         // Coding Rate
+int SYNC = 0x12;    // Sync word
+int PWR = 10;       // Power
+int PRE = 8;        // Preamble
 
 void setup()
 {
-    DEBUG_BEGIN(115200);
-
-    DEBUG_PRINT(F("[SX1276] Initializing ... "));
+    Serial.begin(115200);
 
     int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE);
 
-    if (state == RADIOLIB_ERR_NONE)
+    if (state != RADIOLIB_ERR_NONE)
     {
-        DEBUG_PRINTLN(F("LoRa initiated."));
-    }
-    else
-    {
-        DEBUG_PRINT(F("LoRa failed, code "));
-        DEBUG_PRINTLN(state);
-        while (true);
+        Serial.print(F("LoRa failed, code "));
+        Serial.println(state);
+        while (true)
+            ;
     }
 }
 
@@ -53,14 +43,7 @@ void loop()
 
     if (state == RADIOLIB_ERR_NONE)
     {
-        if (incoming.signature == 0xDEADBEEF) {
-            Serial.write((uint8_t*)&payload, sizeof(payload_t));
-            DEBUG_PRINTLN("Packet Received.");
-            DEBUG_PRINT("RSSI: ");
-            DEBUG_PRINT(radio.getRSSI());
-            DEBUG_PRINTLN(" dBm");
-        }
-        
+        Serial.write((uint8_t *)&payload, sizeof(payload_t));
     }
     else if (state == RADIOLIB_ERR_RX_TIMEOUT)
     {
@@ -68,10 +51,10 @@ void loop()
     }
     else if (state == RADIOLIB_ERR_CRC_MISMATCH)
     {
-        DEBUG_PRINTLN("CRC error! (Corrupt packet)");
+        Serial.println("CRC error! (Corrupt packet)");
     }
     else
     {
-        DEBUG_PRINTLN("Unknown error.");
+        Serial.println("Unknown error.");
     }
 }
