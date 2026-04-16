@@ -1,9 +1,9 @@
+<script lang="ts">
+</script>
+
 <div class= "marker">
-    <h3>Station_id</h3>
-    <ul>
-        <li>Noise: </li>
-        <li>PM2.5: </li>
-        <li>PM5: </li>
-    </ul>
+    <img src="https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png" alt="Marker Icon" />
 </div>
 
+<style>
+</style>
