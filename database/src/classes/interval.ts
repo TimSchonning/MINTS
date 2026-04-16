@@ -15,4 +15,8 @@ export class Interval {
     contains_date(date: Date): boolean {
         return this.start <= date && date <= this.end;
     }
+
+    toString(): string {
+        return `${this.start.toLocaleTimeString()} to ${this.end.toLocaleTimeString()}`
+    }
 }

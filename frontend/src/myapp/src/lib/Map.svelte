@@ -59,9 +59,21 @@
 					.setLngLat([station.position.longitude, station.position.latitude])
 					.addTo(map);
 
+				let popup_state = $state({ is_open: false });
 				const popup_container = document.createElement('div');
-				mount(Popup, { target: popup_container, props: { station_id: station.id } });
-				marker.setPopup(new mapboxgl.Popup({ offset: 25 }).setDOMContent(popup_container));
+				mount(Popup, {
+					target: popup_container,
+					props: {
+						station_id: station.id,
+						get is_open() {
+							return popup_state.is_open;
+						}
+					}
+				});
+				const popup = new mapboxgl.Popup({ offset: 25 }).setDOMContent(popup_container);
+				popup.on('open', () => (popup_state.is_open = true));
+				popup.on('close', () => (popup_state.is_open = false));
+				marker.setPopup(popup);
 			});
 		});
 	});
