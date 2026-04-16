@@ -1,12 +1,18 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
+#include "utils.h"
+
 //// General config
 const uint64_t S_TO_uS          = 1000000;
 const uint64_t S_TO_mS          = 1000;
 const uint8_t  CPU_FREQ_MHZ     = 10;
 const uint32_t BAUD             = 115200;
-const uint64_t TIME_TO_SLEEP_S  = 524
+const uint64_t TIME_TO_SLEEP_S  = 524;
 
 //// Particle config
 // ps = particle sensor

@@ -5,6 +5,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
+#include "utils.h"
+
 /**
  * @brief Stores the running totals and timing state for PM averaging.
  */

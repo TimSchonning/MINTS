@@ -4,6 +4,11 @@
 #include <stdint.h>
 #include <encode_payload.h>
 
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
+#include "utils.h"
 
 /**
  * @brief Stores the results as a sendable LoRa payload.

@@ -51,12 +51,12 @@ void initialise_node() {
     
             if (!error_handler(state, "LoRa_init failed to receive id from gateway")) {
                 // Assigns the ID
-                NODE_ID = received_id[0];
+                node_id = received_id[0];
                 DEBUG_PRINT("Assigned Node ID: ");
-                DEBUG_PRINTLN(NODE_ID);
+                DEBUG_PRINTLN(node_id);
 
                 // ACK to gateway
-                uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, NODE_ID};
+                uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, node_id};
                 radio.transmit(ack_payload, 2);
                 
                 needs_initialisation = false;

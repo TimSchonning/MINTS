@@ -23,7 +23,7 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
 
 void transmit_payload() {
     DEBUG_PRINTLN("[START] LoRa transmission");
-    encode_payload(&payload, &ps_result, &ns_result);
+    encode_payload(&payload, &ps_result, &ns_result, node_id);
 
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     error_handler(state, "LoRa initialisation");
