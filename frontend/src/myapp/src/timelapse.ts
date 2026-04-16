@@ -56,7 +56,7 @@ export class TimeLapse {
     private prepare_data(shown_interval: Interval): Station[] {
         const prepared_data: Station[] = [];
         this.loaded_data.forEach((station: Station) => {
-            const new_station = station.copyWithoutMeasurements();
+            const new_station = station.copy_without_measurements();
             station.measurements.forEach((measurement) => {
                 if (shown_interval.contains_date(measurement.timestamp.toDate())) {
                     new_station.add_measurement(measurement);

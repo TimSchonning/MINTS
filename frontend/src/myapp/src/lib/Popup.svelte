@@ -1,20 +1,33 @@
 <script lang="ts">
-	import { shown_date } from '../map_controller';
+	import { shown_date, timelapse_controller } from '../map_controller';
 
 	let { station_id, is_open, noise, pm25, pm5 } = $props<{
 		station_id: string | undefined;
 		is_open: boolean;
-		noise?: number; // Added with ? for optional
-		pm25?: number; // Added with ? for optional
-		pm5?: number; // Added with ? for optional
+		noise?: number | undefined; // Added with ? for optional
+		pm25?: number | undefined; // Added with ? for optional
+		pm5?: number | undefined; // Added with ? for optional
 	}>();
 
 	$effect(() => {
-		const date = shown_date;
-		if (is_open) {
-			console.log(date);
-			console.log(`Update popup station: ${station_id}`);
-		}
+		const load_task = async () => {
+			const date = shown_date;
+			if (is_open) {
+				let data = await timelapse_controller.get_measurement_data(date);
+				for (let index = 0; index < data.length; index++) {
+					const station = data[index];
+					if (station.id == station_id) {
+						const avg_values = station.calc_avg_measurements();
+						noise = avg_values.get('Noise');
+						pm25 = avg_values.get('PM2.5');
+						pm5 = avg_values.get('PM5');
+						break;
+					}
+				}
+				console.log(`Update popup station: ${station_id}`);
+			}
+		};
+		load_task();
 	});
 </script>
 
