@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Map from '$lib/Map.svelte';
 	import Slider from '$lib/Slider.svelte';
-	import Playbutton from '$lib/Playbutton.svelte';
 	import Menu from '$lib/Menu.svelte';
 	import ChangeDate from '$lib/ChangeDate.svelte';
 </script>
