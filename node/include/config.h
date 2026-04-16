@@ -35,9 +35,9 @@ const int PIN_NRST = 0;
 const int PIN_DIO1 = 0;
 
 //// Initialisation config
-const uint8_t MAX_ID_ATTEMPTS = 0;
-const uint8_t MSG_TYPE_PING   = 0x4;
-const uint8_t MSG_TYPE_ACK    = 0x8;
+const uint8_t MAX_ID_ATTEMPTS    = 0;
+const uint8_t MSG_TYPE_INIT_PING = 0x4;
+const uint8_t MSG_TYPE_ID_ACK    = 0x8;
 
 //// ESP specific
 RTC_DATA_ATTR bool needs_initialisation = true;

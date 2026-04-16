@@ -39,7 +39,7 @@ void initialise_node() {
         DEBUG_PRINTLN("Pinging gateway for ID");
 
         // Pings the gateway
-        state = radio.transmit(&MSG_TYPE_PING, 1);
+        state = radio.transmit(&MSG_TYPE_ID_PING, 1);
         id_attempts++;
         DEBUG_PRINT("Ping attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
@@ -56,7 +56,7 @@ void initialise_node() {
                 DEBUG_PRINTLN(NODE_ID);
 
                 // ACK to gateway
-                uint8_t ack_payload[] = {MSG_TYPE_ACK, NODE_ID};
+                uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, NODE_ID};
                 radio.transmit(ack_payload, 2);
                 
                 needs_initialisation = false;
