@@ -1,21 +1,14 @@
-#ifndef SYSTEM_UTILS_H
-#define SYSTEM_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <cstdint>
 
 #include "config.h"
 #include "debug_macros.h"
 #include "encode_payload.h"
+#include "protocol.h"
 #include "sensor_logic.h"
 #include "utils.h"
-
-/**
- * @brief Structure for gateway synchronization clearance
- */
-typedef struct {
-    uint8_t msg_type;
-    uint32_t time_stamp;
-} clearance_msg;
 
 /**
  * @brief Logic for handling radio status codes.

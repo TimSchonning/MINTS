@@ -4,6 +4,7 @@
 #include "config.h"
 #include "debug_macros.h"
 #include "encode_payload.h"
+#include "protocol.h"
 #include "sensor_logic.h"
 #include "utils.h"
 
@@ -15,7 +16,6 @@ const uint32_t BAUD             = 115200;
 const uint32_t TIME_TO_SLEEP_S  = 524;      //make lowercase, will be calc at runtime
 
 const uint32_t MEASUREMENT_WINDOW_S  = 600;
-
 
 //// Particle config
 // ps = particle sensor
@@ -45,10 +45,6 @@ const int PIN_DIO1 = 0;
 
 //// Initialisation config
 const uint8_t MAX_ID_ATTEMPTS    = 0;
-const uint8_t MSG_TYPE_INIT_PING = 0x4;
-const uint8_t MSG_TYPE_ID_ACK    = 0x8;
-const uint8_t MSG_TYPE_ID_ACK    = 0x10;
-
 
 //// ESP specific
 RTC_DATA_ATTR bool needs_initialisation = true;

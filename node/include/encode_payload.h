@@ -7,17 +7,9 @@
 #include "config.h"
 #include "debug_macros.h"
 #include "encode_payload.h"
+#include "protocol.h"
 #include "sensor_logic.h"
 #include "utils.h"
-
-/**
- * @brief Stores the results as a sendable LoRa payload.
- */
-typedef struct {
-    uint8_t id;
-    uint8_t pm10, pm25;
-    uint16_t noise_peak;
-} payload_t;
 
 /**
  * @brief  Returns the encoded payload.
