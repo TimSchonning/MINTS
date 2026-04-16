@@ -60,14 +60,33 @@ void initialise_node() {
                 radio.transmit(ack_payload, 2);
                 
                 needs_initialisation = false;
+                //standby - loop till cleared
             }
         }
     }
 }
 
-void standby_mode() {
-    
+bool standby_mode() {
     // wait for clearance from gateway
     // init "boot_count" to appropriate val / calc it based on the time received
     // disable radio
+
+    typedef struct {
+        uint8_t msg_type;
+        uint32_t time_stamp;
+    } clearance_msg;
+
+    clearance_msg clearance;
+    state = radio.receive(clearance, 2); // need to assure no time-out
+
+    if (!error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
+        
+        // calc bootcount()
+        // init bootcount()
+        // calc sleeptime till next windoow
+        // disable radio
+        // sleep to closest window
+        DEBUG_PRINT("Assigned Node ID: ");
+        DEBUG_PRINTLN(node_id);
+    }
 }
