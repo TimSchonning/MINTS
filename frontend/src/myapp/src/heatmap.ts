@@ -1,7 +1,7 @@
 // functions to edit heatmap
 import { writable } from 'svelte/store';
 import type { FeatureCollection, Point } from 'geojson';
-import { get_sensor_type_info, load_sensor_types, timelapse_controller } from './map_controller';
+import { get_sensor_type_info, load_sensor_types, shown_date, timelapse_controller } from './map_controller';
 
 type Heatpoint = {
     lat: number;
@@ -99,19 +99,10 @@ export async function show_heatmap(date: Date): Promise<void> {
 
 export function addLayer(item: string): void {
     sens_types.push(item);
-    show_heatmap(new Date());
+    show_heatmap(shown_date);
 }
 
 export function removeLayer(item: string): void {
     sens_types.splice(sens_types.indexOf(item), 1);
-    show_heatmap(new Date());
+    show_heatmap(shown_date);
 }
-
-export function startAnimation(): void {
-    // stub
-}
-
-export function pauseAnimation(): void {
-    // stub
-}
-

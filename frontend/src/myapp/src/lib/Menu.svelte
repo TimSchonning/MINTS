@@ -5,17 +5,17 @@
 		{
 			name: 'Noise',
 			displayText: 'Noise',
-			checked: false
+			checked: true
 		},
 		{
 			name: 'PM2.5',
 			displayText: 'PM2.5',
-			checked: false
+			checked: true
 		},
 		{
 			name: 'PM10',
 			displayText: 'PM10',
-			checked: false
+			checked: true
 		}
 	];
 
