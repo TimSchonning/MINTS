@@ -40,8 +40,13 @@
 		onmousedown={() => (showTooltip = true)}
 		onmouseup={() => (showTooltip = false)}
 	/>
-
-	<!-- <p>Selected Time: <strong>{displayTime}</strong></p> -->
+	<div class="slider-ticks">
+		{#each Array(24) as _, i}
+			<span class="tick" style="left: {(i * 60 / 1425) * 100}%">
+				{i}:00
+			</span>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -94,5 +99,24 @@
 		transition:
 			opacity 0.2s ease,
 			transform 0.2s ease;
+	}
+	.slider-ticks {
+  		display: flex;
+  		justify-content: space-between;
+  		padding: 0 10px;
+	}
+
+	.slider-ticks span {
+  		display: flex;
+  		justify-content: center;
+  		width: 1px;
+  		height: 4px;
+  		background: #d3d3d3;
+  		line-height: 20px;
+		font-size: 12px;
+	}
+	input[type="range"] {
+    	width: 100%;
+    	margin: 0;
 	}
 </style>

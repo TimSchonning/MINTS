@@ -14,7 +14,7 @@
 		<Menu />
 	</div>
 	<div
-		style="position: fixed; bottom: 20px; left: 20px; right: 20px; z-index: 10; background-color: rgba(255, 255, 255, 1); opacity: 0.8; height: 40px; border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; gap: 20px; align-items: center;"
+		style="position: fixed; bottom: 5px; left: 20px; right: 20px; z-index: 10; background-color: rgba(255, 255, 255, 1); opacity: 0.8; height: auto; box-sizing: border-box; border-radius: 30px; padding: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; gap: 20px; align-items: center;"
 	>
 		<!-- <div style="position: relative; z-index: 11;">
 			<Playbutton />
