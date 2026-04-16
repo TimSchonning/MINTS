@@ -16,7 +16,6 @@ uint8_t     ps_sensor_buf[30];
 ps_state_t  ps_state;
 ps_result_t ps_result;
 
-
 ns_state_t  ns_state;
 ns_result_t ns_result;
 

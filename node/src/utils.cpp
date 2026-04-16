@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <RadioLib>
+#include <math.h>
 
 #include "config.h"
 #include "debug_macros.h"
@@ -27,6 +28,32 @@ void power_down_radios() {
     btStop();
     esp_wifi_stop();
     esp_bt_controller_disable();
+}
+
+bool standby_mode() {
+    clearance_msg clearance;
+    state = radio.receive(clearance, 2);
+
+    if (!error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
+        radio.sleep();
+        
+        //// Initialises the boot count
+        uint32_t now_ms                 = clearance.time_stamp;
+        uint32_t measurement_windows_ms = MEASUREMENT_WINDOW_S * S_TO_mS;
+        uint32_t time_past_in_window_ms = now_ms % measurement_windows_ms;
+        uint32_t time_to_sleep_ms       = measurement_windows_ms - time_past_in_window_ms;
+        
+        boot_count = floor(now_ms / meas_win_ms);
+        DEBUG_PRINT("[STANDBY] Init boot_count set to: ");
+        DEBUG_PRINTLN(boot_count);
+
+        DEBUG_PRINT("[STANDBY] Will sleep for: ");
+        DEBUG_PRINTLN(time_to_sleep_ms);
+
+        //// Sleeps till the closest window
+        esp_sleep_enable_timer_wakeup(sleep_time_ms);
+        esp_deep_sleep_start();
+    }
 }
 
 void initialise_node() {
@@ -60,33 +87,10 @@ void initialise_node() {
                 radio.transmit(ack_payload, 2);
                 
                 needs_initialisation = false;
-                //standby - loop till cleared
+                
+                //// Enters standby mode
+                standby_mode();
             }
         }
-    }
-}
-
-bool standby_mode() {
-    // wait for clearance from gateway
-    // init "boot_count" to appropriate val / calc it based on the time received
-    // disable radio
-
-    typedef struct {
-        uint8_t msg_type;
-        uint32_t time_stamp;
-    } clearance_msg;
-
-    clearance_msg clearance;
-    state = radio.receive(clearance, 2); // need to assure no time-out
-
-    if (!error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
-        
-        // calc bootcount()
-        // init bootcount()
-        // calc sleeptime till next windoow
-        // disable radio
-        // sleep to closest window
-        DEBUG_PRINT("Assigned Node ID: ");
-        DEBUG_PRINTLN(node_id);
     }
 }

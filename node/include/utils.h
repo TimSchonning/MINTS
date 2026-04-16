@@ -9,6 +9,11 @@
 #include "sensor_logic.h"
 #include "utils.h"
 
+typedef struct {
+    uint8_t msg_type;
+    uint32_t time_stamp;
+} clearance_msg;
+
 /**
  * @brief Logic for handling radio status codes.
  * @param state The return code from the radio library.
