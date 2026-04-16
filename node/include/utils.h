@@ -34,6 +34,7 @@ void power_down_radios();
  * @brief Initializes the LoRa radio and performs a handshake with the gateway
  * to receive a unique node ID.
  * @note Sets init_flag to false upon success.
+ * @note Is blocking.
  */
 void initialise_node();
 
