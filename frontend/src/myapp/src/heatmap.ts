@@ -35,11 +35,17 @@ export const Data = writable<Heatpoint[]>([]);
 
 export const testData = writable<Heatpoint[]>([
     //   { lat: 59.843905, lng: 17.635488, intensity: 1 },
-    { lat: 59.844905, lng: 17.636488, intensity: 40 },
-    { lat: 59.845905, lng: 17.637488, intensity: 60 },
-    { lat: 59.846905, lng: 17.638488, intensity: 80 }
-]);
+    { lat: 59.844905, lng: 17.636488, intensity: 0.1 },
+    { lat: 59.844905, lng: 17.636488, intensity: 0.1 },
 
+
+]);
+const list = [];
+for (let index = 0; index < 50; index++) {
+    const element = { lat: 59.844905 + 0.0005 * index, lng: 17.636488, intensity: (0.02 * index) };
+    list.push(element);
+}
+testData.set(list);
 
 function normalize_weight(intensity: number, lowval: number, highval: number): number {
     // returns value between 0-100, where 0 is low and 100 is high

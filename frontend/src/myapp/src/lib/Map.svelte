@@ -34,11 +34,11 @@
 				source: 'heat',
 				maxzoom: 20,
 				paint: {
-					'heatmap-weight': ['get', 'intensity'],
-					'heatmap-radius': 20
+					'heatmap-weight': ['interpolate', ['linear'], ['get', 'intensity'], 0, 0, 1, 4],
+					'heatmap-radius': ['interpolate', ['linear'], ['get', 'intensity'], 0, 20, 1, 50]
 				}
 			});
-			Data.subscribe((data) => {
+			testData.subscribe((data) => {
 				const source = map.getSource('heat') as mapboxgl.GeoJSONSource;
 				if (source) {
 					source.setData(toGeoJSON(data));

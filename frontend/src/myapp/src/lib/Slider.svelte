@@ -22,7 +22,7 @@
 
 <div class="slidecontainer">
 	{#if showTooltip}
-		<div class="tooltip" style="left: {sliderMinutes / 1425 * 100}%">
+		<div class="tooltip" style="left: {(sliderMinutes / 1425) * 100}%">
 			{displayTime}
 		</div>
 	{/if}
@@ -35,10 +35,10 @@
 		step={time_resolution}
 		bind:value={sliderMinutes}
 		class="slider"
-		onmouseenter={() => showTooltip = true}
-    	onmouseleave={() => showTooltip = false}
-    	onmousedown={() => showTooltip = true}
-    	onmouseup={() => showTooltip = false}
+		onmouseenter={() => (showTooltip = true)}
+		onmouseleave={() => (showTooltip = false)}
+		onmousedown={() => (showTooltip = true)}
+		onmouseup={() => (showTooltip = false)}
 	/>
 
 	<!-- <p>Selected Time: <strong>{displayTime}</strong></p> -->
@@ -76,22 +76,23 @@
 
 	/* Tooltip */
 	.tooltip {
-    	position: absolute;
-    	top: -35px;
-    	transform: translateX(-50%);
+		position: absolute;
+		top: -35px;
+		transform: translateX(-50%);
 
-    	padding: 4px 8px;
-    	border-radius: 8px;
+		padding: 4px 8px;
+		border-radius: 8px;
 
-    	font-size: 12px;
-    	font-weight: 500;
+		font-size: 12px;
+		font-weight: 500;
 
-    	background: rgba(0, 0, 0, 0.75);
-    	color: white;
+		background: rgba(0, 0, 0, 0.75);
+		color: white;
 
-    	pointer-events: none;
+		pointer-events: none;
 
-    	transition: opacity 0.2s ease, transform 0.2s ease;
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease;
 	}
-
 </style>
