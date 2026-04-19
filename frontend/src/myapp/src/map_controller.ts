@@ -38,7 +38,6 @@ export async function load_interval(interval: Interval): Promise<Station[]> {
 }
 
 export function get_sensor_types(): SensorType[] {
-    console.log(sensor_type_map.size);
     return sensor_type_map.values().toArray();
 }
 
