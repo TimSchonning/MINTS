@@ -52,7 +52,7 @@ export class Station {
 
         const resultMap: Map<string, number> = new Map();
         accumulator.forEach((data, sensorType) => {
-            resultMap.set(sensorType, data.sum / data.count);
+            resultMap.set(sensorType, Math.round((data.sum / data.count) * 100) / 100);
         });
 
         return resultMap;
