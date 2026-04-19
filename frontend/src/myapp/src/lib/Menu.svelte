@@ -1,23 +1,14 @@
 <script lang="ts">
 	import { addLayer, removeLayer } from '../heatmap';
-
-	let menuItems = [
-		{
-			name: 'Noise',
-			displayText: 'Noise',
+	import { get_sensor_types } from '../map_controller';
+	const sensor_types = get_sensor_types();
+	let menuItems = sensor_types.map((sensor_type) => {
+		return {
+			name: sensor_type.sensor_id,
+			displayText: sensor_type.sensor_id,
 			checked: true
-		},
-		{
-			name: 'PM2.5',
-			displayText: 'PM2.5',
-			checked: true
-		},
-		{
-			name: 'PM10',
-			displayText: 'PM10',
-			checked: true
-		}
-	];
+		};
+	});
 
 	let showMenu = $state(true);
 	let content;
