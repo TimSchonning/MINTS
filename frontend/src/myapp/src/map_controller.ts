@@ -5,7 +5,7 @@ import { TimeLapse } from "./timelapse";
 
 export const shown_date = new SvelteDate();
 
-export const time_resolution = 15;
+export const time_resolution = 60;
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
 export const timelapse_controller: TimeLapse = new TimeLapse();
