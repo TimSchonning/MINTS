@@ -23,4 +23,8 @@ export class SensorType {
     public toString() {
         return `Sensor type: ${this.sensor_id} [${this.low}-${this.high}]`;
     }
+
+    public calc_severity(value: number): number {
+        return Math.max((value - this.low) / (this.high - this.low), 0);
+    }
 }

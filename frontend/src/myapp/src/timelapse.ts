@@ -44,7 +44,7 @@ export class TimeLapse {
         return this.loaded_interval.contains_date(bounds.start) && this.loaded_interval.contains_date(bounds.end);
     }
 
-    private is_loading_data(): boolean {
+    public is_loading_data(): boolean {
         return this.loading_promise != null;
     }
 
