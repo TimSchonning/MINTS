@@ -9,8 +9,8 @@
 #include "sensor_logic.h"
 #include "utils.h"
 
-bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result, uint8_t id) {
-    if (!payload || !ps_result || !ns_result || !id) return false;
+bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result) {
+    if (!payload || !ps_result || !ns_result) return false;
 
     if (buffering_counter >= BUFFERING_THRESHOLD) return false;
     
@@ -18,7 +18,7 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
     payload->node_id    = id;
     payload->reading_id = boot_count;
     
-    uint16_t index = buffering_counter * BUFFERING_THRESHOLD;
+    uint16_t index = buffering_counter * 4;
     
     payload->readings[index]     = (uint8_t)ps_result->pm10;
     payload->readings[index + 1] = (uint8_t)ps_result->pm25;
@@ -37,7 +37,7 @@ bool transmit_payload() {
 
     uint8_t counter = 0;
     while (counter < MAX_TX_RETRIES) {
-        state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
+        state = radio.transmit(&payload, sizeof(payload_t));
         error_handler(state, "LoRa payload transmission");
         
         DEBUG_PRINTLN("[SUCCESS] Payload sent, waiting for ACK");
