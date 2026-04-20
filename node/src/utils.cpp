@@ -99,7 +99,7 @@ void initialise_node() {
         if (!error_handler(state, "[ERROR] LoRa_init failed to send join msg to the gateway")) {
             //// Waits the for the join ack from the gateway
             msg_ack_t msg_join_ack;
-            state = radio.receive(msg_join_ack, sizeof(msg_join_ack));
+            state = radio.receive(&msg_join_ack, sizeof(msg_join_ack));
     
             if (msg_join_ack.ack_for == MSG_TYPE_JOIN_REQ &&
                 !error_handler(state, "[ERROR] LoRa_init failed to receive join ack from the gateway")) {
@@ -121,14 +121,17 @@ void initialise_node() {
             }
         }
     }
+    DEBUG_PRINTLN("[ERROR] Max amount of id attempts reached. Reboot node.");
 }
 
 bool sleep_particle_sensor() {
     // TODO: set the SET_PIN of the sensor to low.
     // TODO: return success/fail
+    return true;
 }
 
 bool sleep_noise_sensor() {
     // TODO: set the SET_PIN of the sensor to low.
     // TODO: return success/fail
+    return true;
 }
