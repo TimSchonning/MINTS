@@ -39,7 +39,7 @@ static bool standby_mode() {
     uint8_t type = clearance.type;
 
     if (type == MSG_TYPE_CLEARANCE &&
-        !error_handler(state, "[STANDBY] LoRa_init failed to receive standby clearance from gateway")) {
+        !error_handler(state, "[ERROR] LoRa_init failed to receive standby clearance from gateway")) {
 
         // ACKs the standby clearance
         msg_ack_t msg_clearance_ack;
@@ -48,7 +48,7 @@ static bool standby_mode() {
 
         state = radio.transmit(msg_clearance_ack, sizeof(msg_ack_t));
         
-        if (!error_handler(state, "[STANDBY] Failed to ack standby clearance")) {
+        if (!error_handler(state, "[ERROR] Failed to ack standby clearance")) {
             radio.sleep();
 
             //// Initialises the boot count
@@ -92,17 +92,17 @@ void initialise_node() {
         state = radio.transmit(&msg_join_req, sizeof(msg_join_req));
 
         id_attempts++;
-+
+
         DEBUG_PRINT("[INIT] Join request attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
 
-        if (!error_handler(state, "[INIT] LoRa_init failed to send join msg to the gateway")) {
+        if (!error_handler(state, "[ERROR] LoRa_init failed to send join msg to the gateway")) {
             //// Waits the for the join ack from the gateway
             msg_ack_t msg_join_ack;
             state = radio.receive(msg_join_ack, sizeof(msg_join_ack));
     
             if (msg_join_ack.ack_for == MSG_TYPE_JOIN_REQ &&
-                !error_handler(state, "[INIT] LoRa_init failed to receive join ack from the gateway")) {
+                !error_handler(state, "[ERROR] LoRa_init failed to receive join ack from the gateway")) {
                 
                 // Assigns the ID
                 node_id = msg_join_ack.node_id;
