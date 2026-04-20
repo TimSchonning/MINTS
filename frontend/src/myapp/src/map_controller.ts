@@ -1,7 +1,14 @@
-import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, Station } from "@my-app/database";
-import type { SensorType } from "../../../../database/src/classes/sensor_type";
+import { get_all_sensor_types, get_all_stations, get_measurements_in_interval, Interval, Measurement, SensorType, Station } from "@my-app/database";
+import { SvelteDate } from "svelte/reactivity";
+import { verifySignedIn } from "../../../../database/src/database_connection";
+import { TimeLapse } from "./timelapse";
+
+export const shown_date = new SvelteDate();
+
+export const time_resolution = 60;
 
 export const sensor_type_map: Map<string, SensorType> = await load_sensor_types();
+export const timelapse_controller: TimeLapse = new TimeLapse();
 
 export async function load_interval(interval: Interval): Promise<Station[]> {
     const [stations, measurements] = await Promise.all([
@@ -30,11 +37,16 @@ export async function load_interval(interval: Interval): Promise<Station[]> {
     return stations;
 }
 
+export function get_sensor_types(): SensorType[] {
+    return sensor_type_map.values().toArray();
+}
+
 export function get_sensor_type_info(sensor_type_id: string): SensorType | undefined {
     return sensor_type_map.get(sensor_type_id);
 }
 
-async function load_sensor_types() {
+export async function load_sensor_types() {
+    await verifySignedIn();
     const sensor_types = await get_all_sensor_types();
     const map = new Map<string, SensorType>();
     sensor_types.forEach((sensor_type) => {

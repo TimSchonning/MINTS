@@ -82,8 +82,8 @@ export async function delete_measurement(measurement_id: string) {
 export async function get_measurements_in_interval(interval: Interval) {
     try {
         const q = query(collection(db, MEASUREMENT_COLLECTION),
-            where("timestamp", ">=", interval.d1),
-            where("timestamp", "<=", interval.d2));
+            where("timestamp", ">=", interval.start),
+            where("timestamp", "<=", interval.end));
         const snapshot = await getDocs(q);
         let measurements = snapshot.docs.map((doc) => Measurement.fromDocument(doc));
         return measurements;

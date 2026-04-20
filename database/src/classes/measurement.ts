@@ -14,7 +14,7 @@ export class Measurement {
 
     public static fromDocument(doc: QueryDocumentSnapshot): Measurement {
         const data = doc.data();
-        let measurement = new Measurement(doc.id, data["value"], data["timestamp"]);
+        let measurement = new Measurement(data["sensor_type_id"], data["value"], data["timestamp"]);
         measurement.station_id = data["station_id"];
         return measurement;
     }

@@ -7,7 +7,7 @@
                 "    \"${workspaceFolder}/**\",",
                 "    \"${workspaceFolder}/RadioLib/src\"",
                 "],",
-                "${workspaceFolder}/node/include"
+                "${workspaceFolder}/gateway/RadioLib/src"
             ],
             "defines": [
                 "_DEBUG",
@@ -17,7 +17,7 @@
                 "RADIOLIB_LOW_LEVEL"
             ],
             "windowsSdkVersion": "10.0.19041.0",
-            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
+            "compilerPath": "/usr/bin/g++-13",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-gcc-x64"

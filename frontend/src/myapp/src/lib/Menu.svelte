@@ -1,23 +1,14 @@
 <script lang="ts">
 	import { addLayer, removeLayer } from '../heatmap';
-
-	let menuItems = [
-		{
-			name: 'Noise',
-			displayText: 'Noise',
-			checked: false
-		},
-		{
-			name: 'PM2.5',
-			displayText: 'PM2.5',
-			checked: false
-		},
-		{
-			name: 'PM10',
-			displayText: 'PM10',
-			checked: false
-		}
-	];
+	import { get_sensor_types } from '../map_controller';
+	const sensor_types = get_sensor_types();
+	let menuItems = sensor_types.map((sensor_type) => {
+		return {
+			name: sensor_type.sensor_id,
+			displayText: sensor_type.sensor_id,
+			checked: true
+		};
+	});
 
 	let showMenu = $state(true);
 	let content;
@@ -35,7 +26,9 @@
 </script>
 
 <div class="menu-wrapper">
-	<button class="content" onclick={handleClick}> menu </button>
+	<button class="content" onclick={handleClick}
+		>{showMenu ? 'Close filter selection' : 'Open filter selection'}
+	</button>
 
 	<div class="navbar {showMenu ? 'open' : ''}">
 		<ul>
