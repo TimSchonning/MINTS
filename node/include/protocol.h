@@ -26,8 +26,9 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
-    uint8_t pm10, pm25;
-    uint16_t noise_peak;
+    uint8_t readings[BUFFERING_THRESHOLD * 3] //x3 due to pm, pm and noise
+    // uint8_t pm10, pm25;
+    // uint16_t noise_peak;
 } payload_t;
 
 /**
