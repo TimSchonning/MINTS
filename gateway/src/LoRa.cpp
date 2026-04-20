@@ -1,7 +1,7 @@
 /**
  * The code in this file is to be copy-and-pasted to the Arduino IDE.
  * Functions like Serial.print will not work without the Arduino IDE.
- * TODO: This file will later be modified to run C++ directly on the Raspberry PI gateway.
+ * TODO: This file will later be merged with gatewayLogic.cpp, and modified to run C++ directly on the Raspberry PI gateway.
  */
 
 #include <RadioLib.h>

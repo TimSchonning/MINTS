@@ -6,85 +6,85 @@
  */
 
 #include <iostream>
-#include <windows.h>
 #include <string>
 #include "../include/DataPacket.h"
+#include "../include/protocol.h"
+#include "../gateway/RadioLib/src/modules/SX126x/SX1262.h"
+#include "../gateway/RadioLib/src/hal/RPi/PiHal.h"
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
-int main()
-{
-    /**
-     * Open the COM port - Make sure COM5 matches your current setup.
-     * If unsure, check which port Arduino IDE is talking through.
-     */
-    HANDLE hSerial = CreateFileW(L"\\\\.\\COM5", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+int CS = 40, DIO1 = 36, DIO4 = 31, RST = 12;
+/**
+ * Other pins, unsure if needed:
+ * int MOSI = 19;
+ * int MISO = 21;
+ * int BUSY = 38;
+ */
 
-    if (hSerial == INVALID_HANDLE_VALUE)
-    {
-        /**
-         * If correct port is chosen and you get access denied, check so nothing else is reading from your port.
-         * E.g. close serial monitor in Arduino IDE, wait for Arduino code upload to finish, etc.
-         */
-        std::cerr << "Error: could not open COM port." << std::endl;
-        return 1;
+float FREQ = 868.1; // Frequency
+float BW = 125.0;   // Bandwidth
+int SF = 7;         // Spreading Factor
+int CR = 8;         // Coding Rate
+int SYNC = 0x12;    // Sync word
+int PWR = 10;       // Power
+int PRE = 8;        // Preamble
+int BAUD = 115200;  // Baud
+
+PiHal* hal = new PiHal();
+Module* mod = new Module(hal, CS, DIO1, RST, DIO4);
+SX1262 radio(mod);
+
+void LoRaInit() {
+    int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE);
+
+    if (state != RADIOLIB_ERR_NONE) {
+        std::cout << "Initialisation failed, error code: \n" 
+                  << "For error codes, see: https://jgromes.github.io/RadioLib/group__status__codes.html"
+                  << (int)state << std::endl; // Maybe add some error handling?
     }
+}
 
-    /**
-     * Configures the serial port (Windows only)
-     * Enables communication with an Arduino over UART.
-     */
-    DCB dcbSerialParams = {0};
-    dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-    GetCommState(hSerial, &dcbSerialParams);
-    dcbSerialParams.BaudRate = CBR_115200;
-    dcbSerialParams.ByteSize = 8;
-    dcbSerialParams.StopBits = ONESTOPBIT;
-    dcbSerialParams.Parity = NOPARITY;
-    SetCommState(hSerial, &dcbSerialParams);
+bool IdAssignment() {
+    uint8_t id = 1;     //TODO: ID from db. 1 is placeholder.
+    // TODO: db error handling
+    
+    msg_ack_t idReqACK;
+    idReqACK.id = id;  // The new ID!
+    idReqACK.ack_for = MSG_TYPE_JOIN_REQ;
+
+    int state = radio.transmit(idReqACK, sizeof(msg_ack_t));
+    //error_handler(state);  // TODO: error handling
+    return (state == RADIOLIB_ERR_NONE); // If succeeded return true
+}
+
+int main() // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
+{
+    LoRaInit();
 
     payload_t packet;
-    DWORD bytesRead;
+
+    std::cout << "Gateway started..." << std::endl;
 
     while (true)
     {
-        uint8_t syncCheck = 0; // Use uint8_t for single byte reads
+        int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
-        if (ReadFile(hSerial, &syncCheck, 1, &bytesRead, NULL) && bytesRead > 0)
-        {
-            static uint32_t window = 0; // Sliding window
-            window = (window << 8) | (syncCheck & 0xFF);
-
-            // Checks for Big-Endian or Little-Endian
-            if (window == 0xDEADBEEF || window == 0xEFBEADDE)
-            {
-                // Removes the signature from the packet
-                uint8_t *remainingData = (uint8_t *)&packet + sizeof(uint32_t);
-                size_t remainingSize = sizeof(packet) - sizeof(uint32_t);
-
-                if (ReadFile(hSerial, remainingData, (DWORD)remainingSize, &bytesRead, NULL))
-                {
-                    if (toPython)
-                    {
-                        // Converts received message to CSV
-                        std::cout << (int)packet.nodeID << ","
-                                  << (int)packet.pm10 << ","
-                                  << (int)packet.pm25 << ","
-                                  << (int)packet.noise_peak << std::endl;
-                        std::cout.flush();
-                    }
-                    else
-                    {
-                        // Prints values directly to the terminal (for debugging)
-                        std::cout << "Node: " << (int)packet.nodeID
-                                  << " | PM10: " << (int)packet.pm10
-                                  << " | PM25: " << (int)packet.pm25
-                                  << " | Peak Noise: " << (int)packet.noise_peak << std::endl;
-                    }
-                }
-                // Reset window
-                window = 0;
+        if (state == RADIOLIB_ERR_NONE) {
+            if (packet.signature == 0xDEADBEEF) {
+                std::cout << (int)packet.nodeID << ","
+                          << (int)packet.pm10 << ","
+                          << (int)packet.pm25 << ","
+                          << (int)packet.noise_peak << std::endl;
+                std::cout.flush();                              
             }
+        } else if (state == RADIOLIB_ERR_RX_TIMEOUT){
+            // No packet received in this polling window, maybe add some kind of sleep?
+            // Normal behaviour btw
+        } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
+            std::cout << "CRC Error!" << std::endl;
+        } else {
+            std::cout << "Unknown error: " << (int)state << std::endl;
         }
     }
 
