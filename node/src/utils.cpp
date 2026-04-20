@@ -84,7 +84,7 @@ void initialise_node() {
         state = radio.transmit(&msg_join_req, sizeof(msg_join_req));
 
         id_attempts++;
-
++
         DEBUG_PRINT("[INIT] Join request attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
 
@@ -102,9 +102,9 @@ void initialise_node() {
                 DEBUG_PRINTLN(node_id);
 
                 // ACK the gateway
-                msg_join_ack.node_id = node_id;
-                msg_join_ack.ack_for = MSG_TYPE_JOIN_REQ;
-                radio.transmit(msg_join_ack, sizeof(msg_join_ack));
+                // msg_join_ack.node_id = node_id;
+                // msg_join_ack.ack_for = MSG_TYPE_JOIN_REQ;
+                // radio.transmit(msg_join_ack, sizeof(msg_join_ack));
                 
                 needs_initialisation = false;
                 
