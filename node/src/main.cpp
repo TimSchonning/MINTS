@@ -49,7 +49,9 @@ void setup() {
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP_S * S_TO_uS);
+    // calculates the sleep time by subtracting the designated sleep time with the time it took to reach this line
+    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - (millis() * 1000UL);
+    esp_sleep_enable_timer_wakeup(sleep_time_us);
     esp_deep_sleep_start();
 }
 
