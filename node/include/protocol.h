@@ -26,7 +26,8 @@ const uint8_t MSG_TYPE_START_DOWNLINK   = 0xF;
  */
 typedef struct __attribute__((packed)) {
     uint8_t type;
-    uint8_t id;
+    uint8_t node_id;
+    uint8_t reading_id;     // locally unique
     uint8_t pm10, pm25;
     uint16_t noise_peak;
 } payload_t;
