@@ -46,7 +46,12 @@ void setup() {
     
     //// TODO: Power down sensors
     //// send data
-    transmit_payload();
+    if (buffering_counter < BUFFERING_THRESHOLD) {
+        buffering_counter++;
+    } else {
+        encode_payload(&payload, &ps_result, &ns_result, node_id);
+        transmit_payload();
+    }
 
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");

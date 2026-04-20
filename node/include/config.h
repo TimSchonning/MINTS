@@ -50,5 +50,7 @@ const uint8_t MAX_ID_ATTEMPTS    = 0;
 RTC_DATA_ATTR bool needs_initialisation = true;
 RTC_DATA_ATTR int  boot_count           = 0;
 RTC_DATA_ATTR int  node_id              = 0;
-RTC_DATA_ATTR int  MAX_PAYLOAD_TRANSMISSION_ATTEMPTS = 5;
+RTC_DATA_ATTR int  MAX_TX_RETRIES       = 5;
+RTC_DATA_ATTR int  BUFFERING_THRESHOLD  = 4;
+RTC_DATA_ATTR int  buffering_counter    = 0;
 #endif

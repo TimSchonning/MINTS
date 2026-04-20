@@ -22,9 +22,9 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
 
 /**
  * @brief High-level function.
- * Initializes radio, encodes current data, and transmits via LoRa.
+ * Initializes radio and transmits via LoRa.
  * @return Success indicator
  */
-bool transmit_payload();
+bool transmit_payload(int payload);
 
 #endif
