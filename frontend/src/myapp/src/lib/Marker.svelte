@@ -1,13 +1,18 @@
-<script lang="ts"></script>
+<script lang="ts">
+	import RadioReceiver from '@lucide/svelte/icons/radio-receiver';
+</script>
 
-<div class="marker"></div>
+<div class="marker">
+	<RadioReceiver size={25} color="black"></RadioReceiver>
+</div>
 
 <style>
 	.marker {
-		background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
-		background-size: cover;
-		width: 30px;
-		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 25px;
+		height: 25px;
 		border-radius: 50%;
 		cursor: pointer;
 	}
