@@ -39,7 +39,7 @@ static bool standby_mode() {
     uint8_t type = clearance.type;
 
     if (type == MSG_TYPE_CLEARANCE &&
-        !error_handler(state, "[ERROR] LoRa_init failed to receive standby clearance from gateway")) {
+        !error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
 
         // ACKs the standby clearance
         msg_ack_t msg_clearance_ack;
@@ -48,7 +48,7 @@ static bool standby_mode() {
 
         state = radio.transmit(msg_clearance_ack, sizeof(msg_ack_t));
         
-        if (!error_handler(state, "[ERROR] Failed to ack standby clearance")) {
+        if (!error_handler(state, "Failed to ack standby clearance")) {
             radio.sleep();
 
             //// Initialises the boot count
