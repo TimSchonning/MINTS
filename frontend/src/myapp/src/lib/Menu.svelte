@@ -26,7 +26,9 @@
 </script>
 
 <div class="menu-wrapper">
-	<button class="content" onclick={handleClick}> menu </button>
+	<button class="content" onclick={handleClick}
+		>{showMenu ? 'Close filter selection' : 'Open filter selection'}
+	</button>
 
 	<div class="navbar {showMenu ? 'open' : ''}">
 		<ul>
