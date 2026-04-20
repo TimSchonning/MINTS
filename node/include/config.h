@@ -9,33 +9,33 @@
 #include "utils.h"
 
 //// General config
-const uint64_t S_TO_uS          = 1000000;
-const uint64_t S_TO_mS          = 1000;
-const uint8_t  CPU_FREQ_MHZ     = 10;
-const uint32_t BAUD             = 115200;
-const uint32_t TIME_TO_SLEEP_S  = 524;      //make lowercase, will be calc at runtime
+const uint64_t S_TO_uS                  = 1000000;
+const uint64_t S_TO_mS                  = 1000;
+const uint32_t BAUD                     = 115200;
+RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ     = 10;
+RTC_DATA_ATTR uint32_t TIME_TO_SLEEP_S  = 524;      //make lowercase, will be calc at runtime
 
-const uint32_t MEASUREMENT_WINDOW_S  = 600;
+RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 600;
 
 //// Particle config
 // ps = particle sensor
 // ns = noise sensor
-const uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" sufficient heat-up
-const uint16_t PS_SAMPLE_TIME_mS = 0;   // must be > 1
-const uint16_t PS_TARGET_SAMPLES = 0;
+RTC_DATA_ATTR uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" sufficient heat-up
+RTC_DATA_ATTR uint16_t PS_SAMPLE_TIME_mS = 0;   // must be > 1
+RTC_DATA_ATTR uint16_t PS_TARGET_SAMPLES = 0;
 
-const uint16_t NS_SAMPLE_TIME_mS = 0;   // must be > 1
-const uint8_t  NS_PIN            = 0;
+RTC_DATA_ATTR uint16_t NS_SAMPLE_TIME_mS = 0;   // must be > 1
+const uint8_t  NS_PIN                    = 0;
 
 //// LoRa config
-const float    FREQUENCY        = 868.1;
-const float    BANDWIDTH        = 62.5;
-const uint8_t  SPREADING_FACTOR = 12;
-const uint8_t  CODING_RATE      = 8;
-const uint8_t  SYNC_WORD        = 0x12;
-const int8_t   POWER            = 14;
-const uint16_t PREAMBLE_LEN     = 8;
-const uint8_t  GAIN             = 0;
+RTC_DATA_ATTR float    FREQUENCY        = 868.1;
+RTC_DATA_ATTR float    BANDWIDTH        = 62.5;
+RTC_DATA_ATTR uint8_t  SPREADING_FACTOR = 12;
+RTC_DATA_ATTR uint8_t  CODING_RATE      = 8;
+RTC_DATA_ATTR uint8_t  SYNC_WORD        = 0x12;
+RTC_DATA_ATTR int8_t   POWER            = 14;
+RTC_DATA_ATTR uint16_t PREAMBLE_LEN     = 8;
+RTC_DATA_ATTR uint8_t  GAIN             = 0;
 
 // LoRa pins (check datasheet)
 const int PIN_NSS  = 0;
