@@ -1,47 +1,72 @@
 #include <Seeed_HM330X.h>
-#include <HM330X.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include <esp_bt.h>
 #include <SPI.h>
+#include <RadioLib.h>
 
-// Config
-// ps = particle sensor
-// ns = noise sensor
-const int NS_PIN =       A0;
-const int CPU_FREQ_MHZ = 10;     // Not sure if this will be a const
-
-const uint16_t PS_SAMPLE_TIME =    0;
-const uint16_t PS_TARGET_COUNT =   0;
-const uint16_t NS_SAMPLE_TIME =    0;
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
+#include "utils.h"
 
 HM330X particle_sensor;
-uint8_t ps_sensor_buf[30];     // particle sensor buffer
+uint8_t     ps_sensor_buf[30];
+ps_state_t  ps_state;
+ps_result_t ps_result;
 
-ps_state_t ps_state;
-ps_result_t ps_results;
+ns_state_t  ns_state;
+ns_result_t ns_result;
 
-ns_state_t ns_state;
-ns_result_t ns_results;
+RTC_DATA_ATTR payload_t payload;
+
+SX1276 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
 void setup() {
-    Serial.begin(115200);
-
+    power_down_radios();
     setCpuFrequencyMhz(CPU_FREQ_MHZ);
-    WiFi.mode(WIFI_OFF);
-    btStop();
-    esp_wifi_stop();
-    esp_bt_controller_disable();
+    DEBUG_BEGIN(BAUD);
 
-    Serial.println("Serial start");
-    if (particle_sensor.init()) {
-        Serial.println("PS INIT FAILED");
-        while (1);
+    //// Node initialisation
+    if (needs_initialisation) initialise_node();
+
+    // Initialise sensors
+    if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");
+    
+    //// Data collection
+    sample_noise_sensor();
+    if (sleep_noise_sensor()) error_handler(-1, "Failed to put the noise sensor to sleep");
+
+    sample_particle_sensor();
+    if (sleep_particle_sensor()) error_handler(-1, "Failed to put the particle sensor to sleep");
+
+    //// Update RTC
+    boot_count++;
+    
+    //// TODO: Power down sensors
+    //// updates the payload
+    encode_payload(&payload, &ps_result, &ns_result, node_id);
+    
+    //// send data
+    if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
+        buffering_counter++;
+    } else {
+        transmit_payload();
+        buffering_counter = 0;
+        memset(&payload, 0, sizeof(payload_t));
     }
+    
 
+    //// Sleep
+    DEBUG_PRINTLN("[END]   Entering sleep");
+    radio.sleep();
+    // calculates the sleep time by subtracting the designated sleep time with the time it took to reach this line
+    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - (millis() * 1000UL);
+    esp_sleep_enable_timer_wakeup(sleep_time_us);
+    esp_deep_sleep_start();
 }
 
 void loop() {
-
-    delay(5000);
+    // keep empty
 }

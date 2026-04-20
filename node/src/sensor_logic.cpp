@@ -1,8 +1,15 @@
 #include <Seeed_HM330X.h>
-#include <HM330X.h>
 #include <sensor_logic.h>
 
-uint8_t pm_average(uint8_t count, uint16_t input) {
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "sensor_logic.h"
+#include "utils.h"
+
+extern HM330X particle_sensor;
+
+static uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = input / count;
     if (average_pm > 255) {
         return 255;
@@ -11,7 +18,7 @@ uint8_t pm_average(uint8_t count, uint16_t input) {
     return (uint8_t)average_pm;
 }
 
-bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint16_t duration_ms, uint16_t target_samples) {
+bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples) {
     uint16_t sample_interval = duration_ms / target_samples;
     uint32_t now = millis();
     
@@ -24,7 +31,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint
     /* Sums the readings over the given time period */
     if (state->sample_count < target_samples) {
         if (now - state->last_sample_time >= sample_interval) {
-            if (sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
+            if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
 
                 state->sum_pm10  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
                 state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
@@ -37,13 +44,20 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* results, uint
     }
 
     /* Calculates the averages */
-    results->pm10 = pm_average(state->sample_count, state->sum_pm10);
-    results->pm25 = pm_average(state->sample_count, state->sum_pm25);
+    result->pm10 = pm_average(state->sample_count, state->sum_pm10);
+    result->pm25 = pm_average(state->sample_count, state->sum_pm25);
     state->is_active = false;
+
+    #ifdef DEBUG_MODE
+        Serial.println("Avg PM1 reading:   " + String(result->pm10));
+        Serial.println("Avg PM2.5 reading: " + String(result->pm25));
+        Serial.println("");
+    #endif
+
     return true;
 }
 
-bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t duration_ms) {
+bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms) {
     uint32_t now = millis();
     
     if (!state->is_active) {
@@ -68,11 +82,39 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* results, uint16_t 
 
     if (state->signal_max <= state->signal_min) {
         /* ie, no readings were made */
-        results->noise_peak = 0;
+        result->noise_peak = 0;
     } else {
-        results->noise_peak = state->signal_max - state->signal_min;
+        result->noise_peak = state->signal_max - state->signal_min;
     }
 
     state->is_active = false;
+
+    #ifdef DEBUG_MODE
+        Serial.println(__func__);
+        Serial.println("Peak to peak:      " + String(result->noise_peak));
+        Serial.println("");
+    #endif
+
     return true;
+}
+
+void sample_particle_sensor() {
+    DEBUG_PRINTLN("[START] Particle sensor sampling");
+    DEBUG_PRINT("Heating particle sensor for: ");
+    DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * S_TO_mS);
+
+    delay(PS_HEAT_UP_TIME_S * S_TO_mS);
+    bool is_done = false;
+    while (!ps_parse(ps_sensor_buf, &ps_state, &ps_result, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {
+        delay(1);
+    }
+}
+
+void sample_noise_sensor() {
+    DEBUG_PRINTLN("[START] Noise sensor sampling");
+
+    bool is_done = false;
+    while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_TIME_mS - 1)) {
+        delay(1);
+    }
 }

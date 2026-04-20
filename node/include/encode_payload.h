@@ -4,23 +4,27 @@
 #include <stdint.h>
 #include <encode_payload.h>
 
-
-/**
- * @brief Stores the results as a sendable LoRa payload.
- */
-typedef struct {
-    uint8_t id;
-    uint8_t pm10, pm25;
-    uint16_t noise_peak;
-} payload_t;
+#include "config.h"
+#include "debug_macros.h"
+#include "encode_payload.h"
+#include "protocol.h"
+#include "sensor_logic.h"
+#include "utils.h"
 
 /**
  * @brief  Returns the encoded payload.
  * @param  payload: the payload.
- * @param  pm_results: PM results.
- * @param  ns_results: Sound sensor results.
+ * @param  ps_result: PM results.
+ * @param  ns_result: Sound sensor results.
  * @return Success indicator
  */
-bool encode_payload(payload_t* payload, ps_result_t* pm_results, ns_result_t* ns_results);
+bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result);
+
+/**
+ * @brief High-level function.
+ * Initializes radio and transmits via LoRa.
+ * @return Success indicator
+ */
+bool transmit_payload(int payload);
 
 #endif

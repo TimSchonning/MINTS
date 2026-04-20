@@ -10,7 +10,6 @@
   For full API reference, see the GitHub Pages
   https://jgromes.github.io/RadioLib/
 */
-#define INITIATING_NODE
 // include the library
 #include <RadioLib.h>
 
