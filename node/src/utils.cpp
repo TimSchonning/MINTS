@@ -34,34 +34,42 @@ static bool standby_mode() {
     msg_clearance_t clearance;
     int16_t state = radio.receive((uint8_t*)&clearance, sizeof(clearance));
 
-    if (!error_handler(state, "[STANDBY] LoRa_init failed to receive standby clearance from gateway")) {
-        uint8_t ack_payload[] = {MSG_TYPE_ID_ACK, node_id};
+    uint32_t _ = millis();
+    uint32_t gateway_time_stamp = clearance.time_stamp;
+    uint8_t type = clearance.type;
+
+    if (type == MSG_TYPE_CLEARANCE &&
+        !error_handler(state, "[STANDBY] LoRa_init failed to receive standby clearance from gateway")) {
 
         // ACKs the standby clearance
-        msg_std_t msg_standby_ack;
-        msg_standby_ack.node_id = node_id;
-        msg_standby_ack.payload = 0x00;
+        msg_ack_t msg_clearance_ack;
+        msg_clearance_ack.node_id = node_id;
+        msg_clearance_ack.ack_for = MSG_TYPE_CLEARANCE;
 
-        radio.transmit(msg_standby_ack, sizeof(msg_standby_ack));
-        radio.sleep();
+        state = radio.transmit(msg_clearance_ack, sizeof(msg_ack_t));
         
-        //// Initialises the boot count
-        uint32_t now_ms                 = clearance.time_stamp;
-        uint32_t measurement_windows_ms = MEASUREMENT_WINDOW_S * S_TO_mS;
-        uint32_t time_past_in_window_ms = now_ms % measurement_windows_ms;
-        uint32_t time_to_sleep_us       = (measurement_windows_ms - time_past_in_window_ms) * 1000ULL;
-        
-        boot_count = floor(now_ms / measurement_windows_ms);
-        DEBUG_PRINT("[STANDBY] Init boot_count set to: ");
-        DEBUG_PRINTLN(boot_count);
+        if (!error_handler(state, "[STANDBY] Failed to ack standby clearance")) {
+            radio.sleep();
 
-        DEBUG_PRINT("[STANDBY] Will sleep for (seconds): ");
-        DEBUG_PRINTLN(time_to_sleep_us / S_TO_uS);
-
-        //// Sleeps till the closest window
-        esp_sleep_enable_timer_wakeup(time_to_sleep_us);
-        esp_deep_sleep_start();
-        // wont be reached
+            //// Initialises the boot count
+            uint32_t offset                 = millis() - _;
+            uint32_t now_ms                 = clearance.time_stamp + offset;
+            uint32_t measurement_windows_ms = MEASUREMENT_WINDOW_S * S_TO_mS;
+            uint32_t time_past_in_window_ms = now_ms % measurement_windows_ms;
+            uint32_t time_to_sleep_us       = (measurement_windows_ms - time_past_in_window_ms) * 1000ULL;
+            
+            boot_count = floor(now_ms / measurement_windows_ms);
+            DEBUG_PRINT("[STANDBY] Init boot_count set to: ");
+            DEBUG_PRINTLN(boot_count);
+    
+            DEBUG_PRINT("[STANDBY] Will sleep for (seconds): ");
+            DEBUG_PRINTLN(time_to_sleep_us / S_TO_uS);
+    
+            //// Sleeps till the closest window
+            esp_sleep_enable_timer_wakeup(time_to_sleep_us);
+            esp_deep_sleep_start();
+            // wont be reached
+        }
     } else {
         return false;
     }

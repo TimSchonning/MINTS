@@ -11,14 +11,11 @@
 #include "utils.h"
 
 // Types of messages
-const uint8_t MSG_TYPE_ACK              = 0xA;
-const uint8_t MSG_TYPE_PAYLOAD_UPLINK   = 0xB;  // node -> gateway
+const uint8_t MSG_TYPE_ACK            = 0xA0;
+const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
 
-const uint8_t MSG_TYPE_JOIN_REQ
-const uint8_t MSG_TYPE_JOIN_REQ         = 0xD;
-const uint8_t MSG_TYPE_START_DOWNLINK   = 0xF;
-
-
+const uint8_t MSG_TYPE_JOIN_REQ       = 0xD0;
+const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
 
 /**
  * @brief Stores the results as a sendable LoRa payload.
