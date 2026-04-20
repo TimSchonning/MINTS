@@ -122,3 +122,13 @@ void initialise_node() {
         }
     }
 }
+
+bool sleep_particle_sensor() {
+    // TODO: set the SET_PIN of the sensor to low.
+    // TODO: return success/fail
+}
+
+bool sleep_noise_sensor() {
+    // TODO: set the SET_PIN of the sensor to low.
+    // TODO: return success/fail
+}

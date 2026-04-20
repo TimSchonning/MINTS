@@ -38,4 +38,16 @@ void initialise_node();
  */
 bool standby_mode();
 
+/**
+ * @brief Sleeps the sensor.
+ * @return success
+ */
+bool sleep_particle_sensor();
+
+/**
+ * @brief Sleeps the sensor.
+ * @return success
+ */
+bool sleep_noise_sensor();
+
 #endif
