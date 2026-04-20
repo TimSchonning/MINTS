@@ -16,6 +16,7 @@ const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
 
 const uint8_t MSG_TYPE_JOIN_REQ       = 0xD0;
 const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
+const uint8_t MSG_TYPE_LORA_CONFIG    = 0xD2;
 
 /**
  * @brief Stores the results as a sendable LoRa payload.
@@ -57,5 +58,24 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint32_t time_stamp;
 } msg_clearance_t;
+
+
+/**
+ * @brief Structure for LoRa config updates
+ * @note Is __attribute__((packed)
+ */
+typedef struct __attribute__((packed)) {
+    uint8_t  type = MSG_TYPE_LORA_CONFIG;
+    uint32_t time_stamp;
+    float    frequency;
+    float    bandwidth;
+    uint8_t  spreading_factor;
+    uint8_t  coding_rate;
+    uint8_t  sync_word;
+    int8_t   power;
+    uint16_t preamble_len;
+    uint8_t  gain;
+} msg_clearance_t;
+
 
 #endif
