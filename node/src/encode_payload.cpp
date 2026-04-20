@@ -12,12 +12,20 @@
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result, uint8_t id) {
     if (!payload || !ps_result || !ns_result || !id) return false;
 
-    payload->id  = id;
-
-    payload->pm10  = ps_result->pm10;
-    payload->pm25  = ps_result->pm25;
-
-    payload->noise_peak = ns_result->noise_peak;
+    if (buffering_counter >= BUFFERING_THRESHOLD) return false;
+    
+    payload->type       = MSG_TYPE_PAYLOAD_UPLINK;
+    payload->node_id    = id;
+    payload->reading_id = boot_count;
+    
+    uint16_t index = buffering_counter * BUFFERING_THRESHOLD;
+    
+    payload->readings[index]     = (uint8_t)ps_result->pm10;
+    payload->readings[index + 1] = (uint8_t)ps_result->pm25;
+    payload->readings[index + 2] = (uint8_t)((ns_result->noise_peak >> 8) & 0xFF); 
+    payload->readings[index + 3] = (uint8_t)(ns_result->noise_peak & 0xFF);
+    
+    buffering_counter++;
     return true;
 }
 

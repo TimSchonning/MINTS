@@ -20,13 +20,14 @@ const uint8_t MSG_TYPE_LORA_CONFIG    = 0xD2;
 
 /**
  * @brief Stores the results as a sendable LoRa payload.
+ * @note reading_id reflects the latest readings id.
  * @note Is __attribute__((packed)
  */
 typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
-    uint8_t readings[BUFFERING_THRESHOLD * 3] //x3 due to pm, pm and noise
+    uint8_t readings[BUFFERING_THRESHOLD * 4]
     // uint8_t pm10, pm25;
     // uint16_t noise_peak;
 } payload_t;

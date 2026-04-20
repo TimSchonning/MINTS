@@ -45,11 +45,14 @@ void setup() {
     boot_count++;
     
     //// TODO: Power down sensors
+    //// updates the payload
+    encode_payload(&payload, &ps_result, &ns_result, node_id);
+    
     //// send data
-    if (buffering_counter < BUFFERING_THRESHOLD) {
+    if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
-        encode_payload(&payload, &ps_result, &ns_result, node_id);
+        buffering_counter = 0;
         transmit_payload();
     }
 
