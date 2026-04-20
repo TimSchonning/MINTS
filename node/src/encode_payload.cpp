@@ -21,15 +21,31 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
     return true;
 }
 
-void transmit_payload() {
+bool transmit_payload() {
     DEBUG_PRINTLN("[START] LoRa transmission");
     encode_payload(&payload, &ps_result, &ns_result, node_id);
 
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     error_handler(state, "LoRa initialisation");
 
-    state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
-    error_handler(state, "LoRa transmission");
+    uint8_t counter = 0;
+    while (counter < MAX_PAYLOAD_TRANSMISSION_ATTEMPTS) {
+        state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
+        error_handler(state, "LoRa payload transmission");
+        
+        DEBUG_PRINTLN("[SUCCESS] Payload sent, waiting for ACK");
 
-    DEBUG_PRINTLN("[SUCCESS] LoRa transmission completed");
+        msg_ack_t payload_ack;
+        state = radio.receive(&payload_ack, sizeof(msg_ack_t));
+
+        if (state == RADIOLIB_ERR_NONE) {
+            if (payload_ack.type    == MSG_TYPE_ACK &&
+                payload_ack.node_id == node_id &&
+                payload_ack.ack_for == MSG_TYPE_PAYLOAD_UPLINK) {
+                    return true;
+            }
+        }
+        counter++;
+    }
+    return false;
 }
