@@ -19,7 +19,7 @@ ps_result_t ps_result;
 ns_state_t  ns_state;
 ns_result_t ns_result;
 
-payload_t payload;
+RTC_DATA_ATTR payload_t payload;
 
 SX1276 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
@@ -52,9 +52,11 @@ void setup() {
     if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
-        buffering_counter = 0;
         transmit_payload();
+        buffering_counter = 0;
+        memset(&payload, 0, sizeof(payload_t));
     }
+    
 
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");
