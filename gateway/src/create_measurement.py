@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 
-cred = credentials.Certificate("path/to/serviceAccountKey.json")
+cred = credentials.Certificate("secrets/firebase_config.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -29,3 +29,9 @@ def create_measurement(
     except Exception as error:
         print("Error creating measurement:", error)
         raise
+
+print(db)
+docs = db.collection(MEASUREMENT_COLLECTION).stream()
+
+for doc in docs:
+    print(f"{doc.id} => {doc.to_dict()}")
