@@ -138,10 +138,18 @@ bool sleep_noise_sensor() {
 
 void config_mode() {
     // Mode for config updates from the gateway
-
     //Listen to gateway broadcast
     //// either to all or spec. id
     //update to config depends on all who are not zero
     //Ack the gateway
 
+    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
+    error_handler(state, "[config] radio initialisation");
+
+    msg_config_t msg_config;
+    state = radio.receive((uin8_t)&msg_config, sizeof(msg_config_t));
+
+    if (state == RADIOLIB_ERR_NONE && msg_config.type == MSG_TYPE_CONFIG) {
+
+    }
 }

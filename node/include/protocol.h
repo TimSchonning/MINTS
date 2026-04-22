@@ -17,9 +17,47 @@ const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
 const uint8_t MSG_TYPE_JOIN_REQ       = 0xD0;
 const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
 
-const uint8_t MSG_TYPE_GENERAL_CONFIG = 0xF0;
-const uint8_t MSG_TYPE_LORA_CONFIG    = 0xF1;
+const uint8_t MSG_TYPE_CONFIG         = 0xF0;
 
+/**
+ * @brief Contains all configurable variables and time stamp,
+ * @note is __attribute__((packed))
+ */
+enum __attribute__((packed)) config_tag_t : uint8_t {
+    TAG_TIME_STAMP     = 0x00, // uint32_t
+
+    // LoRa Settings
+    TAG_LORA_FREQ      = 0x01, // float (4 bytes)
+    TAG_LORA_BW        = 0x02, // float (4 bytes)
+    TAG_LORA_SF        = 0x03, // uint8_t
+    TAG_LORA_CR        = 0x04, // uint8_t
+    TAG_LORA_SYNC      = 0x05, // uint8_t
+    TAG_LORA_PWR       = 0x06, // int8_t
+    TAG_LORA_PREAMBLE  = 0x07, // uint16_t
+    TAG_LORA_GAIN      = 0x08, // uint8_t
+
+    // General Config
+    TAG_CPU_FREQ       = 0x09, // uint8_t
+    TAG_SLEEP_TIME     = 0x0A, // uint32_t
+    TAG_MEASURE_WINDOW = 0x0B, // uint8_t
+
+    // Particle Config
+    TAG_PS_HEAT_UP     = 0x0C, // uint8_t
+    TAG_PS_SAMPLE_TIME = 0x0D, // uint16_t
+    TAG_PS_TARGET      = 0x0E, // uint16_t
+    TAG_NODE_ID        = 0x0F, // uint8_t
+    TAG_TX_RETRIES     = 0x10, // uint8_t
+    TAG_BUFFER_THRESH  = 0x11  // uint8_t
+};
+
+/**
+ * @brief Structure for config updates
+ * @note Is __attribute__((packed)
+ * @note 
+ */
+typedef struct __attribute__((packed)) {
+    uint8_t  type = MSG_TYPE_LORA_CONFIG;
+} msg_config_t;
 
 /**
  * @brief Stores the results as a sendable LoRa payload.
@@ -63,47 +101,6 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint32_t time_stamp;
 } msg_clearance_t;
-
-
-/**
- * @brief Structure for LoRa config updates
- * @note Is __attribute__((packed)
- * @note 
- */
-typedef struct __attribute__((packed)) {
-    uint8_t  type = MSG_TYPE_LORA_CONFIG;
-    uint32_t time_stamp;
-    uint8_t mask;  // indicates which factors to update
-    
-    // LoRa
-    float    frequency;
-    float    bandwidth;
-    uint8_t  spreading_factor;
-    uint8_t  coding_rate;
-    uint8_t  sync_word;
-    int8_t   power;
-    uint16_t preamble_len;
-    uint8_t  gain;
-} msg_lora_config_t;
-
-typedef struct __attribute__((packed)) {
-    uint8_t  type = MSG_TYPE_GENERAL_CONFIG;
-    uint32_t time_stamp;
-    uint16_t mask;  // indicates which factors to update
-    
-    // General config
-    uint8_t cpu_freq_mhz;
-    uint32_t time_to_sleep_s;
-    uint8_t measurement_windows_s;
-
-    // Particle config
-    uint8_t ps_heat_up_time_s;
-    uint16_t ps_sample_time_ms;  // > 1
-    uint16_t ps_target_samples;  // > 1
-    uint8_t node_id;
-    uint8_t max_tx_retries;
-    uint8_t buffering_threshold;
-} msg_general_config_t;
 
 
 #endif
