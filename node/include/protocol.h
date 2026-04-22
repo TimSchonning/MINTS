@@ -56,7 +56,7 @@ enum __attribute__((packed)) config_tag_t : uint8_t {
  * @note 
  */
 typedef struct __attribute__((packed)) {
-    uint8_t  type = MSG_TYPE_LORA_CONFIG;
+    uint8_t  type = MSG_TYPE_CONFIG;
 } msg_config_t;
 
 /**
