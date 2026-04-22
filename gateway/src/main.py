@@ -2,12 +2,14 @@
 # Automatically runs (but does not compile) the gatewayLogic file
 # TODO: Implement connection to Firebase.
 
-import datetime
 import subprocess
-import create_measurement
+from databaseConnection import DbConnection
+from measurement import MeasurementGroup
 
 # Change to oath where gatewayLogic.exe exists
 cpp_exe_path = r"C:/Users/deode/Documents/kod/Kandidatebaete/MINTS/gateway/src/gatewayLogic.exe"
+
+db_connection = DbConnection()
 
 # Creates a process and:
 #   Runs gatewayLogic.exe
@@ -27,31 +29,9 @@ def run_lora(gatewayLogicPath):
     
     return process
 
-# TODO: Stub. This function should send data to firebase. Right now it just prints the values.
 def toFirebase(node_id, pm10, pm25, noise):
-    date = datetime.datetime.now()
-
-    create_measurement.create_measurement(
-        measurement_id=f"{node_id}_{date}",
-        station_id=node_id,
-        sensor_type_id="PM5",
-        value=float(pm10),
-        date=date
-    )
-    create_measurement.create_measurement(
-        measurement_id=f"{node_id}_{date}",
-        station_id=node_id,
-        sensor_type_id="PM2.5",
-        value=float(pm25),
-        date=date
-    )
-    create_measurement.create_measurement(
-        measurement_id=f"{node_id}_{date}",
-        station_id=node_id,
-        sensor_type_id="Noise",
-        value=float(noise),
-        date=date
-    )
+    measurement_group = MeasurementGroup(node_id, pm10, pm25, noise)
+    db_connection.save_measurements(measurement_group)
     
     print(f"Received ID: {node_id}, PM10: {pm10}, PM2.5: {pm25}, Noise: {noise}")
 

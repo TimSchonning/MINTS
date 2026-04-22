@@ -6,3 +6,4 @@ database/node_modules/*
 database/src/node_modules/*
 gateway/src/secrets/*
 gateway/src/venv/*
+__pycache__
