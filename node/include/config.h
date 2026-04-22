@@ -55,6 +55,8 @@ RTC_DATA_ATTR uint8_t  BUFFERING_THRESHOLD  = 4;
 RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 //// TX config specific
-uint8_t config_tx_buffer[255];
-uint8_t config_cursor = 0;
+// uint8_t config_tx_buffer[255];
+// uint8_t config_tx_cursor = 0;
+uint8_t config_rx_buffer[255];
+uint8_t config_rx_cursor = 0;
 #endif

@@ -140,7 +140,7 @@ bool sleep_noise_sensor() {
 //     msg_config_t header;
     
 //     memcpy(config_tx_buffer, &header, sizeof(msg_config_t));
-//     cursor = sizeof(config_header_t);
+//     cursor = sizeof(msg_config_t);
 // }
 
 // static void add_tlv(ConfigTag tag, float val) {
@@ -167,20 +167,103 @@ bool sleep_noise_sensor() {
 //     int state = radio.transmit(tx_buffer, cursor); 
 // }
 
-void config_mode() {
-    // Mode for config updates from the gateway
-    //Listen to gateway broadcast
-    //// either to all or spec. id
-    //update to config depends on all who are not zero
-    //Ack the gateway
+void handle_config_msg(size_t len) {
+    if (len < sizeof(msg_config_t)) return; 
+    
+    msg_config_t* header = (msg_config_t*)config_rx_buffer;
 
+    size_t cursor = sizeof(msg_config_t);
+
+    while (cursor < len) {
+        uint8_t tag        = config_rx_buffer[cursor++];
+        uint8_t length     = config_rx_buffer[cursor++];
+        uint8_t* value_ptr = &config_rx_buffer[cursor];
+
+        switch (tag) {
+            case TAG_LORA_FREQ:
+                memcpy(&FREQUENCY, value_ptr, sizeof(FREQUENCY));
+                break;
+            case TAG_LORA_BW:
+                memcpy(&BANDWIDTH, value_ptr, sizeof(BANDWIDTH));
+                break;
+            case TAG_LORA_SF:
+                memcpy(&SPREADING_FACTOR, value_ptr, sizeof(SPREADING_FACTOR));
+                break;
+            case TAG_LORA_CR:
+                memcpy(&CODING_RATE, value_ptr, sizeof(CODING_RATE));
+                break;
+            case TAG_LORA_SYNC:
+                memcpy(&SYNC_WORD, value_ptr, sizeof(SYNC_WORD));
+                break;
+            case TAG_LORA_PWR:
+                memcpy(&POWER, value_ptr, sizeof(POWER));
+                break;
+            case TAG_LORA_PREAMBLE:
+                memcpy(&PREAMBLE_LEN, value_ptr, sizeof(PREAMBLE_LEN));
+                break;
+            case TAG_LORA_GAIN:
+                memcpy(&GAIN, value_ptr, sizeof(GAIN));
+                break;
+
+            case TAG_CPU_FREQ:
+                memcpy(&CPU_FREQ_MHZ, value_ptr, sizeof(CPU_FREQ_MHZ));
+                break;
+            case TAG_SLEEP_TIME:
+                memcpy(&TIME_TO_SLEEP_S, value_ptr, sizeof(TIME_TO_SLEEP_S));
+                break;
+            case TAG_MEASURE_WINDOW:
+                memcpy(&MEASUREMENT_WINDOW_S, value_ptr, sizeof(MEASUREMENT_WINDOW_S));
+                break;
+
+            case TAG_PS_HEAT_UP:
+                memcpy(&PS_HEAT_UP_TIME_S, value_ptr, sizeof(PS_HEAT_UP_TIME_S));
+                break;
+            case TAG_PS_SAMPLE_TIME:
+                memcpy(&PS_SAMPLE_TIME_mS, value_ptr, sizeof(PS_SAMPLE_TIME_mS));
+                break;
+            case TAG_PS_TARGET:
+                memcpy(&PS_TARGET_SAMPLES, value_ptr, sizeof(PS_TARGET_SAMPLES));
+                break;
+            case TAG_NS_SAMPLE_TIME:
+                memcpy(&NS_SAMPLE_TIME_mS, value_ptr, sizeof(NS_SAMPLE_TIME_mS));
+                break;
+
+            case TAG_NODE_ID:
+                memcpy(&node_id, value_ptr, sizeof(node_id));
+                break;
+            case TAG_MAX_RETRIES:
+                memcpy(&MAX_TX_RETRIES, value_ptr, sizeof(MAX_TX_RETRIES));
+                break;
+            case TAG_BUFFER_THRESH:
+                memcpy(&BUFFERING_THRESHOLD, value_ptr, sizeof(BUFFERING_THRESHOLD));
+                break;
+
+            default:
+                DEBUG_PRINTLN("Unknown config tag")
+                break;
+        }
+        cursor += length;
+    }
+}
+
+void config_mode() {
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
     error_handler(state, "[config] radio initialisation");
 
-    msg_config_t msg_config;
-    state = radio.receive((uin8_t)&msg_config, sizeof(msg_config_t));
+    state = radio.receive(config_rx_buffer, sizeof(config_rx_buffer));
 
-    if (state == RADIOLIB_ERR_NONE && msg_config.type == MSG_TYPE_CONFIG) {
-
+    if (state == RADIOLIB_ERR_NONE) {
+        if (config_rx_buffer[0] == MSG_TYPE_CONFIG) {
+            size_t len = radio.getPacketLength();
+            
+            handle_config_msg(len);
+    
+            // ACKs the gateway
+            msg_ack_t msg_ack;
+            msg_ack.node_id = node_id;
+            msg_ack.ack_for = MSG_TYPE_CONFIG;
+            state = radio.transmit(&payload, sizeof(payload_t));
+        }
     }
+
 }
