@@ -167,7 +167,7 @@ bool sleep_noise_sensor() {
 //     int state = radio.transmit(tx_buffer, cursor); 
 // }
 
-void handle_config_msg(size_t len) {
+static void handle_config_msg(size_t len) {
     if (len < sizeof(msg_config_t)) return; 
     
     msg_config_t* header = (msg_config_t*)config_rx_buffer;
@@ -264,6 +264,6 @@ void config_mode() {
             msg_ack.ack_for = MSG_TYPE_CONFIG;
             state = radio.transmit(&payload, sizeof(payload_t));
         }
+        radio.sleep()
     }
-
 }
