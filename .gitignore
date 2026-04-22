@@ -3,3 +3,4 @@ node_modules/*
 .env/*
 database/node_modules/*
 **.env
+database/src/node_modules/*
