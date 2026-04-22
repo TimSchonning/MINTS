@@ -4,3 +4,4 @@ node_modules/*
 database/node_modules/*
 **.env
 database/src/node_modules/*
+gateway/src/secrets/*
