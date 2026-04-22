@@ -34,7 +34,7 @@ def toFirebase(node_id, pm10, pm25, noise):
     create_measurement.create_measurement(
         measurement_id=f"{node_id}_{date}",
         station_id=node_id,
-        sensor_type_id="PM10",
+        sensor_type_id="PM5",
         value=float(pm10),
         date=date
     )
@@ -45,6 +45,14 @@ def toFirebase(node_id, pm10, pm25, noise):
         value=float(pm25),
         date=date
     )
+    create_measurement.create_measurement(
+        measurement_id=f"{node_id}_{date}",
+        station_id=node_id,
+        sensor_type_id="Noise",
+        value=float(noise),
+        date=date
+    )
+    
     print(f"Received ID: {node_id}, PM10: {pm10}, PM2.5: {pm25}, Noise: {noise}")
 
 def main():
