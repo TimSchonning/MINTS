@@ -19,7 +19,7 @@
 	<button
 		onclick={handleClickLeft}
 		class="rounded-none shadow-none first:rounded-s-full last:rounded-e-full focus-visible:z-10"
-		aria-label="Upvote"
+		aria-label="Left"
 	>
 		<ChevronLeftIcon size={16} aria-hidden="true" />
 	</button>
@@ -29,7 +29,7 @@
 	<button
 		onclick={handleClickRight}
 		class="rounded-none shadow-none first:rounded-s-full last:rounded-e-full focus-visible:z-10"
-		aria-label="Downvote"
+		aria-label="Right"
 	>
 		<ChevronRightIcon size={16} aria-hidden="true" />
 	</button>
