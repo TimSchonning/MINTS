@@ -143,11 +143,11 @@ bool sleep_noise_sensor() {
 //     cursor = sizeof(msg_config_t);
 // }
 
-// static void add_tlv(ConfigTag tag, float val) {
+// static void add_tlv(ConfigTag tag, size_t val) {
 //     tx_buffer[cursor++] = tag;
-//     tx_buffer[cursor++] = sizeof(float);
-//     memcpy(&tx_buffer[cursor], &val, sizeof(float));
-//     cursor += sizeof(float);
+//     tx_buffer[cursor++] = sizeof(val);
+//     memcpy(&tx_buffer[cursor], &val, sizeof(val));
+//     cursor += sizeof(val);
 // }
 
 // static void add_tlv(ConfigTag tag, uint8_t val) {
@@ -267,3 +267,14 @@ void config_mode() {
         radio.sleep()
     }
 }
+
+void add_nvs(uint8_t data) {
+    // 8 bits in size
+    // add data to non-volatile storage
+}
+
+void add_nvs(size_t data) {
+    // Used for data larger than 8 bits
+    // add data to non-volatile storage
+}
+
