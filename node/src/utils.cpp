@@ -135,3 +135,13 @@ bool sleep_noise_sensor() {
     // TODO: return success/fail
     return true;
 }
+
+void config_mode() {
+    // Mode for config updates from the gateway
+
+    //Listen to gateway broadcast
+    //// either to all or spec. id
+    //update to config depends on all who are not zero
+    //Ack the gateway
+
+}
