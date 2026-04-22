@@ -136,6 +136,37 @@ bool sleep_noise_sensor() {
     return true;
 }
 
+// static void start_config_msg(uint32_t time_ms) {
+//     msg_config_t header;
+    
+//     memcpy(config_tx_buffer, &header, sizeof(msg_config_t));
+//     cursor = sizeof(config_header_t);
+// }
+
+// static void add_tlv(ConfigTag tag, float val) {
+//     tx_buffer[cursor++] = tag;
+//     tx_buffer[cursor++] = sizeof(float);
+//     memcpy(&tx_buffer[cursor], &val, sizeof(float));
+//     cursor += sizeof(float);
+// }
+
+// static void add_tlv(ConfigTag tag, uint8_t val) {
+//     tx_buffer[cursor++] = tag;
+//     tx_buffer[cursor++] = sizeof(uint8_t);
+//     tx_buffer[cursor++] = val;
+// }
+
+// void send_update() {
+//     start_config_msg(millis());
+
+//     // example
+//     add_tlv(TAG_LORA_FREQ, 433.5f);
+//     add_tlv(TAG_LORA_SF, (uint8_t)12);
+//     add_tlv(TAG_NODE_ID, (uint8_t)0x05);
+
+//     int state = radio.transmit(tx_buffer, cursor); 
+// }
+
 void config_mode() {
     // Mode for config updates from the gateway
     //Listen to gateway broadcast

@@ -53,4 +53,8 @@ RTC_DATA_ATTR uint8_t  node_id              = 0;
 RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
 RTC_DATA_ATTR uint8_t  BUFFERING_THRESHOLD  = 4;
 RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
+
+//// TX config specific
+uint8_t config_tx_buffer[255];
+uint8_t config_cursor = 0;
 #endif
