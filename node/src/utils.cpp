@@ -268,13 +268,14 @@ void config_mode() {
     }
 }
 
-void add_nvs(uint8_t data) {
-    // 8 bits in size
+static void add_nvs(const char* key, uint8_t data) {
     // add data to non-volatile storage
 }
 
-void add_nvs(size_t data) {
-    // Used for data larger than 8 bits
+static void add_nvs(const char* key, uint16_t data) {
     // add data to non-volatile storage
 }
 
+static void add_nvs(const char* key, uint32_t data) {
+    // add data to non-volatile storage
+}
