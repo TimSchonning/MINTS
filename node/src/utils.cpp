@@ -268,14 +268,26 @@ void config_mode() {
     }
 }
 
-static void add_nvs(const char* key, uint8_t data) {
+static void write_nvs(const char* key, uint8_t data_in) {
     // add data to non-volatile storage
 }
 
-static void add_nvs(const char* key, uint16_t data) {
+static void write_nvs(const char* key, uint16_t data_in) {
     // add data to non-volatile storage
 }
 
-static void add_nvs(const char* key, uint32_t data) {
+static void write_nvs(const char* key, uint32_t data_in) {
     // add data to non-volatile storage
+}
+
+static void read_nvs(const char* key, uint8_t &data_out) {
+    // read from nvs
+}
+
+static void read_nvs(const char* key, uint16_t &data_out) {
+    // read from nvs
+}
+
+static void read_nvs(const char* key, uint32_t &data_out) {
+    // read from nvs
 }
