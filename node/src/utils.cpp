@@ -268,35 +268,43 @@ void config_mode() {
     }
 }
 
-static void write_nvs(const char* key, uint8_t data_in) {
-    // add data to non-volatile storage
-}
+// static void write_nvs(const char* key, uint8_t data_in) {
+//     if (!putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
+// }
 
-static void write_nvs(const char* key, uint16_t data_in) {
-    // add data to non-volatile storage
-}
+// static void write_nvs(const char* key, uint16_t data_in) {
+//     if (!putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs")
+// }
 
-static void write_nvs(const char* key, uint32_t data_in) {
-    // add data to non-volatile storage
-}
+// static void write_nvs(const char* key, uint32_t data_in) {
+//     if (!putULong(key, data_in)) error_handler(-1, "Failed to write to nvs")
+// }
 
-static void read_nvs(const char* key, uint8_t &data_out) {
-    // read from nvs
-}
+// static void read_nvs(const char* key, uint8_t &data_out) {
+//     if (!getUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
+// }
 
-static void read_nvs(const char* key, uint16_t &data_out) {
-    // read from nvs
-}
+// static void read_nvs(const char* key, uint16_t &data_out) {
+//     // read from nvs
+// }
 
-static void read_nvs(const char* key, uint32_t &data_out) {
-    // read from nvs
-}
+// static void read_nvs(const char* key, uint32_t &data_out) {
+//     // read from nvs
+// }
 
-void init_nvs() {
-    // Initialises the flash storage at FIRST startup to match ram
-}
+// void init_nvs() {
+//     // Initialises the flash storage at FIRST startup to match ram
 
-void set_config_variables() {
-    // Updates the system variables based on values in nvs
-    // use case: node has initialised, and updated system variables, before and is now being repowered (not woken from sleep)
-}
+//     // init preferences GLOBALLY
+//     // begin
+//     // end
+// }
+
+// void set_config_variables() {
+//     // Updates the system variables based on values in nvs
+//     // use case: node has initialised, and updated system variables, before and is now being repowered (not woken from sleep)
+
+//     // init preferences GLOBALLY
+//     // begin
+//     // end
+// }
