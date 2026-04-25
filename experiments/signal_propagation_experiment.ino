@@ -5,6 +5,8 @@
  * After a specified number of pings, radio configuration is updated and packet loss is printed.
  * Designed to run in Arduino IDE.
  * Requires two LoRa nodes at the same frequency and spreading factor.
+ * Based on the RadioLib library.
+ * @see RadioLib GitHub: https://jgromes.github.io/RadioLib/
  * Last updated: 25/04-2026
  */
 
@@ -18,7 +20,7 @@
 /**
  * Definition of a single radio configuration.
  * Is used in RadioLib's begin function.
- * @see RadioLib documentation: https://jgromes.github.io/RadioLib/group__status__codes.html
+ * @see RadioLib documentation.
  * @param float bandwidth: decides which bandwidth to use.
  * @param int spreadingFactor: decides which spreadingFactor to use.
  * @param int codingRate: decides the nominator the coding rate should use.
@@ -39,6 +41,17 @@ int deviceId = 1;
 bool initiatingNode = false; // Choose if this node should initiate the experiment
 int iterations = 50; // Total number of pings in this experiement (must be divisible by length of configs)
 const String msgToSend = "Ping";
+int timeBetweenTx = 500;
+
+/**
+ * User-defined tests.
+ * Parameter values must be valid.
+ * BW: Bandwidth: 7.8, 10.4, 15.6, 20.8, 31.25, 41.7, 
+ *                62.5, 125.0, 250.0, 500.0
+ * SF: Spreading factor: 7 to 12
+ * CR: Coding rate: 5 to 8
+ * PWR: Power: -17 to 22
+ */
 
 RadioConfig configs[] = {
   // BW, SF, CR, PWR
@@ -49,13 +62,14 @@ RadioConfig configs[] = {
   {31.25f, 12, 8, 22}, // Config 5
 };
 
-// LoRa Radio Settings
-const int FREQ = 868.1;
-const int SYNC = 0x12;
-const int PRE = 8;
-const int TCXO_V = 1.6;
+// LoRa Radio Settings, will not change during the experiment.
+const int FREQ = 868.1;                              // Frequency in MHz
+const int SYNC = RADIOLIB_SX126X_SYNC_WORD_PRIVATE;  // Syncword
+const int PRE = 8;                                   // Preamble length
+const int TCXO_V = 1.6;                              // TCXO voltage in V
 
 // LoRa GPIO pin mapping (using legacy mode in Arduino IDE)
+// Adjust to fit your configuration
 const int CS  = 21;
 const int DIO1 = 5;
 const int RST  = 7;
@@ -67,7 +81,7 @@ const int RXEN = 9;
 SX1262 radio = new Module(CS, DIO1, RST, BSY);
 
 // States and Flags
-int transmissionState = RADIOLIB_ERR_NONE;
+int txState = RADIOLIB_ERR_NONE;
 bool transmitFlag = false;
 volatile bool operationDone = false;
 
@@ -79,10 +93,24 @@ void setFlag(void) {
   operationDone = true;
 }
 
+/**
+ * Get the length of an RadioConfig array.
+ * @param RadioConfig cfg: Pointer to an array of RadioConfig structs.
+ * @returns Length of the array.
+ */
 int len(RadioConfig *cfg) {
   return sizeof(configs) / sizeof(RadioConfig);
 }
 
+/**
+ * Changes bandwidth, spreading factor, coding rate and power of the LoRa radio.
+ * If new initialisation of radio fails, error code is printed.
+ * @see RadioLib documentation for error codes.
+ * @param float BW: New bandwidth in MHz.
+ * @param uint8_t SF: New spreading factor.
+ * @param uint8_t CR: New coding rate.
+ * @param uing8_t PWR: New power.
+ */
 void setRadio(float BW, uint8_t SF, uint8_t CR, uint8_t PWR) {
   Serial.println("Initialising LoRa with parameters:");
   Serial.print("Frequency: ");
@@ -108,6 +136,11 @@ void setRadio(float BW, uint8_t SF, uint8_t CR, uint8_t PWR) {
   }
 }
 
+/**
+ * Pings a node and listens for a response.
+ * @param int pings: Number of pings to transmit.
+ * @returns Number of received packets.
+ */
 int pingNode(int pings){
   int receivedPackets = 0;
 
@@ -117,11 +150,11 @@ int pingNode(int pings){
 
     if(transmitFlag) {
       // Previous Operation was Transmit
-      if (transmissionState == RADIOLIB_ERR_NONE) {
+      if (txState == RADIOLIB_ERR_NONE) {
         Serial.println("Transmission finished!");
       } else {
-        Serial.print(F("TX failed, code "));
-        Serial.println(transmissionState);
+        Serial.print("TX failed, code ");
+        Serial.println(txState);
       }
 
       // Switch to listening
@@ -142,18 +175,18 @@ int pingNode(int pings){
         ++receivedPackets;
       }
 
-      delay(100);
+      delay(timeBetweenTx);
 
       // Send response
       Serial.print("Sending response...");
       String msg = "Ping from ID " + String(deviceId);
-      transmissionState = radio.startTransmit(msg);
+      txState = radio.startTransmit(msg);
 
-      if (transmissionState == RADIOLIB_ERR_NONE) {
+      if (txState == RADIOLIB_ERR_NONE) {
         Serial.println("Sent.");
       } else {
         Serial.println("An error occured. Error code: ");
-        Serial.print(transmissionState);
+        Serial.print(txState);
       }
 
       transmitFlag = true;
@@ -164,6 +197,11 @@ int pingNode(int pings){
   return receivedPackets;
 }
 
+/**
+ * Runs the specified configs.
+ * @param int nrOfPackets: Number of packets to transmit.
+ * @param int currentConfig: The config used.
+ */
 void testConfig(int nrOfPackets, int currentConfig) {
   Serial.println("");
   Serial.print("--- Config ");
@@ -193,6 +231,11 @@ void testConfig(int nrOfPackets, int currentConfig) {
   Serial.println("");
 }
 
+/**
+ * Arduino setup function.
+ * Initialises the system.
+ * Makes a test transmit to verify the connecion.
+ */
 void setup() {
   Serial.begin(115200);
 
@@ -222,7 +265,7 @@ void setup() {
   // Initial Transmission
   if (initiatingNode == true) {
     Serial.print("Sending start-up packet... ");
-    transmissionState = radio.startTransmit("ping");
+    txState = radio.startTransmit("ping");
     transmitFlag = true;
   } else {
     Serial.print("Listening at frequency: ");
@@ -232,13 +275,16 @@ void setup() {
     if (state == RADIOLIB_ERR_NONE) {
       Serial.print("Packet received, starting experiment.");
   } else {
-      Serial.print(F("LoRa failed, error code: "));
+      Serial.print("LoRa failed, error code: ");
       Serial.println(state);
       while (true);
     }
   }
 }
 
+/**
+ * Main loop, runs the experiment.
+ */
 void loop() {
   int nmbrOfConfigs = len(configs);
 
@@ -260,23 +306,3 @@ void loop() {
     }    
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
