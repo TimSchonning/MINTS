@@ -1,8 +1,9 @@
 /**
  * Firmware for LoRa signal experiment.
- * A "ping-pong" like signal transmission where one device initiates the experiment, the other listens.
+ * One device is a transmitter and sends many transmissions to another device acting as receiver.
  * When a packet is received, RSSI and SNR is printed.
- * After a specified number of pings, radio configuration is updated and packet loss is printed.
+ * After a specified number of pings, the packet loss percentage as well as average RSSI and average SNR is printed.
+ * The next configuration is then changed to the next one until all have been tested.
  * Designed to run in Arduino IDE.
  * Requires two LoRa nodes at the same frequency and spreading factor.
  * Based on the RadioLib library.
@@ -31,8 +32,7 @@ struct RadioConfig
 {
   float bandwidth;
   int spreadingFactor;
-  int codingRate;
-  int power;
+  int timeBetweenTx;
 };
 
 /**
@@ -48,15 +48,26 @@ struct ConfigResult
   float packetLoss;
 };
 
+/**
+ * Stores the data collected from a configuration experiment.
+ * @param float totalRSSI: The sum of the RSSI of all packets received.
+ * @param float totalSNR: The sum of the SNR of all packets received.
+ * @param int numPackets: Number of packets received.
+ */
+struct CollectedData
+{
+  float totalRSSI;
+  float totalSNR;
+  int numPackets;
+};
+
 // Give this node a unique ID
 int deviceId = 1;
 
 // Experiment Settings
-bool initiatingNode = false;          // Choose if this node should initiate the experiment
-int iterations = 50;                  // Total number of pings in this experiement (must be divisible by length of configs)
-const String msgToSend = "Ping";      // Transmission message
-int timeBetweenTx = 500;              // Time in ms between transmissions
-unsigned long responseTimeout = 2000; // Counts packet loss if timeout reached
+bool isReceiver = true;          // Choose if this node should be the receiver or the transmitter. 
+int iterationsPerConfig = 50;                  // Total number of pings in this experiement (must be divisible by length of configs)
+String msgToSend = "H";      // Transmission message
 
 /**
  * User-defined tests.
@@ -64,17 +75,18 @@ unsigned long responseTimeout = 2000; // Counts packet loss if timeout reached
  * BW: Bandwidth: 7.8, 10.4, 15.6, 20.8, 31.25, 41.7,
  * 62.5, 125.0, 250.0, 500.0
  * SF: Spreading factor: 7 to 12
- * CR: Coding rate: 5 to 8
- * PWR: Power: -17 to 22
  */
 RadioConfig configs[] = {
     // BW, SF, CR, PWR
-    {125.0f, 10, 6, 17}, // Config 1
-    {125.0f, 12, 8, 20}, // Config 2
-    {62.5f, 11, 8, 22},  // Config 3
-    {62.5f, 12, 8, 22},  // Config 4
-    {31.25f, 12, 8, 22}, // Config 5
+    {125.0f, 8, 70}, // Config 2
+    {125.0f, 10, 250},  // Config 4
+    {125.0f, 12, 1000}, // Config 6
+    {250.0f, 8, 35}, // Config 8
+    {250.0f, 10, 125},  // Config 10
+    {250.0f, 12, 500}, // Config 12
 };
+#define CR 8 // Coding rate
+#define PWR 13 // dBm
 
 const int nmbrOfConfigs = sizeof(configs) / sizeof(RadioConfig);
 
@@ -92,13 +104,16 @@ const int BSY = 6;
 const int TXEN = 8;
 const int RXEN = 9;
 
+const int buttonHigh = A6;
+const int buttonPin = A7;
+
 // Define LoRa radio
 SX1262 radio = new Module(CS, DIO1, RST, BSY);
 
 // State Variables
 int txState = RADIOLIB_ERR_NONE;
 bool transmitFlag = false;
-volatile bool operationDone = false;
+volatile bool receivedFlag = false;
 
 // Interrupt Service Routine
 #if defined(ESP8266) || defined(ESP32)
@@ -106,35 +121,31 @@ ICACHE_RAM_ATTR
 #endif
 void setFlag(void)
 {
-  operationDone = true;
+  receivedFlag = true;
 }
 
 /**
  * Displays current radio parameter values.
  */
-void displayRadioParams(float BW, uint8_t SF, uint8_t CR, uint8_t PWR)
+void displayRadioParams(float BW, uint8_t SF)
 {
   Serial.print("Frequency: ");
   Serial.print(FREQ);
   Serial.print(" | Bandwidth: ");
   Serial.print(BW);
   Serial.print(" | Spreading Factor: ");
-  Serial.print(SF);
-  Serial.print(" | Coding Rate: ");
-  Serial.print(CR);
-  Serial.print(" | Power: ");
-  Serial.print(PWR);
+  Serial.println(SF);
 }
 
 /**
  * Changes bandwidth, spreading factor, coding rate and power of the LoRa radio.
  */
-void setRadio(float BW, uint8_t SF, uint8_t CR, uint8_t PWR)
+void setRadio(float BW, uint8_t SF)
 {
   Serial.println("Initialising LoRa with parameters:");
-  displayRadioParams(BW, SF, CR, PWR);
+  displayRadioParams(BW, SF);
 
-  int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE, TCXO_V);
+  int state = radio.begin(FREQ, BW, SF, 4, SYNC, PWR, PRE, TCXO_V);
 
   if (state == RADIOLIB_ERR_NONE)
   {
@@ -150,123 +161,6 @@ void setRadio(float BW, uint8_t SF, uint8_t CR, uint8_t PWR)
   }
 }
 
-/**
- * Pings a node and listens for a response.
- * @param int pings: Number of pings to transmit.
- * @returns A three element array of floats.
- */
-float *pingNode(int pings)
-{
-  static float collectedData[3];
-  collectedData[0] = 0; // Received count
-  collectedData[1] = 0; // Sum of RSSIs
-  collectedData[2] = 0; // Sum of SNRs
-
-  for (int i = 0; i < pings; i++)
-  {
-    // Start Transmission
-    operationDone = false;
-    transmitFlag = true;
-    txState = radio.startTransmit("Ping");
-
-    // Wait for TX to finish
-    while (!operationDone)
-    {
-      yield();
-    }
-
-    // Switch to listening
-    operationDone = false;
-    transmitFlag = false;
-    radio.startReceive();
-
-    // Timeout
-    unsigned long startWait = millis();
-    bool received = false;
-
-    while (millis() - startWait < responseTimeout)
-    {
-      if (operationDone)
-      {
-        String str;
-        int state = radio.readData(str);
-        if (state == RADIOLIB_ERR_NONE)
-        {
-          float RSSI = radio.getRSSI();
-          float SNR = radio.getSNR();
-
-          collectedData[0]++;
-          collectedData[1] += RSSI;
-          collectedData[2] += SNR;
-          received = true;
-
-          Serial.print("Packet Received! RSSI: ");
-          Serial.print(RSSI);
-          Serial.println(" dBm");
-        }
-        break;
-      }
-      yield();
-    }
-
-    if (!received)
-    {
-      Serial.println("Packet Lost (Timeout)");
-    }
-
-    delay(timeBetweenTx);
-  }
-
-  // Calculate Averages
-  if (collectedData[0] > 0)
-  {
-    collectedData[1] = collectedData[1] / collectedData[0];
-    collectedData[2] = collectedData[2] / collectedData[0];
-  }
-
-  return collectedData;
-}
-
-/**
- * Runs the specified configs.
- */
-ConfigResult testConfig(int nrOfPackets, int currentConfig)
-{
-  ConfigResult result;
-
-  Serial.println("");
-  Serial.print("--- Config ");
-  Serial.print(currentConfig + 1);
-  Serial.print(" ---");
-
-  float bw = configs[currentConfig].bandwidth;
-  int sf = configs[currentConfig].spreadingFactor;
-  int cr = configs[currentConfig].codingRate;
-  int pwr = configs[currentConfig].power;
-
-  setRadio(bw, sf, cr, pwr);
-
-  float *pingResult = pingNode(nrOfPackets);
-  int receivedPackets = (int)pingResult[0];
-
-  Serial.print("Packets sent: ");
-  Serial.println(nrOfPackets);
-  Serial.print("Packets received: ");
-  Serial.println(receivedPackets);
-
-  float packetLoss = ((float)(nrOfPackets - receivedPackets) / nrOfPackets) * 100.0;
-
-  result.packetLoss = packetLoss;
-  result.avgRSSI = pingResult[1];
-  result.avgSNR = pingResult[2];
-
-  Serial.print("Packet Loss: ");
-  Serial.print(packetLoss);
-  Serial.println("%");
-
-  return result;
-}
-
 void experimentSummary(ConfigResult summary[])
 {
   Serial.println("The experiment is done. Here are the results:");
@@ -278,8 +172,7 @@ void experimentSummary(ConfigResult summary[])
     Serial.print("--- Results for config ");
     Serial.print(i + 1);
     Serial.println(" ---");
-    displayRadioParams(configs[i].bandwidth, configs[i].spreadingFactor,
-                       configs[i].codingRate, configs[i].power);
+    displayRadioParams(configs[i].bandwidth, configs[i].spreadingFactor);
     Serial.println();
     Serial.print("Average RSSI: ");
     Serial.print(summary[i].avgRSSI);
@@ -296,58 +189,124 @@ void experimentSummary(ConfigResult summary[])
   }
 }
 
+void awaitButton() {
+  Serial.println("Waiting for button press...");
+
+  // "Await" the press: Loop stays here as long as the pin is LOW (not pressed)
+  while (analogRead(buttonPin) < 4095) {
+    delay(250);
+  }
+  
+
+  Serial.println("Button pressed! Continuing program...");
+}
+
+void receiver() {
+  ConfigResult results[nmbrOfConfigs];
+  for (int i=0; i<nmbrOfConfigs; i++) {
+    awaitButton();
+    RadioConfig config = configs[i];
+    
+    float bw = config.bandwidth;
+    int sf = config.spreadingFactor;
+    int txDuration = config.timeBetweenTx;
+    int totalDuration = iterationsPerConfig * txDuration;
+    Serial.print("Beginning to listen ");
+    Serial.print(totalDuration / 1000);
+    Serial.print(" seconds for config ");
+    Serial.println(i+1);
+
+    setRadio(bw, sf);
+
+    CollectedData data;
+    data.numPackets = 0;
+    data.totalRSSI = 0;
+    data.totalSNR = 0;
+
+    int startTime = millis();
+    radio.startReceive();
+    while(millis() - startTime < totalDuration + 5000) {
+      if (receivedFlag) {
+        receivedFlag = false;
+        String str;
+        int state = radio.readData(str);
+
+        if (state == RADIOLIB_ERR_NONE) {
+          float RSSI = radio.getRSSI();
+          float SNR = radio.getSNR();
+
+          data.numPackets += 1;
+          data.totalRSSI += RSSI;
+          data.totalSNR += SNR;
+          Serial.print(data.numPackets);
+          Serial.print("Packet Received! RSSI: ");
+          Serial.print(RSSI);
+          Serial.print(" dBm, SNR: ");
+          Serial.println(SNR);
+        }
+
+        // Resume listening for the next packet
+        radio.startReceive();
+      }
+    }
+    Serial.println("Listening complete.");
+    ConfigResult result;
+    result.packetLoss = (1 - data.numPackets / iterationsPerConfig) * 100;
+    result.avgRSSI = data.totalRSSI / data.numPackets;
+    result.avgSNR = data.totalSNR / data.numPackets;
+    results[i] = result;
+  }
+  experimentSummary(results);
+}
+
+void transmitter() {
+  for (int i=0; i<nmbrOfConfigs; i++) {
+    awaitButton();
+    RadioConfig config = configs[i];
+    
+    float bw = config.bandwidth;
+    int sf = config.spreadingFactor;
+    Serial.print("Beginning to transmit.");
+    setRadio(bw, sf);
+    for (int j=0; j<iterationsPerConfig; j++) {
+      radio.startTransmit(msgToSend);
+      delay(config.timeBetweenTx);
+    }
+  }
+}
+ 
 /**
  * Arduino setup function.
  */
 void setup()
 {
   Serial.begin(115200);
+  delay(1000);
+  pinMode(buttonPin, INPUT);
+  pinMode(buttonHigh, OUTPUT);
+  digitalWrite(buttonHigh, HIGH);
+  digitalWrite(buttonPin, LOW);
 
   while (!Serial)
   {
     delay(10);
   }
-
-  if ((iterations % nmbrOfConfigs) != 0 || iterations <= 0)
-  {
-    Serial.println("Invalid configuration: iterations must be divisible by config count.");
-    while (true)
-      ;
-  }
-
   radio.setRfSwitchPins(RXEN, TXEN);
 
-  if (initiatingNode)
+  if (isReceiver)
   {
-    Serial.println("Node set as INITIATOR.");
+    Serial.println("Node set as RECEIVER.");
   }
   else
   {
-    Serial.println("Node set as LISTENER.");
+    Serial.println("Node set as TRANSMITTER.");
+  }
+
+  if (isReceiver) {
+    receiver();
+  } else {
+    transmitter();
   }
 }
 
-// Variables across main loop
-int currentConfig = 0;
-ConfigResult results[nmbrOfConfigs];
-
-/**
- * Main loop, runs the experiment.
- */
-void loop()
-{
-  if (currentConfig < nmbrOfConfigs)
-  {
-    int packetsToSend = iterations / nmbrOfConfigs;
-    results[currentConfig] = testConfig(packetsToSend, currentConfig);
-    currentConfig++;
-  }
-  else
-  {
-    experimentSummary(results);
-    while (true)
-    {
-      delay(10000);
-    }
-  }
-}
+void loop() {}
