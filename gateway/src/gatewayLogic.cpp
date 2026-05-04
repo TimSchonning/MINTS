@@ -64,15 +64,16 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
     LoRaInit();
 
     payload_t packet;
+    char *str;
 
     std::cout << "Gateway started..." << std::endl;
 
     while (true)
     {
-        int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
-
+        //int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
+        int state = radio.readData(str);
         if (state == RADIOLIB_ERR_NONE) {
-            std::cout << "Hej" << std::endl;
+            std::cout << str << std::endl;
             if (packet.signature == 0xDEADBEEF) {
                 std::cout << (int)packet.nodeID << ","
                           << (int)packet.pm10 << ","
