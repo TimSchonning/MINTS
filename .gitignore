@@ -7,3 +7,8 @@ database/src/node_modules/*
 gateway/src/secrets/*
 gateway/src/venv/*
 __pycache__
+*.out
+*.exe
+*.obj
+*.pdb
+__pycache__/
