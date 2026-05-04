@@ -15,7 +15,7 @@
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
-int CS = 40, DIO1 = 36, DIO4 = 31, RST = 12;
+int CS = 21, DIO1 = 16, BUSY = 18, RST = 20;
 /**
  * Other pins, unsure if needed:
  * int MOSI = 19;
@@ -32,8 +32,8 @@ int PWR = 10;       // Power
 int PRE = 8;        // Preamble
 int BAUD = 115200;  // Baud
 
-PiHal* hal = new PiHal(0);
-Module* mod = new Module(hal, CS, DIO1, RST, DIO4);
+PiHal* hal = new PiHal(1, 2000000, 0);
+Module* mod = new Module(hal, CS, DIO1, BUSY, RST);
 SX1262 radio(mod);
 
 void LoRaInit() {
