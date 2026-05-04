@@ -12,6 +12,7 @@
 const uint64_t S_TO_uS                  = 1000000;
 const uint64_t S_TO_mS                  = 1000;
 const uint32_t BAUD                     = 115200;
+const uint64_t MAX_TX_DELAY_S           = 60;
 RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ     = 10;
 RTC_DATA_ATTR uint32_t TIME_TO_SLEEP_S  = 524;      //make lowercase, will be calc at runtime
 
