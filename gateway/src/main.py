@@ -1,6 +1,5 @@
 # Code to send the received packet to Firebase
 # Automatically runs (but does not compile) the gatewayLogic file
-# TODO: Implement connection to Firebase.
 
 import subprocess
 from databaseConnection import DbConnection

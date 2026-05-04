@@ -7,10 +7,10 @@
 
 #include <iostream>
 #include <string>
-#include "../include/DataPacket.h"
-#include "../include/protocol.h"
-#include "../gateway/RadioLib/src/modules/SX126x/SX1262.h"
-#include "../gateway/RadioLib/src/hal/RPi/PiHal.h"
+#include "DataPacket.h"
+#include "protocol.h"
+#include "modules/SX126x/SX1262.h"
+#include "hal/RPi/PiHal.h"
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
