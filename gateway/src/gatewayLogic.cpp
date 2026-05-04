@@ -66,7 +66,7 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
         int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
         if (state == RADIOLIB_ERR_NONE) {
-            std::cout << packet.signature << std::endl;
+            std::cout << packet.signature << std::endl; // Test print
             if (packet.signature == 0xDEADBEEF) {
                 std::cout << (int)packet.nodeID << ","
                           << (int)packet.pm10 << ","
