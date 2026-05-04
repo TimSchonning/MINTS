@@ -7,7 +7,7 @@ from databaseConnection import DbConnection
 from measurement import MeasurementGroup
 
 # Change to oath where gatewayLogic.exe exists
-cpp_exe_path = r"C:/Users/deode/Documents/kod/Kandidatebaete/MINTS/gateway/src/gatewayLogic.exe"
+cpp_exe_path = r"gatewayLogic.exe"
 
 db_connection = DbConnection()
 
