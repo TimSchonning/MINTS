@@ -33,7 +33,7 @@ int PRE = 8;        // Preamble
 int BAUD = 115200;  // Baud
 
 PiHal* hal = new PiHal(1, 2000000, 0);
-Module* mod = new Module(hal, CS, DIO1, BUSY, RST);
+Module *mod = new Module(hal, CS, DIO1, RST, BUSY);
 SX1262 radio(mod);
 
 void LoRaInit() {
