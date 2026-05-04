@@ -55,7 +55,7 @@ void setup() {
     } else {
         srand((unsigned int)time(NULL) + node_id);
         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS):
-        
+
         transmit_payload();
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));

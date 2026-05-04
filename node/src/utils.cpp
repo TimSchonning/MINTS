@@ -1,6 +1,8 @@
 #include <cstdint>
+#include <stdio.h>
 #include <RadioLib>
 #include <math.h>
+#include <Preferences.h>
 
 #include "config.h"
 #include "debug_macros.h"
@@ -268,29 +270,43 @@ void config_mode() {
     }
 }
 
-// static void write_nvs(const char* key, uint8_t data_in) {
-//     if (!putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
-// }
+static void write_nvs(const char* key, uint8_t data_in) {
+    if (!putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
+}
 
-// static void write_nvs(const char* key, uint16_t data_in) {
-//     if (!putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs")
-// }
+static void write_nvs(const char* key, uint16_t data_in) {
+    if (!putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs")
+}
 
-// static void write_nvs(const char* key, uint32_t data_in) {
-//     if (!putULong(key, data_in)) error_handler(-1, "Failed to write to nvs")
-// }
+static void write_nvs(const char* key, uint32_t data_in) {
+    if (!putULong(key, data_in)) error_handler(-1, "Failed to write to nvs")
+}
 
-// static void read_nvs(const char* key, uint8_t &data_out) {
-//     if (!getUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
-// }
+static void read_nvs(const char* key, uint8_t &data_out) {
+    data_out = getUChar(key, 0);
+}
 
-// static void read_nvs(const char* key, uint16_t &data_out) {
-//     // read from nvs
-// }
+static void read_nvs(const char* key, uint16_t &data_out) {
+    data_out = getUShort(key, 0);
+}
 
-// static void read_nvs(const char* key, uint32_t &data_out) {
-//     // read from nvs
-// }
+static void read_nvs(const char* key, uint32_t &data_out) {
+    data_out = getULong(key, 0);
+}
+
+void add_to_nvs(uint8_t boot_count, uint8_t pm10, uint8_t pm25, uint16_t noise) {
+    char key[16];
+    
+    snprintf(key, sizeof(key), "i_%u_p1", boot_count);
+    write_nvs(key, pm10);
+    
+    snprintf(key, sizeof(key), "i_%u_p2", boot_count);
+    write_nvs(key, pm25);
+    
+    snprintf(key, sizeof(key), "i_%u_n", boot_count);
+    write_nvs(key, noise);
+}
+
 
 // void init_nvs() {
 //     // Initialises the flash storage at FIRST startup to match ram
