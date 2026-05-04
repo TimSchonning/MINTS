@@ -70,8 +70,8 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
 
     while (true)
     {
-        //int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
-        int state = radio.readData(&str, 32);
+        int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
+
         if (state == RADIOLIB_ERR_NONE) {
             std::cout << str << std::endl;
             if (packet.signature == 0xDEADBEEF) {
@@ -84,6 +84,7 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
         } else if (state == RADIOLIB_ERR_RX_TIMEOUT){
             // No packet received in this polling window, maybe add some kind of sleep?
             // Normal behaviour btw
+            std::cout << state << std::endl
         } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
             std::cout << "CRC Error!" << std::endl;
         } else {
