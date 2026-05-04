@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 #include "DataPacket.h"
-#include "protocol.h"
+#include "../include/protocol.h"
 #include "modules/SX126x/SX1262.h"
 #include "hal/RPi/PiHal.h"
 
@@ -31,7 +31,7 @@ int PWR = 10;       // Power
 int PRE = 8;        // Preamble
 int BAUD = 115200;  // Baud
 
-PiHal* hal = new PiHal();
+PiHal* hal = new PiHal(0);
 Module* mod = new Module(hal, CS, DIO1, RST, DIO4);
 SX1262 radio(mod);
 

@@ -1,5 +1,7 @@
-/
-/ Types of messages
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
+
+// Types of messages
 const uint8_t MSG_TYPE_ACK              = 0xA;
 const uint8_t MSG_TYPE_PAYLOAD_UPLINK   = 0xB;  // node -> gateway
 
@@ -13,7 +15,7 @@ const uint8_t MSG_TYPE_START_DOWNLINK   = 0xF;
 typedef struct __attribute__((packed)) {
     uint8_t type = MSG_TYPE_ACK;
     uint8_t node_id;
-    uint8_t ack_for;    //ie which type of msg is being ack:ed
+    uint8_t ack_for;    //i.e which type of msg is being ack:ed
 } msg_ack_t;
 
 /**
@@ -24,3 +26,5 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t node_id;
 } msg_req_t;
+
+#endif
