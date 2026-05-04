@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <RadioLib>
 #include "DataPacket.h"
 #include "../include/protocol.h"
 #include "modules/SX126x/SX1262.h"
