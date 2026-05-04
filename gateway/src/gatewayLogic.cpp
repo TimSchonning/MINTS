@@ -16,12 +16,6 @@
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
 int CS = 21, DIO1 = 16, BUSY = 18, RST = 20;
-/**
- * Other pins, unsure if needed:
- * int MOSI = 19;
- * int MISO = 21;
- * int BUSY = 38;
- */
 
 float FREQ = 868.1; // Frequency
 float BW = 125.0;   // Bandwidth
@@ -64,7 +58,6 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
     LoRaInit();
 
     payload_t packet;
-    char *str;
 
     std::cout << "Gateway started..." << std::endl;
 
@@ -73,7 +66,7 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
         int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
         if (state == RADIOLIB_ERR_NONE) {
-            std::cout << str << std::endl;
+            std::cout << packet << std::endl;
             if (packet.signature == 0xDEADBEEF) {
                 std::cout << (int)packet.nodeID << ","
                           << (int)packet.pm10 << ","
@@ -84,7 +77,6 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
         } else if (state == RADIOLIB_ERR_RX_TIMEOUT){
             // No packet received in this polling window, maybe add some kind of sleep?
             // Normal behaviour btw
-            std::cout << state << std::endl
         } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
             std::cout << "CRC Error!" << std::endl;
         } else {
