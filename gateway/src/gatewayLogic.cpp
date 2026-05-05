@@ -32,10 +32,10 @@ void LoRaInit() {
 }
 
 void handleSensorReading(payload_t packet) {
-    std::cout << (int)packet.nodeID     << ","
-              << (int)packet.pm10       << ","
-              << (int)packet.pm25       << ","
-              << (int)packet.noise_peak << std::endl;
+    std::cout << (int)packet.node_id    << ","
+              << (int)packet.readings[0]       << ","
+              << (int)packet.readings[1]       << ","
+              << (int)packet.readings[2] << std::endl; // TODO: Är inte noise peak i readings[2] och readings[3]?
     std::cout.flush();
 }
 
