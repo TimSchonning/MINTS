@@ -18,7 +18,7 @@ const uint8_t MSG_TYPE_CONFIG         = 0xF0;
  * @note Is __attribute__((packed)
  */
 typedef struct __attribute__((packed)) {
-    uint8_t type;
+    uint8_t signature;
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
     uint8_t readings[BUFFERING_THRESHOLD * 4]
