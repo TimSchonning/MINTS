@@ -1,12 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
+#include <cstdint>
+#include "esp_attr.h"
 
 //// General config
 const uint64_t S_TO_uS                  = 1000000;
@@ -29,14 +25,14 @@ RTC_DATA_ATTR uint16_t NS_SAMPLE_TIME_mS = 0;   // must be > 1
 const uint8_t  NS_PIN                    = 0;
 
 //// LoRa config
-RTC_DATA_ATTR float    FREQUENCY        = 868.1;
-RTC_DATA_ATTR float    BANDWIDTH        = 62.5;
-RTC_DATA_ATTR uint8_t  SPREADING_FACTOR = 12;
-RTC_DATA_ATTR uint8_t  CODING_RATE      = 8;
-RTC_DATA_ATTR uint8_t  SYNC_WORD        = 0x12;
-RTC_DATA_ATTR int8_t   POWER            = 14;
-RTC_DATA_ATTR uint16_t PREAMBLE_LEN     = 8;
-RTC_DATA_ATTR uint8_t  GAIN             = 0;
+float    FREQUENCY        = 868.1;
+float    BANDWIDTH        = 62.5;
+uint8_t  SPREADING_FACTOR = 12;
+uint8_t  CODING_RATE      = 8;
+uint8_t  SYNC_WORD        = 0x12;
+int8_t   POWER            = 14;
+uint16_t PREAMBLE_LEN     = 8;
+uint8_t  GAIN             = 0;
 
 // LoRa pins (check datasheet)
 const int PIN_NSS  = 0;
@@ -52,7 +48,7 @@ RTC_DATA_ATTR bool needs_initialisation = true;
 RTC_DATA_ATTR uint8_t  boot_count           = 0;
 RTC_DATA_ATTR uint8_t  node_id              = 0;
 RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
-RTC_DATA_ATTR uint8_t  BUFFERING_THRESHOLD  = 4;
+constexpr uint8_t  BUFFERING_THRESHOLD  = 4;
 RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 //// TX config specific

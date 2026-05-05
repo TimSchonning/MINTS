@@ -2,14 +2,8 @@
 #define ENCODE_PAYLOAD_H
 
 #include <stdint.h>
-#include <encode_payload.h>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
 #include "sensor_logic.h"
-#include "utils.h"
+#include "protocol.h"
 
 /**
  * @brief  Returns the encoded payload.
@@ -25,6 +19,6 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
  * Initializes radio and transmits via LoRa.
  * @return Success indicator
  */
-bool transmit_payload(int payload);
+bool transmit_payload(payload_t* payload);
 
 #endif

@@ -3,11 +3,16 @@
 
 #include "config.h"
 #include "debug_macros.h"
-#include "encode_payload.h"
 #include "sensor_logic.h"
 #include "utils.h"
 
 extern HM330X particle_sensor;
+extern uint8_t ps_sensor_buf[];
+extern ps_state_t ps_state;
+extern ps_result_t ps_result;
+
+extern ns_state_t ns_state;
+extern ns_result_t ns_result;
 
 static uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = input / count;

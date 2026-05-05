@@ -3,13 +3,6 @@
 
 #include <stdint.h>
 
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
-
 // Types of messages
 const uint8_t MSG_TYPE_ACK            = 0xA0;
 const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
@@ -68,7 +61,7 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
-    uint8_t readings[BUFFERING_THRESHOLD * 4]
+    uint8_t readings[1 * 4];
     // uint8_t pm10, pm25;
     // uint16_t noise_peak;
 } payload_t;

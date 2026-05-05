@@ -1,14 +1,20 @@
 #include <cstdint>
 #include <stdio.h>
-#include <RadioLib>
+#include <RadioLib.h>
 #include <math.h>
 #include <Preferences.h>
+#include <WiFi.h>
+#include <esp_wifi.h>
+#include <esp_bt.h>
 
 #include "config.h"
 #include "debug_macros.h"
-#include "encode_payload.h"
 #include "sensor_logic.h"
 #include "utils.h"
+#include "protocol.h"
+
+Preferences prefs;
+extern SX1262 radio;
 
 bool error_handler(int16_t state, const char* message) {
     if (state != RADIOLIB_ERR_NONE) {
@@ -32,7 +38,7 @@ void power_down_radios() {
     esp_bt_controller_disable();
 }
 
-static bool standby_mode() {
+bool standby_mode() {
     msg_clearance_t clearance;
     int16_t state = radio.receive((uint8_t*)&clearance, sizeof(clearance));
 
@@ -48,7 +54,7 @@ static bool standby_mode() {
         msg_clearance_ack.node_id = node_id;
         msg_clearance_ack.ack_for = MSG_TYPE_CLEARANCE;
 
-        state = radio.transmit(msg_clearance_ack, sizeof(msg_ack_t));
+        state = radio.transmit((uint8_t*)&msg_clearance_ack, sizeof(msg_ack_t));
         
         if (!error_handler(state, "Failed to ack standby clearance")) {
             radio.sleep();
@@ -91,7 +97,7 @@ void initialise_node() {
         msg_join_req.type    = MSG_TYPE_JOIN_REQ;
         msg_join_req.node_id = 0x00;
 
-        state = radio.transmit(&msg_join_req, sizeof(msg_join_req));
+        state = radio.transmit((uint8_t*)&msg_join_req, sizeof(msg_join_req));
 
         id_attempts++;
 
@@ -101,7 +107,7 @@ void initialise_node() {
         if (!error_handler(state, "[ERROR] LoRa_init failed to send join msg to the gateway")) {
             //// Waits the for the join ack from the gateway
             msg_ack_t msg_join_ack;
-            state = radio.receive(&msg_join_ack, sizeof(msg_join_ack));
+            state = radio.receive((uint8_t*)&msg_join_ack, sizeof(msg_join_ack));
     
             if (msg_join_ack.ack_for == MSG_TYPE_JOIN_REQ &&
                 !error_handler(state, "[ERROR] LoRa_init failed to receive join ack from the gateway")) {
@@ -169,84 +175,84 @@ bool sleep_noise_sensor() {
 //     int state = radio.transmit(tx_buffer, cursor); 
 // }
 
-static void handle_config_msg(size_t len) {
-    if (len < sizeof(msg_config_t)) return; 
+// static void handle_config_msg(size_t len) {
+//     if (len < sizeof(msg_config_t)) return; 
     
-    msg_config_t* header = (msg_config_t*)config_rx_buffer;
+//     msg_config_t* header = (msg_config_t*)config_rx_buffer;
 
-    size_t cursor = sizeof(msg_config_t);
+//     size_t cursor = sizeof(msg_config_t);
 
-    while (cursor < len) {
-        uint8_t tag        = config_rx_buffer[cursor++];
-        uint8_t length     = config_rx_buffer[cursor++];
-        uint8_t* value_ptr = &config_rx_buffer[cursor];
+//     while (cursor < len) {
+//         uint8_t tag        = config_rx_buffer[cursor++];
+//         uint8_t length     = config_rx_buffer[cursor++];
+//         uint8_t* value_ptr = &config_rx_buffer[cursor];
 
-        switch (tag) {
-            case TAG_LORA_FREQ:
-                memcpy(&FREQUENCY, value_ptr, sizeof(FREQUENCY));
-                break;
-            case TAG_LORA_BW:
-                memcpy(&BANDWIDTH, value_ptr, sizeof(BANDWIDTH));
-                break;
-            case TAG_LORA_SF:
-                memcpy(&SPREADING_FACTOR, value_ptr, sizeof(SPREADING_FACTOR));
-                break;
-            case TAG_LORA_CR:
-                memcpy(&CODING_RATE, value_ptr, sizeof(CODING_RATE));
-                break;
-            case TAG_LORA_SYNC:
-                memcpy(&SYNC_WORD, value_ptr, sizeof(SYNC_WORD));
-                break;
-            case TAG_LORA_PWR:
-                memcpy(&POWER, value_ptr, sizeof(POWER));
-                break;
-            case TAG_LORA_PREAMBLE:
-                memcpy(&PREAMBLE_LEN, value_ptr, sizeof(PREAMBLE_LEN));
-                break;
-            case TAG_LORA_GAIN:
-                memcpy(&GAIN, value_ptr, sizeof(GAIN));
-                break;
+//         switch (tag) {
+//             case TAG_LORA_FREQ:
+//                 memcpy(&FREQUENCY, value_ptr, sizeof(FREQUENCY));
+//                 break;
+//             case TAG_LORA_BW:
+//                 memcpy(&BANDWIDTH, value_ptr, sizeof(BANDWIDTH));
+//                 break;
+//             case TAG_LORA_SF:
+//                 memcpy(&SPREADING_FACTOR, value_ptr, sizeof(SPREADING_FACTOR));
+//                 break;
+//             case TAG_LORA_CR:
+//                 memcpy(&CODING_RATE, value_ptr, sizeof(CODING_RATE));
+//                 break;
+//             case TAG_LORA_SYNC:
+//                 memcpy(&SYNC_WORD, value_ptr, sizeof(SYNC_WORD));
+//                 break;
+//             case TAG_LORA_PWR:
+//                 memcpy(&POWER, value_ptr, sizeof(POWER));
+//                 break;
+//             case TAG_LORA_PREAMBLE:
+//                 memcpy(&PREAMBLE_LEN, value_ptr, sizeof(PREAMBLE_LEN));
+//                 break;
+//             case TAG_LORA_GAIN:
+//                 memcpy(&GAIN, value_ptr, sizeof(GAIN));
+//                 break;
 
-            case TAG_CPU_FREQ:
-                memcpy(&CPU_FREQ_MHZ, value_ptr, sizeof(CPU_FREQ_MHZ));
-                break;
-            case TAG_SLEEP_TIME:
-                memcpy(&TIME_TO_SLEEP_S, value_ptr, sizeof(TIME_TO_SLEEP_S));
-                break;
-            case TAG_MEASURE_WINDOW:
-                memcpy(&MEASUREMENT_WINDOW_S, value_ptr, sizeof(MEASUREMENT_WINDOW_S));
-                break;
+//             case TAG_CPU_FREQ:
+//                 memcpy(&CPU_FREQ_MHZ, value_ptr, sizeof(CPU_FREQ_MHZ));
+//                 break;
+//             case TAG_SLEEP_TIME:
+//                 memcpy(&TIME_TO_SLEEP_S, value_ptr, sizeof(TIME_TO_SLEEP_S));
+//                 break;
+//             case TAG_MEASURE_WINDOW:
+//                 memcpy(&MEASUREMENT_WINDOW_S, value_ptr, sizeof(MEASUREMENT_WINDOW_S));
+//                 break;
 
-            case TAG_PS_HEAT_UP:
-                memcpy(&PS_HEAT_UP_TIME_S, value_ptr, sizeof(PS_HEAT_UP_TIME_S));
-                break;
-            case TAG_PS_SAMPLE_TIME:
-                memcpy(&PS_SAMPLE_TIME_mS, value_ptr, sizeof(PS_SAMPLE_TIME_mS));
-                break;
-            case TAG_PS_TARGET:
-                memcpy(&PS_TARGET_SAMPLES, value_ptr, sizeof(PS_TARGET_SAMPLES));
-                break;
-            case TAG_NS_SAMPLE_TIME:
-                memcpy(&NS_SAMPLE_TIME_mS, value_ptr, sizeof(NS_SAMPLE_TIME_mS));
-                break;
+//             case TAG_PS_HEAT_UP:
+//                 memcpy(&PS_HEAT_UP_TIME_S, value_ptr, sizeof(PS_HEAT_UP_TIME_S));
+//                 break;
+//             case TAG_PS_SAMPLE_TIME:
+//                 memcpy(&PS_SAMPLE_TIME_mS, value_ptr, sizeof(PS_SAMPLE_TIME_mS));
+//                 break;
+//             case TAG_PS_TARGET:
+//                 memcpy(&PS_TARGET_SAMPLES, value_ptr, sizeof(PS_TARGET_SAMPLES));
+//                 break;
+//             case TAG_NS_SAMPLE_TIME:
+//                 memcpy(&NS_SAMPLE_TIME_mS, value_ptr, sizeof(NS_SAMPLE_TIME_mS));
+//                 break;
 
-            case TAG_NODE_ID:
-                memcpy(&node_id, value_ptr, sizeof(node_id));
-                break;
-            case TAG_MAX_RETRIES:
-                memcpy(&MAX_TX_RETRIES, value_ptr, sizeof(MAX_TX_RETRIES));
-                break;
-            case TAG_BUFFER_THRESH:
-                memcpy(&BUFFERING_THRESHOLD, value_ptr, sizeof(BUFFERING_THRESHOLD));
-                break;
+//             case TAG_NODE_ID:
+//                 memcpy(&node_id, value_ptr, sizeof(node_id));
+//                 break;
+//             case TAG_MAX_RETRIES:
+//                 memcpy(&MAX_TX_RETRIES, value_ptr, sizeof(MAX_TX_RETRIES));
+//                 break;
+//             case TAG_BUFFER_THRESH:
+//                 memcpy(&BUFFERING_THRESHOLD, value_ptr, sizeof(BUFFERING_THRESHOLD));
+//                 break;
 
-            default:
-                DEBUG_PRINTLN("Unknown config tag")
-                break;
-        }
-        cursor += length;
-    }
-}
+//             default:
+//                 DEBUG_PRINTLN("Unknown config tag")
+//                 break;
+//         }
+//         cursor += length;
+//     }
+// }
 
 void config_mode() {
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
@@ -258,40 +264,52 @@ void config_mode() {
         if (config_rx_buffer[0] == MSG_TYPE_CONFIG) {
             size_t len = radio.getPacketLength();
             
-            handle_config_msg(len);
+            // handle_config_msg(len);
     
             // ACKs the gateway
             msg_ack_t msg_ack;
             msg_ack.node_id = node_id;
             msg_ack.ack_for = MSG_TYPE_CONFIG;
-            state = radio.transmit(&payload, sizeof(payload_t));
+            state = radio.transmit((uint8_t*)&msg_ack, sizeof(payload_t));
         }
-        radio.sleep()
+        radio.sleep();
     }
 }
 
 static void write_nvs(const char* key, uint8_t data_in) {
-    if (!putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs")
+    prefs.begin("mints", false);
+    if (!prefs.putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    prefs.end();
 }
 
 static void write_nvs(const char* key, uint16_t data_in) {
-    if (!putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs")
+    prefs.begin("mints", false);
+    if (!prefs.putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    prefs.end();
 }
 
 static void write_nvs(const char* key, uint32_t data_in) {
-    if (!putULong(key, data_in)) error_handler(-1, "Failed to write to nvs")
+    prefs.begin("mints", false);
+    if (!prefs.putULong(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    prefs.end();
 }
 
 static void read_nvs(const char* key, uint8_t &data_out) {
-    data_out = getUChar(key, 0);
+    prefs.begin("mints", true);
+    data_out = prefs.getUChar(key, 0);
+    prefs.end();
 }
 
 static void read_nvs(const char* key, uint16_t &data_out) {
-    data_out = getUShort(key, 0);
+    prefs.begin("mints", true);
+    data_out = prefs.getUShort(key, 0);
+    prefs.end();
 }
 
 static void read_nvs(const char* key, uint32_t &data_out) {
-    data_out = getULong(key, 0);
+    prefs.begin("mints", true);
+    data_out = prefs.getULong(key, 0);
+    prefs.end();
 }
 
 void add_to_nvs(uint8_t boot_count, uint8_t pm10, uint8_t pm25, uint16_t noise) {

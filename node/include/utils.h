@@ -1,14 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <cstdint>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
 
 /**
  * @brief Logic for handling radio status codes.
