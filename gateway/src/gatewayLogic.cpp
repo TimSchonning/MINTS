@@ -7,24 +7,15 @@
 
 #include <iostream>
 #include <string>
+
 #include "RadioLib.h"
 #include "DataPacket.h"
 #include "../include/protocol.h"
+#include "../include/config.h"
 #include "modules/SX126x/SX1262.h"
 #include "hal/RPi/PiHal.h"
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
-
-int CS = 21, DIO1 = 16, BUSY = 18, RST = 20;
-
-float FREQ = 868.1; // Frequency
-float BW = 125.0;   // Bandwidth
-int SF = 8;         // Spreading Factor
-int CR = 8;         // Coding Rate
-int SYNC = 0x12;    // Sync word
-int PWR = 13;       // Power
-int PRE = 8;        // Preamble
-int BAUD = 115200;  // Baud
 
 PiHal* hal = new PiHal(1, 2000000, 0);
 Module *mod = new Module(hal, CS, DIO1, RST, BUSY);
