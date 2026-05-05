@@ -4,6 +4,7 @@
 #include <esp_bt.h>
 #include <SPI.h>
 #include <RadioLib.h>
+#include <cstdlib.h>
 
 #include "config.h"
 #include "debug_macros.h"
@@ -29,7 +30,7 @@ void setup() {
     DEBUG_BEGIN(BAUD);
 
     //// Node initialisation
-    if (needs_initialisation) initialise_node();
+    //if (needs_initialisation) initialise_node();
 
     // Initialise sensors
     if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");
@@ -52,6 +53,9 @@ void setup() {
     if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
+        srand((unsigned int)time(NULL) + node_id);
+        delay((rand() % MAX_TX_DELAY_S) * S_TO_mS):
+
         transmit_payload();
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));
