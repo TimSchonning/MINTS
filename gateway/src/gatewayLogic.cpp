@@ -52,26 +52,34 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
 
     std::cout << "Gateway started..." << std::endl;
 
-    while (true)
-    {
+    while (true) {
         int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
-        if (state == RADIOLIB_ERR_NONE) {
-            std::cout << packet.signature << std::endl; // Test print
-            if (packet.signature == 0xDEADBEEF) {
-                std::cout << (int)packet.nodeID << ","
-                          << (int)packet.pm10 << ","
-                          << (int)packet.pm25 << ","
-                          << (int)packet.noise_peak << std::endl;
-                std::cout.flush();                              
-            }
-        } else if (state == RADIOLIB_ERR_RX_TIMEOUT){
-            // No packet received in this polling window, maybe add some kind of sleep?
-            // Normal behaviour btw
-        } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
-            std::cout << "CRC Error!" << std::endl;
-        } else {
-            std::cout << "Unknown error: " << (int)state << std::endl;
+        switch (state) {
+            case RADIOLIB_ERR_NONE:
+                std::cout << packet.signature << std::endl; // Test print
+                
+                if (packet.signature == 0xDEADBEEF) {
+                    std::cout << (int)packet.nodeID     << ","
+                              << (int)packet.pm10       << ","
+                              << (int)packet.pm25       << ","
+                              << (int)packet.noise_peak << std::endl;
+                    std::cout.flush(); 
+                }
+                break;
+
+            case RADIOLIB_ERR_RX_TIMEOUT:
+                // No packet received in this polling window, maybe add some kind of sleep?
+                // Normal behaviour btw
+                break;
+
+            case RADIOLIB_ERR_CRC_MISMATCH:
+                std::cout << "CRC Error!" << std::endl;
+                break;
+
+            default:
+                std::cout << "Unknown error: " << (int)state << std::endl;
+                break;
         }
     }
 
