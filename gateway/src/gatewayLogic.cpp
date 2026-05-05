@@ -31,21 +31,39 @@ void LoRaInit() {
     }
 }
 
-// bool IdAssignment() {
-//     uint8_t id = 1;     //TODO: ID from db. 1 is placeholder.
-//     // TODO: db error handling
-    
-//     msg_ack_t idReqACK;
-//     idReqACK.node_id = id;  // The new ID!
-//     idReqACK.ack_for = MSG_TYPE_JOIN_REQ;
+void handleSensorReading(payload_t packet) {
+    std::cout << (int)packet.nodeID     << ","
+              << (int)packet.pm10       << ","
+              << (int)packet.pm25       << ","
+              << (int)packet.noise_peak << std::endl;
+    std::cout.flush();
+}
 
-//     int state = radio.transmit((uint8_t*)&idReqACK, sizeof(msg_ack_t));
-//     //error_handler(state);  // TODO: error handling
-//     return (state == RADIOLIB_ERR_NONE); // If succeeded return true
-// }
+void sendAck(uint8_t nodeID, uint8_t ackFor) {
+    msg_ack_t msg_packet_ack;
+    msg_packet_ack.node_id = nodeID;
+    msg_packet_ack.ack_for = ackFor;
 
-int main() // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
-{
+    radio.transmit((uint8_t*)&msg_packet_ack, sizeof(msg_ack_t));
+}
+
+void handlePacket(payload_t packet) {
+    switch (packet.signature) {
+        case MSG_TYPE_PAYLOAD_UPLINK:
+            handleSensorReading(packet);
+            sendAck(packet.node_id, MSG_TYPE_PAYLOAD_UPLINK);
+            break;
+
+        case MSG_TYPE_ACK:
+            break;
+
+        default:
+            std::cout << "Unknown packet signature: " << (uint8_t)packet.signature << std::endl;
+            break;
+    }
+}
+
+int main() { // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
     LoRaInit();
 
     payload_t packet;
@@ -57,20 +75,10 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
 
         switch (state) {
             case RADIOLIB_ERR_NONE:
-                std::cout << packet.signature << std::endl; // Test print
-                
-                if (packet.signature == 0xDEADBEEF) {
-                    std::cout << (int)packet.nodeID     << ","
-                              << (int)packet.pm10       << ","
-                              << (int)packet.pm25       << ","
-                              << (int)packet.noise_peak << std::endl;
-                    std::cout.flush(); 
-                }
+                handlePacket(packet);
                 break;
 
             case RADIOLIB_ERR_RX_TIMEOUT:
-                // No packet received in this polling window, maybe add some kind of sleep?
-                // Normal behaviour btw
                 break;
 
             case RADIOLIB_ERR_CRC_MISMATCH:
@@ -85,3 +93,16 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
 
     return 0;
 }
+
+// bool IdAssignment() {
+//     uint8_t id = 1;     //TODO: ID from db. 1 is placeholder.
+//     // TODO: db error handling
+    
+//     msg_ack_t idReqACK;
+//     idReqACK.node_id = id;  // The new ID!
+//     idReqACK.ack_for = MSG_TYPE_JOIN_REQ;
+
+//     int state = radio.transmit((uint8_t*)&idReqACK, sizeof(msg_ack_t));
+//     //error_handler(state);  // TODO: error handling
+//     return (state == RADIOLIB_ERR_NONE); // If succeeded return true
+// }
