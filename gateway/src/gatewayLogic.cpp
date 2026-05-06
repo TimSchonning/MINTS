@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdint.h>
 
 #include "RadioLib.h"
 #include "DataPacket.h"
@@ -40,7 +41,7 @@ void handleSensorReading(payload_t packet) {
     std::cout << (int)packet.node_id    << ","
               << (int)packet.readings[0]       << ","
               << (int)packet.readings[1]       << ","
-              << (int)packet.readings[2] << std::endl; // TODO: Är inte noise peak i readings[2] och readings[3]?
+              << (uint16_t) (packet.readings[2] << 8) | packet.readings[3] << std::endl;
     std::cout.flush();
 }
 
