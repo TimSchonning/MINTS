@@ -18,7 +18,6 @@
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
 PiHal* hal = new PiHal(1, 2000000, 0);
-hal->init();
 
 Module *mod = new Module(hal, CS, DIO1, RST, BUSY);
 SX1262 radio(mod);
