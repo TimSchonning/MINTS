@@ -41,7 +41,7 @@ void handleSensorReading(payload_t packet) {
     std::cout << (int)packet.node_id    << ","
               << (int)packet.readings[0]       << ","
               << (int)packet.readings[1]       << ","
-              << (uint16_t) (packet.readings[2] << 8) | packet.readings[3] << std::endl;
+              << (uint16_t) ((packet.readings[2] << 8) | packet.readings[3]) << std::endl;
     std::cout.flush();
 }
 
