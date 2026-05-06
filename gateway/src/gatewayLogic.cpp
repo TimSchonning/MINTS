@@ -25,6 +25,10 @@ SX1262 radio(mod);
 void LoRaInit() {
     int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE);
 
+    if (state == RADIOLIB_ERR_NONE) {
+        state = radio.setDio2AsRfSwitch();
+    }
+
     if (state != RADIOLIB_ERR_NONE) {
         std::cout << "Initialisation failed, error code: \n" 
                   << "For error codes, see: https://jgromes.github.io/RadioLib/group__status__codes.html"

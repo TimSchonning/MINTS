@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 /// @brief Lora configs
-int CS = 21, DIO1 = 16, BUSY = 18, RST = 20;
+int CS = 21, DIO1 = 16, BUSY = 20, RST = 18;
 
 float FREQ = 868.1; // Frequency
 float BW = 125.0;   // Bandwidth
