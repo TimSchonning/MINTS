@@ -24,7 +24,7 @@ def run_lora(gatewayLogicPath):
     )
     
     print("Python is now connected with LoRa...")
-    print("Listening to LoRa packets.")
+    print("Listening for LoRa packets.")
     
     return process
 

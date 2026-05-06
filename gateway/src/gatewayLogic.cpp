@@ -74,8 +74,6 @@ int main() { // TODO: Clear gateway simulation and add (modified) main loop from
 
     payload_t packet;
 
-    std::cout << "Gateway started..." << std::endl;
-
     while (true) {
         int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
