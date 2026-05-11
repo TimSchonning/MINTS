@@ -70,7 +70,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
  * @return is done
  * 
  * @note Avoid any delay() when using this function since it depends heavily on being called at a high sample rate
- * @note Hard-coded to an ADC which returns a 10 bit value. Change if possible/needed
+ * @note Hard-coded to an ADC which returns a 12 bit value. Change if possible/needed
  */
 bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms);
 
