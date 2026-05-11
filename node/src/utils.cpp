@@ -294,11 +294,11 @@ static void read_nvs(const char* key, uint32_t &data_out) {
     data_out = getULong(key, 0);
 }
 
-void add_to_nvs(uint8_t boot_count, uint8_t pm10, uint8_t pm25, uint16_t noise) {
+void add_to_nvs(uint8_t boot_count, uint8_t pm1, uint8_t pm25, uint16_t noise) {
     char key[16];
     
     snprintf(key, sizeof(key), "i_%u_p1", boot_count);
-    write_nvs(key, pm10);
+    write_nvs(key, pm1);
     
     snprintf(key, sizeof(key), "i_%u_p2", boot_count);
     write_nvs(key, pm25);

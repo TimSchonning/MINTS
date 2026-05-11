@@ -28,11 +28,11 @@ def run_lora(gatewayLogicPath):
     
     return process
 
-def toFirebase(node_id, pm10, pm25, noise):
-    measurement_group = MeasurementGroup(node_id, pm10, pm25, noise)
+def toFirebase(node_id, pm1, pm25, noise):
+    measurement_group = MeasurementGroup(node_id, pm1, pm25, noise)
     db_connection.save_measurements(measurement_group)
     
-    print(f"Received ID: {node_id}, PM10: {pm10}, PM2.5: {pm25}, Noise: {noise}")
+    print(f"Received ID: {node_id}, PM1: {pm1}, PM2.5: {pm25}, Noise: {noise}")
 
 def main():
     process = run_lora(cpp_exe_path)
@@ -42,9 +42,9 @@ def main():
         if line:
             # Split the CSV data
             try:
-                node_id, pm10, pm25, noise = line.split(",")
+                node_id, pm1, pm25, noise = line.split(",")
                    
-                toFirebase(node_id, pm10, pm25, noise)
+                toFirebase(node_id, pm1, pm25, noise)
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.

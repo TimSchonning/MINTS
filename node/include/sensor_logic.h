@@ -27,7 +27,7 @@ typedef struct {
  * @brief Stores the final calculated averages.
  */
 typedef struct {
-    uint8_t pm10, pm25;
+    uint8_t pm1, pm25;
 } ps_result_t;
 
 /**

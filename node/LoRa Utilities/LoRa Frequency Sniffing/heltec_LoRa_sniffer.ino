@@ -4,7 +4,7 @@
 // Structure to hold our sensor data
 typedef struct
 {
-  int pm10, pm25;
+  int pm1, pm25;
   int noise_peak;
 } __attribute__((packed)) payload_t;
 
@@ -95,8 +95,8 @@ void loop()
   {
     // Serial Output for Debugging
     Serial.println("--- Packet Received ---");
-    Serial.print("PM10: ");
-    Serial.println(payload.pm10);
+    Serial.print("PM1: ");
+    Serial.println(payload.pm1);
     Serial.print("PM2.5: ");
     Serial.println(payload.pm25);
     Serial.print("Noise: ");
@@ -110,10 +110,10 @@ void loop()
     display.clearLine(4);
     display.drawString(0, 4, "New Packet!");
 
-    // Print PM10, PM2.5, and Noise on Row 5
+    // Print PM1, PM2.5, and Noise on Row 5
     // Format: "10:XX 25:XX N:XX"
     char buffer[17];
-    snprintf(buffer, sizeof(buffer), "10:%d 25:%d N:%d", payload.pm10, payload.pm25, payload.noise_peak);
+    snprintf(buffer, sizeof(buffer), "10:%d 25:%d N:%d", payload.pm1, payload.pm25, payload.noise_peak);
     display.clearLine(5);
     display.drawString(0, 5, buffer);
 

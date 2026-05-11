@@ -14,7 +14,7 @@ typedef struct
 {
     uint32_t signature = 0xDEADBEEF;
     uint8_t nodeID;
-    uint8_t pm10, pm25;
+    uint8_t pm1, pm25;
     uint16_t noise_peak;
 } __attribute__((packed)) payload_t;
 

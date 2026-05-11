@@ -69,7 +69,7 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
             std::cout << packet.signature << std::endl; // Test print
             if (packet.signature == 0xDEADBEEF) {
                 std::cout << (int)packet.nodeID << ","
-                          << (int)packet.pm10 << ","
+                          << (int)packet.pm1 << ","
                           << (int)packet.pm25 << ","
                           << (int)packet.noise_peak << std::endl;
                 std::cout.flush();                              

@@ -69,7 +69,7 @@ typedef struct __attribute__((packed)) {
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
     uint8_t readings[BUFFERING_THRESHOLD * 4]
-    // uint8_t pm10, pm25;
+    // uint8_t pm1, pm25;
     // uint16_t noise_peak;
 } payload_t;
 
