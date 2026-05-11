@@ -28,7 +28,7 @@ def run_lora(gatewayLogicPath):
     
     return process
 
-def toFirebase(node_id, pm1, pm25, noise):
+def toFirebase(node_id: str, pm1: float, pm25: float, noise: float):
     measurement_group = MeasurementGroup(node_id, pm1, pm25, noise)
     db_connection.save_measurements(measurement_group)
     
@@ -44,7 +44,7 @@ def main():
             try:
                 node_id, pm1, pm25, noise = line.split(",")
                    
-                toFirebase(node_id, pm1, pm25, noise)
+                toFirebase(node_id, float(pm1), float(pm25), float(noise))
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.

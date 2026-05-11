@@ -29,7 +29,7 @@
 	async function testStoringSensorType() {
 		console.log('Attempting to create a sensor type');
 
-		await create_sensor_type('PM5', 100, 520);
+		await create_sensor_type('PM1', 100, 520);
 		isSensorTypeAdded = true;
 	}
 
