@@ -43,7 +43,7 @@ void handleSensorReading(payload_t *packet) {
     std::cout << (int)packet->node_id     << ","
               << (int)packet->readings[0] << ","
               << (int)packet->readings[1] << ","
-              << (uint16_t) ((packet.readings[2] << 8) | packet->readings[3]) << std::endl;
+              << (uint16_t) ((packet->readings[2] << 8) | packet->readings[3]) << std::endl;
     std::cout.flush();
 }
 
@@ -68,6 +68,12 @@ void handlePacket() {
 
         case MSG_TYPE_ACK:
             break;
+
+        case MSG_TYPE_ERROR: {
+            msg_error_t *error_msg = (msg_error_t *)packetBuffer;
+            std::cout << "[ERROR] Node-side node ID: " << error_msg->node_id << " error code: " << error_msg->error_code << std::endl;
+            break;
+        }
 
         default:
             std::cout << "Unknown packet signature: " << signature << std::endl;
