@@ -89,7 +89,7 @@ typedef struct __attribute__((packed)) {
 typedef struct __attribute__((packed)) {
     uint8_t type = MSG_TYPE_ERROR;
     uint8_t node_id;
-    uint8_t error_id;
+    uint8_t error_code;
 } msg_error_t;
 
 /**
