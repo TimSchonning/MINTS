@@ -39,8 +39,12 @@ void LoRaInit() {
     }
 }
 
-void handleSensorReading(payload_t *packet, int sets) {
-    for (int i = 0; i < sets; i++) {
+void handleSensorReading(payload_t *packet) {
+    int payloadOverheadSize = 3;
+    int paylaodReadingSize  = 4;
+    int numberOfReadings = (sizeof(packet) - paypayloadOverhead) / paylaodReadingSize;
+
+    for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
         std::cout << (int)packet->node_id           << ","
                   << (int)packet->readings[set + 0] << ","
@@ -64,7 +68,7 @@ void handlePacket() {
     switch (signature) {
         case MSG_TYPE_PAYLOAD_UPLINK: {
             payload_t *packet = (payload_t *)packetBuffer;
-            handleSensorReading(packet, 1); // Oklart vad andra parametern ska vara...
+            handleSensorReading(packet);
             sendAck(packet->node_id, MSG_TYPE_PAYLOAD_UPLINK);
             break;
         }
