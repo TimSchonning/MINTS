@@ -39,10 +39,16 @@ void LoRaInit() {
     }
 }
 
-void handleSensorReading(payload_t *packet) {
+/**
+ * @brief Parses payload packets and outputs CSV data.
+ * Extracts multiple sensor readings from a single payload packet and flushes
+ * them to the console in the format: node_id, data1, data2, data3 and so on for each batched reading.
+ * @param packet Pointer to the received payload structure.
+ */
+static void handleSensorReading(payload_t *packet) {
     int payloadOverheadSize = 3;
     int paylaodReadingSize  = 4;
-    int numberOfReadings    = (sizeof(*packet) - paypayloadOverhead) / paylaodReadingSize;
+    int numberOfReadings = (sizeof(*packet) - payloadOverhead) / paylaodReadingSize;
 
     for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
@@ -54,7 +60,12 @@ void handleSensorReading(payload_t *packet) {
     }
 }
 
-void sendAck(uint8_t nodeID, uint8_t ackFor) {
+/**
+ * @brief Transmits an acknowledgement packet to a specific node.
+ * @param nodeID The target node ID.
+ * @param ackFor The message type signature being acknowledged.
+ */
+static void sendAck(uint8_t nodeID, uint8_t ackFor) {
     msg_ack_t msg_packet_ack;
     msg_packet_ack.node_id = nodeID;
     msg_packet_ack.ack_for = ackFor;
@@ -62,7 +73,12 @@ void sendAck(uint8_t nodeID, uint8_t ackFor) {
     radio.transmit((uint8_t *)&msg_packet_ack, sizeof(msg_ack_t));
 }
 
-void handlePacket() {
+/**
+ * @brief Main packet handler.
+ * Reads the packet signature from the global buffer and routes to the 
+ * appropriate handler (Payload, Error, or ACK).
+ */
+static void handlePacket() {
     uint8_t signature = packetBuffer[0];
 
     switch (signature) {
