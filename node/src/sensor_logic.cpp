@@ -70,14 +70,14 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
         state->start_time = now;
         state->is_active = true;
         state->signal_max = 0;
-        state->signal_min = 1024;
+        state->signal_min = 4096;
     }
 
     /* Sums the readings over the given time period */
     if (now - state->start_time < duration_ms) {
         uint16_t sample = analogRead(SENSOR_PIN);
 
-        if (sample < 1024) {
+        if (sample < 4096) {
             if (sample > state->signal_max) state->signal_max = sample;
             if (sample < state->signal_min) state->signal_min = sample;
         }
