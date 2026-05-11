@@ -18,6 +18,8 @@
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
+uint8_t packetBuffer[256];
+
 PiHal* hal = new PiHal(1, 2000000, 0);
 
 Module *mod = new Module(hal, CS, DIO1, RST, BUSY);
@@ -37,11 +39,11 @@ void LoRaInit() {
     }
 }
 
-void handleSensorReading(payload_t packet) {
-    std::cout << (int)packet.node_id    << ","
-              << (int)packet.readings[0]       << ","
-              << (int)packet.readings[1]       << ","
-              << (uint16_t) ((packet.readings[2] << 8) | packet.readings[3]) << std::endl;
+void handleSensorReading(payload_t *packet) {
+    std::cout << (int)packet->node_id     << ","
+              << (int)packet->readings[0] << ","
+              << (int)packet->readings[1] << ","
+              << (uint16_t) ((packet.readings[2] << 8) | packet->readings[3]) << std::endl;
     std::cout.flush();
 }
 
@@ -50,21 +52,25 @@ void sendAck(uint8_t nodeID, uint8_t ackFor) {
     msg_packet_ack.node_id = nodeID;
     msg_packet_ack.ack_for = ackFor;
 
-    radio.transmit((uint8_t*)&msg_packet_ack, sizeof(msg_ack_t));
+    radio.transmit((uint8_t *)&msg_packet_ack, sizeof(msg_ack_t));
 }
 
-void handlePacket(payload_t packet) {
-    switch (packet.signature) {
-        case MSG_TYPE_PAYLOAD_UPLINK:
+void handlePacket() {
+    uint8_t signature = packetBuffer[0];
+
+    switch (signature) {
+        case MSG_TYPE_PAYLOAD_UPLINK: {
+            payload_t *packet = (payload_t *)packetBuffer;
             handleSensorReading(packet);
             sendAck(packet.node_id, MSG_TYPE_PAYLOAD_UPLINK);
             break;
+        }
 
         case MSG_TYPE_ACK:
             break;
 
         default:
-            std::cout << "Unknown packet signature: " << (uint8_t)packet.signature << std::endl;
+            std::cout << "Unknown packet signature: " << signature << std::endl;
             break;
     }
 }
@@ -72,14 +78,12 @@ void handlePacket(payload_t packet) {
 int main() { // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
     LoRaInit();
 
-    payload_t packet;
-
     while (true) {
-        int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
+        int state = radio.receive(packetBuffer, sizeof(packetBuffer));
 
         switch (state) {
             case RADIOLIB_ERR_NONE:
-                handlePacket(packet);
+                handlePacket();
                 break;
 
             case RADIOLIB_ERR_RX_TIMEOUT:
