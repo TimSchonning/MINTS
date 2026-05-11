@@ -16,7 +16,7 @@
 Preferences prefs;
 extern SX1262 radio;
 
-bool error_handler(int16_t state, uint8_t error_code, const char* message) {
+bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const char* message) {
     // RADIOLIB_ERR_NONE is def. as 0;
     if (state != RADIOLIB_ERR_NONE) {
         DEBUG_PRINT("[ERROR] ");
@@ -24,11 +24,13 @@ bool error_handler(int16_t state, uint8_t error_code, const char* message) {
         DEBUG_PRINT(" Code: ");
         DEBUG_PRINTLN(state);
         
-        msg_error_t msg_error;
-        msg_error.node_id = node_id;
-        msg_error.ack_for = error_code;
-        
-        state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_ack_t));
+        if (inform_gateway) {
+            msg_error_t msg_error;
+            msg_error.node_id = node_id;
+            msg_error.ack_for = error_code;
+            
+            state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_ack_t));
+        }
 
         #ifdef DEBUG_MODE
             while (1); 
@@ -55,7 +57,7 @@ bool standby_mode() {
     uint8_t type = clearance.type;
 
     if (type == MSG_TYPE_CLEARANCE &&
-        !error_handler(state, "LoRa_init failed to receive standby clearance from gateway")) {
+        !error_handler(state, false, UNDEFINED_ERROR, "LoRa_init failed to receive standby clearance from gateway")) {
 
         // ACKs the standby clearance
         msg_ack_t msg_clearance_ack;
@@ -64,7 +66,7 @@ bool standby_mode() {
 
         state = radio.transmit((uint8_t*)&msg_clearance_ack, sizeof(msg_ack_t));
         
-        if (!error_handler(state, "Failed to ack standby clearance")) {
+        if (!error_handler(state, false, UNDEFINED_ERROR, "Failed to ack standby clearance")) {
             radio.sleep();
 
             //// Initialises the boot count
@@ -93,7 +95,7 @@ bool standby_mode() {
 
 void initialise_node() {
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
-    error_handler(state, "[INIT] LoRa_init initialisation");
+    error_handler(state, false, UNDEFINED_ERROR, "[INIT] LoRa_init initialisation");
 
     uint8_t id_attempts = 0;
 
@@ -112,13 +114,13 @@ void initialise_node() {
         DEBUG_PRINT("[INIT] Join request attempt nr.: ");
         DEBUG_PRINTLN(id_attempts);
 
-        if (!error_handler(state, "[ERROR] LoRa_init failed to send join msg to the gateway")) {
+        if (!error_handler(state, false, UNDEFINED_ERROR, "[ERROR] LoRa_init failed to send join msg to the gateway")) {
             //// Waits the for the join ack from the gateway
             msg_ack_t msg_join_ack;
             state = radio.receive((uint8_t*)&msg_join_ack, sizeof(msg_join_ack));
     
             if (msg_join_ack.ack_for == MSG_TYPE_JOIN_REQ &&
-                !error_handler(state, "[ERROR] LoRa_init failed to receive join ack from the gateway")) {
+                !error_handler(state, false, UNDEFINED_ERROR, "[ERROR] LoRa_init failed to receive join ack from the gateway")) {
                 
                 // Assigns the ID
                 node_id = msg_join_ack.node_id;
@@ -264,7 +266,7 @@ bool sleep_noise_sensor() {
 
 void config_mode() {
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
-    error_handler(state, "[config] radio initialisation");
+    error_handler(state, false, UNDEFINED_ERROR, "[config] radio initialisation");
 
     state = radio.receive(config_rx_buffer, sizeof(config_rx_buffer));
 
@@ -286,19 +288,19 @@ void config_mode() {
 
 static void write_nvs(const char* key, uint8_t data_in) {
     prefs.begin("mints", false);
-    if (!prefs.putUChar(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    if (!prefs.putUChar(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
     prefs.end();
 }
 
 static void write_nvs(const char* key, uint16_t data_in) {
     prefs.begin("mints", false);
-    if (!prefs.putUShort(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    if (!prefs.putUShort(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
     prefs.end();
 }
 
 static void write_nvs(const char* key, uint32_t data_in) {
     prefs.begin("mints", false);
-    if (!prefs.putULong(key, data_in)) error_handler(-1, "Failed to write to nvs");
+    if (!prefs.putULong(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
     prefs.end();
 }
 

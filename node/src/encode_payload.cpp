@@ -38,12 +38,12 @@ bool transmit_payload(payload_t* payload) {
     DEBUG_PRINTLN("[START] LoRa transmission");
 
     int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
-    error_handler(state, "LoRa initialisation");
+    error_handler(state, false, UNDEFINED_ERROR, "LoRa initialisation");
 
     uint8_t counter = 0;
     while (counter < MAX_TX_RETRIES) {
         state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
-        error_handler(state, "LoRa payload transmission");
+        error_handler(state, false, UNDEFINED_ERROR, "LoRa payload transmission");
         
         DEBUG_PRINTLN("[SUCCESS] Payload sent, waiting for ACK");
 
