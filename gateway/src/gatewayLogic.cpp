@@ -41,7 +41,7 @@ void LoRaInit() {
 
 void handleSensorReading(payload_t *packet, int sets) {
     for (int i = 0; i < sets; i++) {
-        set = i * 4;
+        int set = i * 4;
         std::cout << (int)packet->node_id           << ","
                   << (int)packet->readings[set + 0] << ","
                   << (int)packet->readings[set + 1] << ","
