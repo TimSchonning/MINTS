@@ -3,21 +3,20 @@
 
 #include <stdint.h>
 
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
-
 // Types of messages
 const uint8_t MSG_TYPE_ACK            = 0xA0;
-const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
-
+const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;
 const uint8_t MSG_TYPE_JOIN_REQ       = 0xD0;
 const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
-
+const uint8_t MSG_TYPE_ERROR          = 0xE0;
 const uint8_t MSG_TYPE_CONFIG         = 0xF0;
+
+const uint8_t UNDEFINED_ERROR = 0x00;
+const uint8_t PS_INIT_ERROR   = 0x01;
+const uint8_t PS_SLEEP_ERROR  = 0x02;
+const uint8_t NS_SLEEP_ERROR  = 0x03;
+const uint8_t NVS_ERROR       = 0x04;
+
 
 /**
  * @brief Contains all configurable variables and time stamp,
@@ -68,7 +67,7 @@ typedef struct __attribute__((packed)) {
     uint8_t type;
     uint8_t node_id;
     uint8_t reading_id;     // locally unique
-    uint8_t readings[BUFFERING_THRESHOLD * 4]
+    uint8_t readings[1 * 4];
     // uint8_t pm10, pm25;
     // uint16_t noise_peak;
 } payload_t;
@@ -82,6 +81,16 @@ typedef struct __attribute__((packed)) {
     uint8_t node_id;
     uint8_t ack_for;    //ie which type of msg is being ack:ed
 } msg_ack_t;
+
+/**
+ * @brief Error message structure.
+ * @note Is __attribute__((packed)
+ */
+typedef struct __attribute__((packed)) {
+    uint8_t type = MSG_TYPE_ERROR;
+    uint8_t node_id;
+    uint8_t error_id;
+} msg_error_t;
 
 /**
  * @brief Request message structure.
