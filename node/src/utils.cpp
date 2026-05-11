@@ -16,7 +16,8 @@
 Preferences prefs;
 extern SX1262 radio;
 
-bool error_handler(int16_t state, const char* message) {
+bool error_handler(int16_t state, int8_t error_code, const char* message) {
+    // RADIOLIB_ERR_NONE is def. as 0;
     if (state != RADIOLIB_ERR_NONE) {
         DEBUG_PRINT("[ERROR] ");
         DEBUG_PRINT(message);
@@ -25,6 +26,7 @@ bool error_handler(int16_t state, const char* message) {
         #ifdef DEBUG_MODE
             while (1); 
         #endif
+
         return true;
     } else {
         return false;
@@ -324,6 +326,8 @@ void add_to_nvs(uint8_t boot_count, uint8_t pm10, uint8_t pm25, uint16_t noise) 
     snprintf(key, sizeof(key), "i_%u_n", boot_count);
     write_nvs(key, noise);
 }
+
+
 
 
 // void init_nvs() {
