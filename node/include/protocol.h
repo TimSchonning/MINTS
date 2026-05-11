@@ -5,11 +5,10 @@
 
 // Types of messages
 const uint8_t MSG_TYPE_ACK            = 0xA0;
-const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;  // node -> gateway
-
+const uint8_t MSG_TYPE_PAYLOAD_UPLINK = 0xB0;
 const uint8_t MSG_TYPE_JOIN_REQ       = 0xD0;
 const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
-
+const uint8_t MSG_TYPE_ERROR          = 0xE0;
 const uint8_t MSG_TYPE_CONFIG         = 0xF0;
 
 const uint8_t LORA_ERROR     = 0x01;
