@@ -4,7 +4,7 @@
 // #include <esp_bt.h>
 // #include <SPI.h>
 // #include <RadioLib.h>
-// #include <cstdlib.h>
+// #include <cstdlib>
 
 // #include "config.h"
 // #include "debug_macros.h"
@@ -22,7 +22,7 @@
 
 // RTC_DATA_ATTR payload_t payload;
 
-// SX1276 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
+// SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
 // void setup() {
 //     power_down_radios();
@@ -33,30 +33,30 @@
 //     //if (needs_initialisation) initialise_node();
 
 //     // Initialise sensors
-//     if (particle_sensor.init()) error_handler(-1, "Particle sensor initialisation failed");
+//     if (particle_sensor.init())  error_handler(-1, true, PS_INIT_ERROR,  "Particle sensor initialisation failed");
     
 //     //// Data collection
 //     sample_noise_sensor();
-//     if (sleep_noise_sensor()) error_handler(-1, "Failed to put the noise sensor to sleep");
+//     if (sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
 
 //     sample_particle_sensor();
-//     if (sleep_particle_sensor()) error_handler(-1, "Failed to put the particle sensor to sleep");
+//     if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
 //     //// Update RTC
 //     boot_count++;
     
 //     //// TODO: Power down sensors
 //     //// updates the payload
-//     encode_payload(&payload, &ps_result, &ns_result, node_id);
+//     encode_payload(&payload, &ps_result, &ns_result);
     
 //     //// send data
 //     if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
 //         buffering_counter++;
 //     } else {
 //         srand((unsigned int)time(NULL) + node_id);
-//         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS):
+//         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS);
 
-//         transmit_payload();
+//         transmit_payload(&payload);
 //         buffering_counter = 0;
 //         memset(&payload, 0, sizeof(payload_t));
 //     }
