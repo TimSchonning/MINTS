@@ -39,12 +39,15 @@ void LoRaInit() {
     }
 }
 
-void handleSensorReading(payload_t *packet) {
-    std::cout << (int)packet->node_id     << ","
-              << (int)packet->readings[0] << ","
-              << (int)packet->readings[1] << ","
-              << (uint16_t) ((packet->readings[2] << 8) | packet->readings[3]) << std::endl;
-    std::cout.flush();
+void handleSensorReading(payload_t *packet, int sets) {
+    for(i = 0, i < sets, i++) {
+        set = i * 4;
+        std::cout << (int)packet->node_id           << ","
+                  << (int)packet->readings[set + 0] << ","
+                  << (int)packet->readings[set + 1] << ","
+                  << (uint16_t) ((packet->readings[set + 2] << 8) | packet->readings[set + 3]) << std::endl;
+        std::cout.flush();
+    }
 }
 
 void sendAck(uint8_t nodeID, uint8_t ackFor) {
