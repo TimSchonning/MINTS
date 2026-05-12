@@ -21,8 +21,10 @@ RTC_DATA_ATTR uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" suff
 RTC_DATA_ATTR uint16_t PS_SAMPLE_TIME_mS = 0;   // must be > 1
 RTC_DATA_ATTR uint16_t PS_TARGET_SAMPLES = 0;
 
-RTC_DATA_ATTR uint16_t NS_SAMPLE_TIME_mS = 0;   // must be > 1
-const uint8_t  NS_PIN                    = 0;
+RTC_DATA_ATTR uint16_t NS_SAMPLE_WINDOW_mS  = 0;   // must be > 1
+RTC_DATA_ATTR uint8_t  NS_TARGET_SAMPLES    = 0;   // must be > 1
+RTC_DATA_ATTR uint8_t  NS_SAMPLE_DELAY_ms   = 0;   // must be > 1
+const uint8_t NS_PIN                        = 0;
 
 //// LoRa config
 float    FREQUENCY        = 868.1;

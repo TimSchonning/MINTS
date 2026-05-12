@@ -29,6 +29,8 @@ typedef struct {
 typedef struct {
     uint32_t start_time;
     uint16_t signal_max, signal_min;
+    uint32_t total_noise_peak;
+    uint8_t  sample_count;
 
     bool is_active;
 } ns_state_t;
@@ -37,7 +39,7 @@ typedef struct {
  * @brief Stores the final calculated peak to peak amplitude.
  */
 typedef struct {
-    uint16_t noise_peak;
+    uint16_t noise_avg;
 } ns_result_t;
 
 /**
@@ -62,7 +64,7 @@ typedef struct {
 bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples);
 
 /**
- * @brief  Calculates the peak to peak sound amplitude
+ * @brief  Calculates the average peak to peak sound amplitude
  * @param  SENSOR_PIN: Analog data output pin.
  * @param  state: the state.
  * @param  results: the result (peak volume).

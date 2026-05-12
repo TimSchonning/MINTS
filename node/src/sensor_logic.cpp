@@ -66,11 +66,10 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
     uint32_t now = millis();
     
     if (!state->is_active) {
-        memset(state, 0, sizeof(ns_state_t));
         state->start_time = now;
-        state->is_active = true;
         state->signal_max = 0;
         state->signal_min = 4096;
+        state->is_active  = true;
     }
 
     /* Sums the readings over the given time period */
@@ -85,11 +84,24 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
         return false;
     }
 
+    // Window finished. Adds the peak-to-peak value to the accumulator
     if (state->signal_max <= state->signal_min) {
-        /* ie, no readings were made */
-        result->noise_peak = 0;
+        DEBUG_PRINTLN("[ERROR] ns_parse call failed to detect any sound")
+        // TODO: this requires some better handling
+        state->total_noise_peak += 0;
     } else {
-        result->noise_peak = state->signal_max - state->signal_min;
+        state->total_noise_peak += state->signal_max - state->signal_min;
+    }
+
+    state->sample_count++;
+
+    // Calculates the total average
+    if (state->sample_count >= NS_TARGET_SAMPLES) {
+        result->noise_avg = state->total_noise_peak / NS_TARGET_SAMPLES;
+
+        // resets the state
+        state->total_noise_peak = 0;
+        state->sample_count = 0;
     }
 
     state->is_active = false;
@@ -105,12 +117,13 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
 
 void sample_particle_sensor() {
     DEBUG_PRINTLN("[START] Particle sensor sampling");
-    DEBUG_PRINT("Heating particle sensor for: ");
+    DEBUG_PRINT("Heating particle sensor for (ms): ");
     DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * S_TO_mS);
 
     delay(PS_HEAT_UP_TIME_S * S_TO_mS);
-    bool is_done = false;
+
     while (!ps_parse(ps_sensor_buf, &ps_state, &ps_result, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {
+        // 1ms delay safe guard
         delay(1);
     }
 }
@@ -118,7 +131,15 @@ void sample_particle_sensor() {
 void sample_noise_sensor() {
     DEBUG_PRINTLN("[START] Noise sensor sampling");
 
-    bool is_done = false;
-    while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_TIME_mS - 1)) {
+    // state safe guards
+    ns_state.is_active = false; 
+    ns_state.total_noise_peak = 0;
+    ns_state.sample_count = 0;
+
+    for (int i = 0, i < NS_TARGET_SAMPLES, i++) {
+        while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_WINDOW_mS)) {
+            //delay(1) Might cause side effects if enabled
+        }
+        delay(NS_SAMPLE_DELAY_ms)
     }
 }
