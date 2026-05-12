@@ -39,12 +39,20 @@ def main():
     
     for line in iter(process.stdout.readline, ""): # type: ignore
         line = line.strip()
+                
         if line:
             # Split the CSV data
             try:
-                node_id, pm10, pm25, noise = line.split(",")
-                   
-                toFirebase(node_id, pm10, pm25, noise)
+                parts = line.split(",")
+
+                if len(parts) % 4 != 0:
+                    print(f"[Warning]: Incomplete batch received. Total values: {len(parts)} (need to be multiple of four)")
+
+                for i in range(0, len(parts), 4):
+                    batch = parts[i : i + 4]
+                    if len(batch) == 4:
+                        node_id, pm10, pm25, noise = batch
+                        toFirebase(node_id, pm10, pm25, noise)
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.

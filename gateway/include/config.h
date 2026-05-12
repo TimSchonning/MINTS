@@ -13,5 +13,6 @@ int PWR = 13;       // Power
 int PRE = 8;        // Preamble
 int BAUD = 115200;  // Baud
 
+int NODE_SAMPLE_WINDOW_S = 900;
 
 #endif
