@@ -120,6 +120,5 @@ void sample_noise_sensor() {
 
     bool is_done = false;
     while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_TIME_mS - 1)) {
-        delay(1);
     }
 }
