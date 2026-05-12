@@ -52,7 +52,8 @@ static void handleSensorReading(payload_t *packet) {
 
     for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
-        std::cout << (int)packet->node_id           << ","
+        std::cout << (int)i                         << "," // is used to calculate the timestamps for each set
+                  << (int)packet->node_id           << ","
                   << (int)packet->readings[set + 0] << ","
                   << (int)packet->readings[set + 1] << ","
                   << (uint16_t) ((packet->readings[set + 2] << 8) | packet->readings[set + 3]) << std::endl;
