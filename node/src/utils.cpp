@@ -94,7 +94,7 @@ bool standby_mode() {
 }
 
 void initialise_node() {
-    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
+    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN);
     error_handler(state, false, UNDEFINED_ERROR, "[INIT] LoRa_init initialisation");
 
     uint8_t id_attempts = 0;
@@ -265,7 +265,7 @@ bool sleep_noise_sensor() {
 // }
 
 void config_mode() {
-    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN, GAIN);
+    int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN);
     error_handler(state, false, UNDEFINED_ERROR, "[config] radio initialisation");
 
     state = radio.receive(config_rx_buffer, sizeof(config_rx_buffer));

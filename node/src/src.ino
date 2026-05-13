@@ -26,21 +26,23 @@ SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
 void setup() {
     power_down_radios();
-    setCpuFrequencyMhz(CPU_FREQ_MHZ);
+    //setCpuFrequencyMhz(CPU_FREQ_MHZ);
+    delay(1000);
     DEBUG_BEGIN(BAUD);
-
-    //// Node initialisation
-    //if (needs_initialisation) initialise_node();
+    delay(1000);
+    DEBUG_PRINTLN("[START]   Entering");
+    // Node initialisation
+    // if (needs_initialisation) initialise_node();
 
     // Initialise sensors
     if (particle_sensor.init())  error_handler(-1, true, PS_INIT_ERROR,  "Particle sensor initialisation failed");
     
-    //// Data collection
+    // Data collection
     sample_noise_sensor();
-    if (sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
+    // if (sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
 
     sample_particle_sensor();
-    if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
+    // if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
     //// Update RTC
     boot_count++;
@@ -66,7 +68,13 @@ void setup() {
     DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
     // calculates the sleep time by subtracting the designated sleep time with the time it took to reach this line
-    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - (millis() * 1000UL);
+    uint32_t comp = (millis() * 1000UL);
+    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - comp;
+    DEBUG_PRINTLN("[SLEEP]   sleep times: ");
+    DEBUG_PRINTLN(TIME_TO_SLEEP_S);
+    DEBUG_PRINTLN(S_TO_uS);
+    DEBUG_PRINTLN(comp);
+
     esp_sleep_enable_timer_wakeup(sleep_time_us);
     esp_deep_sleep_start();
 }
