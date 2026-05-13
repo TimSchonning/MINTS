@@ -50,6 +50,7 @@ def main():
 
                 for i in range(0, len(parts), 5):
                     batch = parts[i : i + 5]
+                    print(f"length of batch: {len(batch)}")
                     if len(batch) == 5:
                         batch_nr, node_id, pm10, pm25, noise = batch
                         toFirebase(batch_nr, node_id, pm10, pm25, noise)
