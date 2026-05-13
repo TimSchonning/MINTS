@@ -32,7 +32,7 @@ def toFirebase(batch_nr, node_id, pm10, pm25, noise):
     measurement_group = MeasurementGroup(batch_nr, node_id, pm10, pm25, noise)
     db_connection.save_measurements(measurement_group)
     
-    print(f"Received ID: {node_id}, PM10: {pm10}, PM2.5: {pm25}, Noise: {noise}")
+    print(f"Received ID: {node_id}, PM1: {pm1}, PM2.5: {pm25}, Noise: {noise}")
 
 def main():
     process = run_lora(cpp_exe_path)

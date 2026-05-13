@@ -5,13 +5,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
-
 /**
  * @brief Stores the running totals and timing state for PM averaging.
  */
@@ -27,7 +20,7 @@ typedef struct {
  * @brief Stores the final calculated averages.
  */
 typedef struct {
-    uint8_t pm10, pm25;
+    uint8_t pm1, pm25;
 } ps_result_t;
 
 /**
@@ -36,6 +29,8 @@ typedef struct {
 typedef struct {
     uint32_t start_time;
     uint16_t signal_max, signal_min;
+    uint32_t total_noise_peak;
+    uint8_t  sample_count;
 
     bool is_active;
 } ns_state_t;
@@ -44,7 +39,7 @@ typedef struct {
  * @brief Stores the final calculated peak to peak amplitude.
  */
 typedef struct {
-    uint16_t noise_peak;
+    uint16_t noise_avg;
 } ns_result_t;
 
 /**
@@ -69,7 +64,7 @@ typedef struct {
 bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples);
 
 /**
- * @brief  Calculates the peak to peak sound amplitude
+ * @brief  Calculates the average peak to peak sound amplitude
  * @param  SENSOR_PIN: Analog data output pin.
  * @param  state: the state.
  * @param  results: the result (peak volume).
@@ -77,7 +72,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
  * @return is done
  * 
  * @note Avoid any delay() when using this function since it depends heavily on being called at a high sample rate
- * @note Hard-coded to an ADC which returns a 10 bit value. Change if possible/needed
+ * @note Hard-coded to an ADC which returns a 12 bit value. Change if possible/needed
  */
 bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms);
 

@@ -1,22 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <cstdint>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "protocol.h"
-#include "sensor_logic.h"
-#include "utils.h"
-
 /**
  * @brief Logic for handling radio status codes.
  * @param state The return code from the radio library.
  * @param message The error message to print if the state is not successful.
+ * @param inform_gateway True = sends a message to the gateway with the specified error_code.
+ * @param error_code the error code that gets sent to the gateway.
  * @return true if an error occurred, false if successful.
+ * @note if inform_gateway is set to false, set error_code to UNDEFINED_ERROR
  */
-bool error_handler(int16_t state, const char* message);
+bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const char* message);
 
 /**
  * @brief Disables all wireless communication.
@@ -63,6 +57,6 @@ void config_mode();
  * @note pm2,5 => i_%u_p2
  * @note noise => i_%u_n
  */
-void add_to_nvs(uint8_t boot_count, uint8_t pm10, uint8_t pm25, uint16_t noise);
+void add_to_nvs(uint8_t boot_count, uint8_t pm1, uint8_t pm25, uint16_t noise);
 
 #endif

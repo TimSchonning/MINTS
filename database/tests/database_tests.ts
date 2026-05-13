@@ -358,7 +358,7 @@ describe('Firebase Database CRUD Operations', () => {
   });
 
   describe('Measurement Type CRUD Operations', () => {
-    const testTypeId = 'PM5';
+    const testTypeId = 'PM1';
     const testValues = {
       low: 0,
       high: 100
