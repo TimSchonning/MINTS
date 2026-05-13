@@ -24,12 +24,12 @@ def run_lora(gatewayLogicPath):
     )
     
     print("Python is now connected with LoRa...")
-    print("Listening to LoRa packets.")
+    print("Listening for LoRa packets.")
     
     return process
 
-def toFirebase(node_id: str, pm1: float, pm25: float, noise: float):
-    measurement_group = MeasurementGroup(node_id, pm1, pm25, noise)
+def toFirebase(batch_nr, node_id, pm10, pm25, noise):
+    measurement_group = MeasurementGroup(batch_nr, node_id, pm10, pm25, noise)
     db_connection.save_measurements(measurement_group)
     
     print(f"Received ID: {node_id}, PM1: {pm1}, PM2.5: {pm25}, Noise: {noise}")
@@ -38,13 +38,24 @@ def main():
     process = run_lora(cpp_exe_path)
     
     for line in iter(process.stdout.readline, ""): # type: ignore
+        print(f"Line (whole batch): {line}")
         line = line.strip()
+                
         if line:
             # Split the CSV data
             try:
-                node_id, pm1, pm25, noise = line.split(",")
-                   
-                toFirebase(node_id, float(pm1), float(pm25), float(noise))
+                parts = line.split(",")
+                print(f"Parts (whole set within batch): {parts}")
+
+                if len(parts) % 5 != 0:
+                    print(f"[Warning]: Incomplete batch received. Total values: {len(parts)} (need to be multiple of five)")
+
+                for i in range(0, len(parts), 5):
+                    batch = parts[i : i + 5]
+                    print(f"length of batch: {len(batch)}")
+                    if len(batch) == 5:
+                        batch_nr, node_id, pm10, pm25, noise = batch
+                        toFirebase(batch_nr, node_id, pm10, pm25, noise)
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.
