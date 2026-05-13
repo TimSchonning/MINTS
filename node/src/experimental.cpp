@@ -1,3 +1,18 @@
+#include <cstdint>
+#include <stdio.h>
+#include <RadioLib.h>
+#include <math.h>
+#include <Preferences.h>
+#include <WiFi.h>
+#include <esp_wifi.h>
+#include <esp_bt.h>
+
+#include "config.h"
+#include "debug_macros.h"
+#include "sensor_logic.h"
+#include "utils.h"
+#include "protocol.h"
+
 static void start_config_msg(uint32_t time_ms) {
     msg_config_t header;
     
