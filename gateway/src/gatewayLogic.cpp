@@ -48,7 +48,7 @@ void LoRaInit() {
 static void handleSensorReading(payload_t *packet) {
     int payloadOverheadSize = 3;
     int paylaodReadingSize  = 4;
-    int numberOfReadings = (sizeof(*packet) - payloadOverhead) / paylaodReadingSize;
+    int numberOfReadings = (sizeof(*packet) - payloadOverheadSize) / paylaodReadingSize;
 
     for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
