@@ -45,10 +45,10 @@ void LoRaInit() {
  * them to the console in the format: node_id, data1, data2, data3 and so on for each batched reading.
  * @param packet Pointer to the received payload structure.
  */
-static void handleSensorReading(payload_t *packet) {
+static void handleSensorReading(payload_t *packet, size_t payloadSize) {
     int payloadOverheadSize = 3;
     int paylaodReadingSize  = 4;
-    int numberOfReadings = (sizeof(*packet) - payloadOverheadSize) / paylaodReadingSize;
+    int numberOfReadings = (payloadSize - payloadOverheadSize) / paylaodReadingSize;
 
     for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
@@ -79,13 +79,13 @@ static void sendAck(uint8_t nodeID, uint8_t ackFor) {
  * Reads the packet signature from the global buffer and routes to the 
  * appropriate handler (Payload, Error, or ACK).
  */
-static void handlePacket() {
+static void handlePacket(size_t payloadSize) {
     uint8_t signature = packetBuffer[0];
 
     switch (signature) {
         case MSG_TYPE_PAYLOAD_UPLINK: {
             payload_t *packet = (payload_t *)packetBuffer;
-            handleSensorReading(packet);
+            handleSensorReading(packet, payloadSize);
             sendAck(packet->node_id, MSG_TYPE_PAYLOAD_UPLINK);
             break;
         }
@@ -110,10 +110,11 @@ int main() { // TODO: Clear gateway simulation and add (modified) main loop from
 
     while (true) {
         int state = radio.receive(packetBuffer, sizeof(packetBuffer));
+        size_t payloadSize = radio.getPacketLength();
 
         switch (state) {
             case RADIOLIB_ERR_NONE:
-                handlePacket();
+                handlePacket(payloadSize);
                 break;
 
             case RADIOLIB_ERR_RX_TIMEOUT:
