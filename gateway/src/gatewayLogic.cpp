@@ -7,32 +7,27 @@
 
 #include <iostream>
 #include <string>
-#include "../include/DataPacket.h"
+#include "RadioLib.h"
+#include "DataPacket.h"
 #include "../include/protocol.h"
-#include "../gateway/RadioLib/src/modules/SX126x/SX1262.h"
-#include "../gateway/RadioLib/src/hal/RPi/PiHal.h"
+#include "modules/SX126x/SX1262.h"
+#include "hal/RPi/PiHal.h"
 
 bool toPython = true; // Temporary variable. Decides if print from c++ or from a separate python file.
 
-int CS = 40, DIO1 = 36, DIO4 = 31, RST = 12;
-/**
- * Other pins, unsure if needed:
- * int MOSI = 19;
- * int MISO = 21;
- * int BUSY = 38;
- */
+int CS = 21, DIO1 = 16, BUSY = 18, RST = 20;
 
 float FREQ = 868.1; // Frequency
 float BW = 125.0;   // Bandwidth
-int SF = 7;         // Spreading Factor
+int SF = 8;         // Spreading Factor
 int CR = 8;         // Coding Rate
 int SYNC = 0x12;    // Sync word
-int PWR = 10;       // Power
+int PWR = 13;       // Power
 int PRE = 8;        // Preamble
 int BAUD = 115200;  // Baud
 
-PiHal* hal = new PiHal();
-Module* mod = new Module(hal, CS, DIO1, RST, DIO4);
+PiHal* hal = new PiHal(1, 2000000, 0);
+Module *mod = new Module(hal, CS, DIO1, RST, BUSY);
 SX1262 radio(mod);
 
 void LoRaInit() {
@@ -50,10 +45,10 @@ bool IdAssignment() {
     // TODO: db error handling
     
     msg_ack_t idReqACK;
-    idReqACK.id = id;  // The new ID!
+    idReqACK.node_id = id;  // The new ID!
     idReqACK.ack_for = MSG_TYPE_JOIN_REQ;
 
-    int state = radio.transmit(idReqACK, sizeof(msg_ack_t));
+    int state = radio.transmit((uint8_t*)&idReqACK, sizeof(msg_ack_t));
     //error_handler(state);  // TODO: error handling
     return (state == RADIOLIB_ERR_NONE); // If succeeded return true
 }
@@ -71,9 +66,10 @@ int main() // TODO: Clear gateway simulation and add (modified) main loop from L
         int state = radio.receive((uint8_t *)&packet, sizeof(payload_t));
 
         if (state == RADIOLIB_ERR_NONE) {
+            std::cout << packet.signature << std::endl; // Test print
             if (packet.signature == 0xDEADBEEF) {
                 std::cout << (int)packet.nodeID << ","
-                          << (int)packet.pm10 << ","
+                          << (int)packet.pm1 << ","
                           << (int)packet.pm25 << ","
                           << (int)packet.noise_peak << std::endl;
                 std::cout.flush();                              

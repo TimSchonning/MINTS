@@ -48,12 +48,12 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
     }
 
     /* Calculates the averages */
-    result->pm10 = pm_average(state->sample_count, state->sum_pm10);
+    result->pm1 = pm_average(state->sample_count, state->sum_pm10);
     result->pm25 = pm_average(state->sample_count, state->sum_pm25);
     state->is_active = false;
 
     #ifdef DEBUG_MODE
-        Serial.println("Avg PM1 reading:   " + String(result->pm10));
+        Serial.println("Avg PM1 reading:   " + String(result->pm1));
         Serial.println("Avg PM2.5 reading: " + String(result->pm25));
         Serial.println("");
     #endif

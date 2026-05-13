@@ -1,11 +1,14 @@
 # Code to send the received packet to Firebase
 # Automatically runs (but does not compile) the gatewayLogic file
-# TODO: Implement connection to Firebase.
 
 import subprocess
+from databaseConnection import DbConnection
+from measurement import MeasurementGroup
 
 # Change to oath where gatewayLogic.exe exists
-cpp_exe_path = r"C:/Users/deode/Documents/kod/Kandidatebaete/MINTS/gateway/src/gatewayLogic.exe"
+cpp_exe_path = r"./gatewayLogic.out"
+
+db_connection = DbConnection()
 
 # Creates a process and:
 #   Runs gatewayLogic.exe
@@ -25,10 +28,12 @@ def run_lora(gatewayLogicPath):
     
     return process
 
-# TODO: Stub. This function should send data to firebase. Right now it just prints the values.
-def toFirebase(node_id, pm10, pm25, noise):
-    print(f"Received ID: {node_id}, PM10: {pm10}, PM2.5: {pm25}, Noise: {noise}")
+def toFirebase(node_id: str, pm1: float, pm25: float, noise: float):
+    measurement_group = MeasurementGroup(node_id, pm1, pm25, noise)
+    db_connection.save_measurements(measurement_group)
     
+    print(f"Received ID: {node_id}, PM1: {pm1}, PM2.5: {pm25}, Noise: {noise}")
+
 def main():
     process = run_lora(cpp_exe_path)
     
@@ -37,9 +42,9 @@ def main():
         if line:
             # Split the CSV data
             try:
-                node_id, pm10, pm25, noise = line.split(",")
+                node_id, pm1, pm25, noise = line.split(",")
                    
-                toFirebase(node_id, pm10, pm25, noise)
+                toFirebase(node_id, float(pm1), float(pm25), float(noise))
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.

@@ -8,14 +8,14 @@
  * 
  * This structure holds the signature and must be same for all files on all communicating devices.
  * Signature assures we are receiving the sought after message.
- * NodeID, pm10, pm25, noise_peak is the node's ID and collected data respectively.
+ * NodeID, pm1, pm25, noise_peak is the node's ID and collected data respectively.
  */
 
 #pragma pack(push, 1)
 struct payload_t {
     uint32_t signature = 0xDEADBEEF;
     uint8_t nodeID;
-    uint8_t pm10;
+    uint8_t pm1;
     uint8_t pm25;
     uint16_t noise_peak;
 };

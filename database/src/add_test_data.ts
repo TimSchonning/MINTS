@@ -1,8 +1,9 @@
-import { doc, writeBatch, GeoPoint, Timestamp } from "firebase/firestore";
-import { db, verifySignedIn } from "./database_connection";
+import { doc, writeBatch, GeoPoint, Timestamp, collection, query, where, getDocs, DocumentSnapshot } from "firebase/firestore";
+import { auth, db, verifySignedIn } from "./database_connection";
 import { Interval } from "./classes/interval";
 import { get_all_sensor_types } from "./sensor_type_repository";
 import { get_all_stations } from "./station_repository";
+import { getAuth } from "firebase/auth";
 
 /**
  * Adds N number of mock stations to Firestore in a single atomic batch.
@@ -26,6 +27,7 @@ async function create_mock_stations_batch(n: number) {
         });
     }
 
+    console.log("ready to commit");
     try {
         await batch.commit();
         console.log(`Successfully committed ${n} mock stations.`);
@@ -74,5 +76,30 @@ async function create_mock_measurements_batch(interval: Interval) {
     }
 }
 
+async function changeMeasurementSensorTypeName(oldName: String, newName: String) {
+    await verifySignedIn();
+
+    const ref = collection(db, "Measurements");
+    const q = query(ref, where("sensor_type_id", "==", oldName));
+    const docs = await getDocs(q);
+    if (docs.empty) {
+        console.log("No docs with the given sensor_type_id found.")
+        return;
+    } else if (docs.size > 500) {
+        console.log(`Attempting to update ${docs.size} documents.`);
+        console.log("A batch has a limit of 500 operations, you must split it up.");
+        return;
+    }
+    const batch = writeBatch(db); // Has a limit of 500 operations.
+    docs.docs.forEach((doc: DocumentSnapshot) => {
+        batch.update(doc.ref, { sensor_type_id: newName });
+    });
+    console.log(`Trying to update ${docs.size} measurements.`);
+    await batch.commit();
+    console.log(`Successfully updated ${docs.size} measurements.`);
+}
+
+//changeMeasurementSensorTypeName("PM5", "PM1");
+
 //create_mock_stations_batch(10);
-create_mock_measurements_batch(new Interval(new Date(2026, 3, 19), new Date(2026, 3, 20)));
+//create_mock_measurements_batch(new Interval(new Date(2026, 3, 19), new Date(2026, 3, 20)));

@@ -20,7 +20,7 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
     
     uint16_t index = buffering_counter * 4;
     
-    payload->readings[index]     = ps_result->pm10;
+    payload->readings[index]     = ps_result->pm1;
     payload->readings[index + 1] = ps_result->pm25;
     payload->readings[index + 2] = (uint8_t)((ns_result->noise_avg >> 8) & 0xFF); 
     payload->readings[index + 3] = (uint8_t)(ns_result->noise_avg & 0xFF);
