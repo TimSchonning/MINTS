@@ -62,7 +62,6 @@ void setup() {
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));
     }
-    
 
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");

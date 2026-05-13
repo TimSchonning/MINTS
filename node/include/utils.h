@@ -1,7 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-
 /**
  * @brief Logic for handling radio status codes.
  * @param state The return code from the radio library.
