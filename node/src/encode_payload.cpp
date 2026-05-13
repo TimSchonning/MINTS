@@ -40,7 +40,8 @@ bool transmit_payload(payload_t* payload) {
 
     uint8_t counter = 0;
     while (counter < MAX_TX_RETRIES) {
-        state = radio.transmit((uint8_t*)payload, sizeof(payload_t));
+        uint8_t payload_size = 3 + BUFFERING_THRESHOLD * 4;
+        state = radio.transmit((uint8_t*)payload, payload_size);
         error_handler(state, false, UNDEFINED_ERROR, "LoRa payload transmission");
         
         DEBUG_PRINTLN("[SUCCESS] Payload sent, waiting for ACK");
