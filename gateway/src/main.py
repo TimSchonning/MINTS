@@ -38,12 +38,14 @@ def main():
     process = run_lora(cpp_exe_path)
     
     for line in iter(process.stdout.readline, ""): # type: ignore
+        print(f"Line (whole batch): {line}")
         line = line.strip()
                 
         if line:
             # Split the CSV data
             try:
                 parts = line.split(",")
+                print(f"Parts (whole set within batch): {parts}")
 
                 if len(parts) % 5 != 0:
                     print(f"[Warning]: Incomplete batch received. Total values: {len(parts)} (need to be multiple of five)")
