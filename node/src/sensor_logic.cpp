@@ -86,7 +86,7 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
 
     // Window finished. Adds the peak-to-peak value to the accumulator
     if (state->signal_max <= state->signal_min) {
-        DEBUG_PRINTLN("[ERROR] ns_parse call failed to detect any sound")
+        DEBUG_PRINTLN("[ERROR] ns_parse call failed to detect any sound");
         // TODO: this requires some better handling
         state->total_noise_peak += 0;
     } else {
@@ -108,7 +108,7 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
 
     #ifdef DEBUG_MODE
         Serial.println(__func__);
-        Serial.println("Peak to peak:      " + String(result->noise_peak));
+        Serial.println("Peak to peak:      " + String(result->noise_avg));
         Serial.println("");
     #endif
 
@@ -136,10 +136,10 @@ void sample_noise_sensor() {
     ns_state.total_noise_peak = 0;
     ns_state.sample_count = 0;
 
-    for (int i = 0, i < NS_TARGET_SAMPLES, i++) {
+    for (int i = 0; i < NS_TARGET_SAMPLES; i++) {
         while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_WINDOW_mS)) {
             //delay(1) Might cause side effects if enabled
         }
-        delay(NS_SAMPLE_DELAY_ms)
+        delay(NS_SAMPLE_DELAY_ms);
     }
 }
