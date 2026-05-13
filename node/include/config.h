@@ -11,10 +11,10 @@ namespace Mints::Config {
         constexpr uint32_t SERIAL_BAUD = 115200;
         
         // LoRa Radio Pins
-        constexpr int8_t PIN_LORA_NSS  = 21;
-        constexpr int8_t PIN_LORA_DIO0 = 5;
-        constexpr int8_t PIN_LORA_NRST = 7;
-        constexpr int8_t PIN_LORA_DIO1 = 6;
+        constexpr int8_t PIN_LORA_CS   = 21;
+        constexpr int8_t PIN_LORA_DIO1 = 5;
+        constexpr int8_t PIN_LORA_RST  = 7;
+        constexpr int8_t PIN_LORA_BSY  = 6;
         
         constexpr uint8_t PIN_NOISE_SENSOR = 1;
     }
