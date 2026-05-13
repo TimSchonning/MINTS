@@ -13,6 +13,9 @@
 #include "utils.h"
 #include "protocol.h"
 
+inline uint8_t config_rx_buffer[255];
+inline uint8_t config_rx_cursor = 0;
+
 static void start_config_msg(uint32_t time_ms) {
     msg_config_t header;
     
