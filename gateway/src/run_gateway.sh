@@ -1,10 +1,12 @@
-# Script that automatically compiles and runs the neccessary gateway files
-
 #!/bin/bash
 
-cd /home/mints/MINTS/gateway/src/
+echo "Initialising gateway..."
 
-echo "Compiles gatewayLogic and its dependencies..."
+cd /home/mints/MINTS/
+
+git pull
+
+cd /home/mints/MINTS/gateway/src/
 
 g++ gatewayLogic.cpp \
 ../RadioLib/src/Hal.cpp \
@@ -24,12 +26,10 @@ g++ gatewayLogic.cpp \
 -llgpio -lpthread \
 -o gatewayLogic.out
 
-# Kontrollera om kompileringen lyckades
 if [ $? -eq 0 ]; then
-    echo "Kompilering klar. Startar Python..."
-    # Kör python-skriptet med sudo för att säkra GPIO-tillgång
+    echo "Compiled. Starting Python."
     sudo python3 main.py
 else
-    echo "Kompilering misslyckades!"
+    echo "Compile failed."
     exit 1
 fi
