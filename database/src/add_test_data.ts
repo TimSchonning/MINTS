@@ -102,4 +102,4 @@ async function changeMeasurementSensorTypeName(oldName: String, newName: String)
 //changeMeasurementSensorTypeName("PM5", "PM1");
 
 //create_mock_stations_batch(10);
-//create_mock_measurements_batch(new Interval(new Date(2026, 3, 19), new Date(2026, 3, 20)));
+//create_mock_measurements_batch(new Interval(new Date(2026, 4, 12), new Date(2026, 4, 14)));
