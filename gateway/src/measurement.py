@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import zoneinfo
 
-NODE_SAMPLE_WINDOW_S = 900
+NODE_SAMPLE_WINDOW_S = 300
 
 time_zone = zoneinfo.ZoneInfo("Europe/Stockholm")
 
