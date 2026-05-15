@@ -28,7 +28,7 @@ g++ gatewayLogic.cpp \
 
 if [ $? -eq 0 ]; then
     echo "Compiled. Starting Python."
-    sudo python3 main.py
+    python3 main.py
 else
     echo "Compile failed."
     exit 1
