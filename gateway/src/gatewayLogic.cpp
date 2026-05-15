@@ -10,7 +10,6 @@
 #include <stdint.h>
 
 #include "RadioLib.h"
-#include "DataPacket.h"
 #include "../include/protocol.h"
 #include "../include/config.h"
 #include "modules/SX126x/SX1262.h"
