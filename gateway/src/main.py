@@ -28,8 +28,8 @@ def run_lora(gatewayLogicPath):
     
     return process
 
-def toFirebase(batch_nr, node_id, pm10, pm25, noise):
-    measurement_group = MeasurementGroup(batch_nr, node_id, pm10, pm25, noise)
+def toFirebase(batch_nr, node_id, pm1, pm25, noise):
+    measurement_group = MeasurementGroup(batch_nr, node_id, pm1, pm25, noise)
     db_connection.save_measurements(measurement_group)
     
     print(f"Received ID: {node_id}, PM1: {pm1}, PM2.5: {pm25}, Noise: {noise}")
@@ -54,8 +54,8 @@ def main():
                     batch = parts[i : i + 5]
                     print(f"length of batch: {len(batch)}")
                     if len(batch) == 5:
-                        batch_nr, node_id, pm10, pm25, noise = batch
-                        toFirebase(batch_nr, node_id, pm10, pm25, noise)
+                        batch_nr, node_id, pm1, pm25, noise = batch
+                        toFirebase(batch_nr, node_id, pm1, pm25, noise)
                     
             except ValueError:
                 print(f"Value Error: {line}") # Everything that isn't in the data packet struct gets printed here.

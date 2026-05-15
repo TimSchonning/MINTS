@@ -8,7 +8,7 @@ time_zone = zoneinfo.ZoneInfo("Europe/Stockholm")
 
 class MeasurementGroup():
     readings = {}
-    def __init__(self, batch_nr, station_id, pm10, pm25, noise):
+    def __init__(self, batch_nr, station_id, pm1, pm25, noise):
         self.station_id = station_id
         self.readings["PM2.5"] = pm25
         self.readings["PM1"] = pm1
