@@ -163,8 +163,6 @@ Email:    timschonning@gmail.com <br />
 Github:   https://github.com/TimSchonning <br />
 LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning <br />
 
-Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimSchonning/MINTS)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- SCREENSHOTS AND DEMONSTRATIONS -->
