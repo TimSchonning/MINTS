@@ -1,5 +1,4 @@
-<h1 align="center">Mesh-Integrated Network of Traffic Sensors (MINTS)</h1>
-
+<h1 align="center">Modular Integrated Network of Traffic Sensors (MINTS)</h1>
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
@@ -34,29 +33,66 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## About the Project
+***NOTE:** This project was a part of the authors bachelor thesis at Uppsala university.* <br>
+*The thesis can be found at:*
 
-MINTS is a network of small, energy-efficient measurement stations with sensors for monitoring air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central hub. The hub can, in turn, generate real-time heatmaps and visualizations, converting data into insights.
+MINTS is a network of small, energy-efficient measurement stations with sensors for monitoring ground-level air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central gateway. From the gateway, the data takes a streamlined path to reach the public-facing website, transforming raw numbers into an intuitive, real-time heatmap.
 
-The goal is to create a plug-and-play system that can identify problematic areas and enable the rerouting of traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to notice traffic patterns, which can be used to plan future development better and improve the quality of life in affected areas. Moreover, ongoing construction work, such as the tram in Uppsala, causes traffic disruptions. The MINTS system will give authorities the means to track these traffic jams.
+The goal is to create a plug-and-play system that can identify problematic areas and enable the rerouting of traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to notice traffic patterns, which can be used to plan future development better and improve the quality of life in affected areas.
 
 The primary beneficiaries of this project are the municipalities and the people, who are troubled by pollution and disturbances caused by traffic. Further, it provides the tools for responsive urbanism, making the day-to-day lives of citizens easier.
 
+### Key Features
+* **Ground-level measurements:**    measures ground level PM and noise pollution.
+* **Real-Time Heatmap Generation:** Real-time visualisations of pollution data.
+* **Low-Cost system:**              ~100 USD per node.
+* **Low-Power LoRa Communication:** Optimized for long-range, battery-efficient data transmissions within an urban, ground-level environment.
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
+### System Architecture
 
-### Built With
+*For further details, please see chapter 3.3 and 3.4 in the thesis.*
 
-### Hardware used
+#### Hardware Architecture
 
-// temp <br />
-    https://www.electrokit.com/optisk-damm-partikelsensor-2.5/5/10-um-hm3301 <br />
-    https://www.electrokit.com/en/sound-detector <br />
-    https://www.electrokit.com/en/arduino-nano-esp32-with-headers <br />
-    https://www.electrokit.com/en/lora-modul-868mhz-core1262-hf <br />
+The measuring station is designed to be compact, energy-efficient, and easily expandable. It is powered by a 9V supply, providing a 4V overhead to handle battery degradation and protect voltage-sensitive components.
+
+<img width="700" alt="node_circuit" src="https://github.com/user-attachments/assets/270738e1-6b0a-460a-b97a-2418bbfe84ac" />
+
+#### Software Architecture
+The software architecture consists of four parts working together: frontend,
+database, gateway, and node (Figure 8). The goal is to collect data from
+the connected sensors, transmit it to the gateway, which uploads it to the
+database, which can be read from the frontend to update the heatmap.
+
+<img width="400" alt="sysarc" src="https://github.com/user-attachments/assets/32bf94a7-8212-41a6-887e-9e92bd2d4194" />
+
+### Tech Stack and Hardware Components
+
+*For further details, please see chapter 3.2 in the thesis.*
+
+#### Hardware
+| Component | Model / Details | Purpose & Key Specifications |
+| :--- | :--- | :--- |
+| **Particle Sensor** | SEN-HM3301 | Monitors airborne fine particle concentrations ($PM_{1}$ and $PM_{2.5}$). |
+| **Sound Sensor** | Waveshare (LM386 Amp) | Captures acoustic data (50–20,000 Hz range, 52 dB sensitivity). |
+| **LoRa Module** | Core1262-HF (TCXO) | Handles wireless communication between nodes and the gateway. |
+| **Microcontroller** | Arduino Nano (ESP32-S3 SoC) | Serves as the main processing board for each individual node. |
+| **Gateway** | Raspberry Pi 3 Model B (1GB) | Bridges communication between the node network and the server. |
+| **LoRa HAT** | Waveshare LoRa & GNSS | Gateway add-on board based on the SX1262 radio chip. |
+| **Antennas** | 2J0C15-868-C885G & Bundled HAT Antenna | **Nodes:** 868MHz antenna via SMA to U.FL adapters.<br>**Gateway:** High-gain antenna bundled with the HAT. |
+| **Misc. Electronics** | Capacitors, Resistors, Regulators | • 2x Electrolytic capacitors (10uF, 16V/50V)<br>• Resistors: 200Ω, 140Ω, 20Ω<br>• LD1117V33 voltage regulator (steps down to 3.3V, up to 0.95A). |
+| **Power Supply** | 6x AA Batteries per node | Dual AA battery holder configuration per measurement station. |
+| **Enclosure** | Custom 3D Printed Case | Custom PLA plastic chassis featuring an integrated PM10 insect/debris filter. |
+
+#### Software & Libraries
+| Tool / Library | Type | Function |
+| :--- | :--- | :--- |
+| **RadioLib** | Open-source Library | Provides low-level control and configuration for the SX1262 LoRa module. |
+| **MapBox API** | Mapping Platform | Powering the interactive, customizable heatmap and layer handling. |
+| **Firestore** | Database | Cloud-hosted NoSQL database used for storing and syncing station data. |
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -64,44 +100,25 @@ To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
-To run the project you need to have npm, NodeJS and TypeScript installed. Below is an example of how to set them up in Ubuntu using Windows Subsystem for Linux (WSL) if they are not yet installed.
-
-### Step 1
-Install Node Version Manager (nvm) using the following command.
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-```
-
-Restart your terminal and then verify installation by typing:
-```
-nvm -v
-```
-
-### Step 2
-Use nvm to install npm and NodeJS LTS by using the following command. At the time of writing the version of node is "v24.14.1" and npm is version "11.11.0".
-
-```
-nvm install --lts
-```
-
-### Step 3
-Install TypeScript using npm by using the command:
-```
-npm install -g typescript
-```
-
-Verify by typing 
-´´´
-tsc --v
-´´´
-
+Before running the backend or frontend web application, ensure you have the following installed:
+* **Node.js** (LTS version `v24.x` or higher recommended)
+* **npm** (v11.x or higher)
+* **TypeScript**
+* **C++**
 
 ### Installation
 
 Navigate to the part of the project you want to run and follow the specific instructions in the respective README:s.
 
-<!-- USAGE EXAMPLES -->
-## Usage
+### Repository Structure
+
+```text
+├── database/          # Firestore security rules and configurations
+├── frontend/          # Web application source code and components (built with Svelte)
+├── gateway/           # Packet forwarder configurations and gateway management scripts
+├── node/              # Arduino/C++ firmware and PIN layouts for the LoRa sensor nodes
+└── README.md          # Main project documentation and overview
+```
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -118,25 +135,30 @@ See also the [open issues](https://github.com/TimSchonning/MINTS/issues) for a f
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
-## Contact
+## Authors, Acknowledgments and Contact Information
+
 For questions, support, or collaboration, reach out to the team:
 
-**Filip Hellgren**  
+**Filip Hellgren**
+Role:     frontend and database developer.
 Email:    filip.hellgren04@gmail.com <br />
 Github:   https://github.com/Filip-Shellbranch <br />
 LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 
-**Jenny Nilsson**  
-Email:    nilssonjennylinnea@gmail.com <br />
+**Jenny Nilsson**
+Role:    frontend and database developer.
+Email:   nilssonjennylinnea@gmail.com <br />
 Github:  https://github.com/jeni1263 <br />
 LinkedIn: <br />
 
-**David Olmedo**  
+**David Olmedo**
+Role:     node and gateway developer.
 Email:    david@olmedo.se <br />
 Github:   https://github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
 
-**Tim Schönning**  
+**Tim Schönning**
+Role:     node and gateway developer.
 Email:    timschonning@gmail.com <br />
 Github:   https://github.com/TimSchonning <br />
 LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning <br />
@@ -145,16 +167,15 @@ Project Link: [https://github.com/TimSchonning/MINTS](https://github.com/TimScho
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- SCREENSHOTS AND DEMONSTRATIONS -->
+## Screenshots & Demos
+
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* Special thanks to our thesis advisor, Docent Calkin Suero Montero.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
