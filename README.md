@@ -139,26 +139,26 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 
 For questions, support, or collaboration, reach out to the team:
 
-**Filip Hellgren**
-Role:     frontend and database developer <br />
+**Filip Hellgren** <br />
+Frontend and database developer <br />
 Email:    filip.hellgren04@gmail.com <br />
 Github:   https://github.com/Filip-Shellbranch <br />
 LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 
-**Jenny Nilsson**
-Role:    frontend and database developer <br />
+**Jenny Nilsson** <br />
+Frontend and database developer <br />
 Email:   nilssonjennylinnea@gmail.com <br />
 Github:  https://github.com/jeni1263 <br />
 LinkedIn: <br />
 
-**David Olmedo**
-Role:     node and gateway developer <br />
+**David Olmedo** <br />
+Node and gateway developer <br />
 Email:    david@olmedo.se <br />
 Github:   https://github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
 
-**Tim Schönning**
-Role:     node and gateway developer <br />
+**Tim Schönning** <br />
+Node and gateway developer <br />
 Email:    timschonning@gmail.com <br />
 Github:   https://github.com/TimSchonning <br />
 LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning <br />
