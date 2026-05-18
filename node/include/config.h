@@ -30,7 +30,7 @@ inline const uint8_t NS_PIN                        = 1;
 //// LoRa config
 inline float    FREQUENCY        = 868.1;
 inline float    BANDWIDTH        = 125.0;
-inline uint8_t  SPREADING_FACTOR = 8;
+inline uint8_t  SPREADING_FACTOR = 10;
 inline uint8_t  CODING_RATE      = 8;
 inline uint8_t  SYNC_WORD        = 0x12;
 inline int8_t   POWER            = 14;

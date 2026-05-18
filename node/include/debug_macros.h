@@ -2,7 +2,7 @@
 #define DEBUG_MACROS_H
 
 
-#define DEBUG_MODE // Comment this to disable debug mode
+//#define DEBUG_MODE // Comment this to disable debug mode
 
 #ifdef DEBUG_MODE
   #define DEBUG_PRINT(x) Serial.print(x)
