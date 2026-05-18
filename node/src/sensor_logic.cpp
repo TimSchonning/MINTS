@@ -14,7 +14,7 @@ extern ns_state_t ns_state;
 extern ns_result_t ns_result;
 
 static uint8_t pm_average(uint8_t count, uint16_t input) {
-    uint16_t average_pm = input / count;
+    uint16_t average_pm = (input + (count / 2)) / count;
     if (average_pm > 255) {
         return 255;
     }
