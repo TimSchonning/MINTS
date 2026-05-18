@@ -35,25 +35,25 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About the Project
-***NOTE:** This project was a part of the authors bachelor thesis at Uppsala university.* <br>
+***NOTE:** This project was a part of the author's bachelor's thesis at Uppsala University.* <br>
 *The thesis can be found at:*
 
-MINTS is a network of small, energy-efficient measurement stations with sensors for monitoring ground-level air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central gateway. From the gateway, the data takes a streamlined path to reach the public-facing website, transforming raw numbers into an intuitive, real-time heatmap.
+MINTS is a network of small, energy-efficient measurement stations equipped with sensors to monitor ground-level air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central gateway. From the gateway, the data takes a streamlined path to reach the public-facing website, transforming raw numbers into an intuitive, real-time heatmap.
 
-The goal is to create a plug-and-play system that can identify problematic areas and enable the rerouting of traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to notice traffic patterns, which can be used to plan future development better and improve the quality of life in affected areas.
+The goal is to create a plug-and-play system that can identify problem areas and reroute traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to identify traffic patterns that can be used to better plan future development and improve the quality of life in affected areas.
 
-The primary beneficiaries of this project are the municipalities and the people, who are troubled by pollution and disturbances caused by traffic. Further, it provides the tools for responsive urbanism, making the day-to-day lives of citizens easier.
+The primary beneficiaries of this project are the municipalities and the people who are troubled by pollution and traffic-related disturbances. Further, it provides the tools for responsive urbanism, making the day-to-day lives of citizens easier.
 
 ### Key Features
-* **Ground-level measurements:**    measures ground level PM and noise pollution.
+* **Ground-level measurements:**    measures ground-level PM and noise pollution.
 * **Real-Time Heatmap Generation:** Real-time visualisations of pollution data.
 * **Low-Cost system:**              ~100 USD per node.
-* **Low-Power LoRa Communication:** Optimized for long-range, battery-efficient data transmissions within an urban, ground-level environment.
+* **Low-Power LoRa Communication:** Optimised for long-range, battery-efficient data transmissions within an urban, ground-level environment.
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 ### System Architecture
 
-*For further details, please see chapter 3.3 and 3.4 in the thesis.*
+*For further details, please see chapters 3.3 and 3.4 in the thesis.*
 
 #### Hardware Architecture
 
@@ -96,7 +96,7 @@ database, which can be read from the frontend to update the heatmap.
 
 <!-- GETTING STARTED -->
 ## Getting Started
-To get a local copy up and running follow these steps.
+To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
@@ -108,7 +108,7 @@ Before running the backend or frontend web application, ensure you have the foll
 
 ### Installation
 
-Navigate to the part of the project you want to run and follow the specific instructions in the respective README:s.
+Navigate to the part of the project you want to run and follow the specific instructions in the respective READMEs.
 
 ### Repository Structure
 
@@ -135,7 +135,7 @@ See also the [open issues](https://github.com/TimSchonning/MINTS/issues) for a f
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
-## Authors, Acknowledgments and Contact Information
+## Authors, Acknowledgements, and Contact Information
 
 For questions, support, or collaboration, reach out to the team:
 
