@@ -35,7 +35,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About the Project
-***NOTE:** This project was a part of the author's bachelor's thesis at Uppsala University.* <br>
+***NOTE:** This project was a part of the authors' bachelor's thesis at Uppsala University.* <br>
 *The thesis can be found at:*
 
 MINTS is a network of small, energy-efficient measurement stations equipped with sensors to monitor ground-level air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central gateway. From the gateway, the data takes a streamlined path to reach the public-facing website, transforming raw numbers into an intuitive, real-time heatmap.
