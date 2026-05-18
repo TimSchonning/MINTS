@@ -31,6 +31,7 @@ void setup() {
     DEBUG_BEGIN(BAUD);
     delay(1000);
     DEBUG_PRINTLN("[START]   Entering");
+    
     // Node initialisation
     // if (needs_initialisation) initialise_node();
 
@@ -41,8 +42,9 @@ void setup() {
     sample_noise_sensor();
     // if (sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
 
+    
     sample_particle_sensor();
-    // if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
+    if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
     //// Update RTC
     boot_count++;

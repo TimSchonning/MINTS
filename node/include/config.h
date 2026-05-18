@@ -20,6 +20,7 @@ inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;
 inline RTC_DATA_ATTR uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" sufficient heat-up
 inline RTC_DATA_ATTR uint16_t PS_SAMPLE_TIME_mS = 10000;   // must be > 1
 inline RTC_DATA_ATTR uint16_t PS_TARGET_SAMPLES = 10;
+inline const uint8_t PS_SET_PIN                 = 10;
 
 inline RTC_DATA_ATTR uint16_t NS_SAMPLE_WINDOW_mS  = 1000;   // must be > 1
 inline RTC_DATA_ATTR uint8_t  NS_TARGET_SAMPLES    = 10;   // must be > 1

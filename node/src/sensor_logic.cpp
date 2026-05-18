@@ -119,6 +119,8 @@ void sample_particle_sensor() {
     DEBUG_PRINT("Heating particle sensor for (ms): ");
     DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * S_TO_mS);
 
+    wake_particle_sensor();
+
     delay(PS_HEAT_UP_TIME_S * S_TO_mS);
 
     while (!ps_parse(ps_sensor_buf, &ps_state, &ps_result, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {

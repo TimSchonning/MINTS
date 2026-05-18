@@ -143,14 +143,13 @@ void initialise_node() {
 }
 
 bool sleep_particle_sensor() {
-    // TODO: set the SET_PIN of the sensor to low.
-    // TODO: return success/fail
+    digitalWrite(PS_SET_PIN, LOW); 
     return true;
 }
 
-bool sleep_noise_sensor() {
-    // TODO: set the SET_PIN of the sensor to low.
-    // TODO: return success/fail
+bool wake_particle_sensor() {
+    pinMode(PS_SET_PIN, OUTPUT);
+    digitalWrite(PS_SET_PIN, HIGH);
     return true;
 }
 
