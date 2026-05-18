@@ -40,6 +40,8 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
                 state->sum_pm10  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
                 state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
 
+                DEBUG_PRINTLN(state->sum_pm10);
+
                 state->sample_count++;
                 state->last_sample_time = now;
             }
@@ -107,7 +109,7 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
 
     #ifdef DEBUG_MODE
         Serial.println(__func__);
-        Serial.println("Peak to peak:      " + String(result->noise_avg));
+        Serial.println("Total noise peak:      " + String(state->total_noise_peak));
         Serial.println("");
     #endif
 
