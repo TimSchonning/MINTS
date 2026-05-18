@@ -6,6 +6,7 @@ database/node_modules/*
 database/src/node_modules/*
 gateway/src/secrets/*
 gateway/src/venv/*
+node/build/*
 __pycache__
 *.out
 *.exe
