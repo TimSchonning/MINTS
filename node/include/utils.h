@@ -45,6 +45,12 @@ bool sleep_particle_sensor();
 bool sleep_noise_sensor();
 
 /**
+ * @brief Wakes the sensor.
+ * @return success
+ */
+bool wake_particle_sensor()
+
+/**
  * @brief Sets the node to config mode - where it can receive updates to state RTC variables.
  * @note Starts and sleeps the radio upon use.
  * @note Acks the gateway upon received config message
