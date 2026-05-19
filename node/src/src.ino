@@ -27,7 +27,7 @@ SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 void setup() {
     power_down_radios();
     //setCpuFrequencyMhz(CPU_FREQ_MHZ);
-    delay(1000);
+    delay(5000);
     DEBUG_BEGIN(BAUD);
     delay(1000);
     DEBUG_PRINTLN("[START]   Entering");
@@ -60,6 +60,7 @@ void setup() {
         srand((unsigned int)time(NULL) + node_id);
         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS);
 
+        DEBUG_PRINTLN("[TRANSMIT]   Transmitting payload");
         transmit_payload(&payload);
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));
