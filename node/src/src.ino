@@ -69,15 +69,20 @@ void setup() {
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
-    // calculates the sleep time by subtracting the designated sleep time with the time it took to reach this line
-    uint32_t comp = (millis() * 1000UL);
-    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - comp;
-    DEBUG_PRINTLN("[SLEEP]   sleep times: ");
-    DEBUG_PRINTLN(TIME_TO_SLEEP_S);
-    DEBUG_PRINTLN(S_TO_uS);
-    DEBUG_PRINTLN(comp);
 
-    esp_sleep_enable_timer_wakeup(sleep_time_us);
+    uint32_t time_awake       = millis() * 1000UL;
+    uint32_t wakeup_interval  = WAKEUP_INTERVAL_S * S_TO_uS;
+    uint32_t sleep_time = 900 * S_TO_uS;    //default value - dont change
+    
+    if (wakeup_interval > time_awake) {
+        sleep_time = wakeup_interval - time_awake;
+        DEBUG_PRINT("[SLEEP] Dynamic sleep time (s): ");
+        DEBUG_PRINTLN(sleep_time / S_TO_uS);
+    } else {
+        DEBUG_PRINTLN("[ERROR] WAKEUP_INTERVAL too low (underflow). Defaulting to ~900s");
+    }
+    
+    esp_sleep_enable_timer_wakeup(sleep_time);
     esp_deep_sleep_start();
 }
 

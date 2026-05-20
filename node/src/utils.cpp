@@ -234,7 +234,7 @@ bool wake_particle_sensor() {
 //                 memcpy(&CPU_FREQ_MHZ, value_ptr, sizeof(CPU_FREQ_MHZ));
 //                 break;
 //             case TAG_SLEEP_TIME:
-//                 memcpy(&TIME_TO_SLEEP_S, value_ptr, sizeof(TIME_TO_SLEEP_S));
+//                 memcpy(&WAKEUP_INTERVAL_S, value_ptr, sizeof(WAKEUP_INTERVAL_S));
 //                 break;
 //             case TAG_MEASURE_WINDOW:
 //                 memcpy(&MEASUREMENT_WINDOW_S, value_ptr, sizeof(MEASUREMENT_WINDOW_S));

@@ -5,14 +5,14 @@
 #include "esp_attr.h"
 
 //// General config
-inline const uint64_t S_TO_uS                  = 1000000;
-inline const uint64_t S_TO_mS                  = 1000;
-inline const uint32_t BAUD                     = 115200;
-inline const uint64_t MAX_TX_DELAY_S           = 3;
-inline RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ     = 10;
-inline RTC_DATA_ATTR uint32_t TIME_TO_SLEEP_S  = 600;      //make lowercase, will be calc at runtime
+inline const uint64_t S_TO_uS                   = 1000000;
+inline const uint64_t S_TO_mS                   = 1000;
+inline const uint32_t BAUD                      = 115200;
+inline const uint64_t MAX_TX_DELAY_S            = 3;
+inline RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ      = 10;
+inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 600;      //make lowercase, will be calc at runtime
 
-inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;
+inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;  // deprecated
 
 //// Particle config
 // ps = particle sensor
