@@ -11,8 +11,6 @@ extern SX1262 radio;
 
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result) {
     if (!payload || !ps_result || !ns_result) return false;
-
-    if (buffering_counter >= BUFFERING_THRESHOLD) return false;
     
     payload->type       = MSG_TYPE_PAYLOAD_UPLINK;
     payload->node_id    = node_id;
