@@ -13,37 +13,6 @@ extern ps_result_t ps_result;
 extern ns_state_t ns_state;
 extern ns_result_t ns_result;
 
-void debug_print_raw_ps_data() {
-    DEBUG_PRINTLN("HM3301 RAW FRAME:");
-
-    for (int i = 0; i < 29; i++) {
-        DEBUG_PRINT(ps_sensor_buf[i], HEX);
-        DEBUG_PRINT(" ");
-    }
-
-    DEBUG_PRINTLN("\n--- DECODED VALUES ---");
-
-    // CF=1 values
-    uint16_t pm1_cf1  = (uint16_t)ps_sensor_buf[2] << 8 | ps_sensor_buf[3];
-    uint16_t pm25_cf1 = (uint16_t)ps_sensor_buf[4] << 8 | ps_sensor_buf[5];
-    uint16_t pm10_cf1 = (uint16_t)ps_sensor_buf[6] << 8 | ps_sensor_buf[7];
-
-    // Atmospheric values (what you want)
-    uint16_t pm1_atm  = (uint16_t)ps_sensor_buf[8]  << 8 | ps_sensor_buf[9];
-    uint16_t pm25_atm = (uint16_t)ps_sensor_buf[10] << 8 | ps_sensor_buf[11];
-    uint16_t pm10_atm = (uint16_t)ps_sensor_buf[12] << 8 | ps_sensor_buf[13];
-
-    DEBUG_PRINT("PM1.0 CF=1: "); DEBUG_PRINTLN(pm1_cf1);
-    DEBUG_PRINT("PM2.5 CF=1: "); DEBUG_PRINTLN(pm25_cf1);
-    DEBUG_PRINT("PM10  CF=1: "); DEBUG_PRINTLN(pm10_cf1);
-
-    DEBUG_PRINT("PM1.0 ATM:  "); DEBUG_PRINTLN(pm1_atm);
-    DEBUG_PRINT("PM2.5 ATM:  "); DEBUG_PRINTLN(pm25_atm);
-    DEBUG_PRINT("PM10  ATM:  "); DEBUG_PRINTLN(pm10_atm);
-
-    DEBUG_PRINTLN("----------------------\n");
-}
-
 static uint8_t pm_average(uint8_t count, uint16_t input) {
     uint16_t average_pm = (input + (count / 2)) / count;
     if (average_pm > 255) {
