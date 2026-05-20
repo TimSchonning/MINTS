@@ -70,11 +70,11 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
         if (now - state->last_sample_time >= sample_interval) {
             if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
 
-                state->sum_pm10  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+                state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
                 state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
 
                 DEBUG_PRINTLN("PM1 SUM VALUE:  ");
-                DEBUG_PRINT(state->sum_pm10);
+                DEBUG_PRINT(state->sum_pm1);
                 DEBUG_PRINTLN("PM25 SUM VALUE: ");
                 DEBUG_PRINT(state->sum_pm25);
 
