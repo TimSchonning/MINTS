@@ -54,7 +54,7 @@ void setup() {
     encode_payload(&payload, &ps_result, &ns_result);
     
     //// send data
-    if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
+    if (buffering_counter < (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
         srand((unsigned int)time(NULL) + node_id);
