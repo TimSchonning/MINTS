@@ -26,10 +26,12 @@ db_connection = DbConnection()
 # Returns the created process
 def run_lora(gatewayLogicPath):
     process = subprocess.Popen(
-        [cpp_exe_path],
+        [gatewayLogicPath],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         bufsize=1
     )
     
