@@ -57,7 +57,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
     }
 
     /* Calculates the averages */
-    result->pm1 = pm_average(state->sample_count, state->sum_pm10);
+    result->pm1 = pm_average(state->sample_count, state->sum_pm1);
     result->pm25 = pm_average(state->sample_count, state->sum_pm25);
     state->is_active = false;
 
