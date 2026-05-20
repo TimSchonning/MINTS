@@ -33,7 +33,7 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
     }
 
     if (target_samples != 1) {
-        DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.")
+        DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.");
     }
 
    // debug_print_raw_ps_data();
