@@ -13,7 +13,7 @@ typedef struct {
     uint8_t sample_count;
     bool is_active;
 
-    uint16_t sum_pm10, sum_pm25;
+    uint16_t sum_pm1, sum_pm25;
 } ps_state_t;
 
 /**
