@@ -23,18 +23,26 @@ bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const
         DEBUG_PRINT(message);
         DEBUG_PRINT(" Code: ");
         DEBUG_PRINTLN(state);
-        
+    
         if (inform_gateway) {
+            int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN);
+
+            if (state != RADIOLIB_ERR_NONE) {
+                DEBUG_PRINTLN("[ERROR] (error_handler) Cannot transmit because radio init failed.");
+                return true;
+            }
             msg_error_t msg_error;
-            msg_error.node_id = node_id;
+            msg_error.node_id  = node_id;
             msg_error.error_id = error_code;
             
-            state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_ack_t));
+            state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_error_t));
+
+            if (state != RADIOLIB_ERR_NONE) {
+                DEBUG_PRINTLN("[ERROR] (error_handler) Cannot transmit because radio transmit failed.");
+                return true;
+            }
         }
 
-        #ifdef DEBUG_MODE
-            while (1); 
-        #endif
         return true;
     } else {
         return false;
