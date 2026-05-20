@@ -27,8 +27,6 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
     
     add_to_nvs(boot_count, ps_result->pm1, ps_result->pm25, ns_result->noise_avg);
 
-    buffering_counter++;
-
     return true;
 }
 
