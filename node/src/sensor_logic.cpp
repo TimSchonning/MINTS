@@ -23,7 +23,7 @@ static uint8_t pm_average(uint8_t count, uint16_t input) {
 }
 
 bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples) {
-    uint16_t sample_interval = duration_ms / target_samples;
+    // uint16_t sample_interval = duration_ms / target_samples;
     uint32_t now = millis();
     
     if (!state->is_active) {
@@ -32,40 +32,60 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
         state->is_active = true;
     }
 
+    if (target_samples != 1) {
+        DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.")
+    }
+
    // debug_print_raw_ps_data();
 
     /* Sums the readings over the given time period */
-    if (state->sample_count < target_samples) {
-        if (now - state->last_sample_time >= sample_interval) {
-            if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
+    // if (state->sample_count < target_samples) {
+    //     if (now - state->last_sample_time >= sample_interval) {
+    //         if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
 
-                state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-                state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
+    //             state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+    //             state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
 
-                DEBUG_PRINTLN("PM1 SUM VALUE:  ");
-                DEBUG_PRINT(state->sum_pm1);
-                DEBUG_PRINTLN("PM25 SUM VALUE: ");
-                DEBUG_PRINT(state->sum_pm25);
+    //             DEBUG_PRINTLN("PM1 SUM VALUE:  ");
+    //             DEBUG_PRINT(state->sum_pm1);
+    //             DEBUG_PRINTLN("PM25 SUM VALUE: ");
+    //             DEBUG_PRINT(state->sum_pm25);
 
-                state->sample_count++;
-                state->last_sample_time = now;
-            } else {
-                DEBUG_PRINTLN("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
-            }
-        }
-        return false;
+    //             state->sample_count++;
+    //             state->last_sample_time = now;
+    //         } else {
+    //             DEBUG_PRINTLN("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // /* Calculates the averages */
+    // result->pm1 = pm_average(state->sample_count, state->sum_pm1);
+    // result->pm25 = pm_average(state->sample_count, state->sum_pm25);
+    // state->is_active = false;
+
+    uint16_t error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
+
+    if (error_code == NO_ERROR) {
+
+        result->pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+        result->pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
+
+        DEBUG_PRINT("PM1 SUM VALUE:  ");
+        DEBUG_PRINTLN( result->pm1);
+        DEBUG_PRINT("PM25 SUM VALUE: ");
+        DEBUG_PRINTLN( result->pm25);
+
+    } else {
+        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
+        DEBUG_PRINTLN(error_code);
+        DEBUG_PRINTLN("Writing 255 to both PM values");
+        result->pm1  += 255;
+        result->pm25 += 255;
     }
 
-    /* Calculates the averages */
-    result->pm1 = pm_average(state->sample_count, state->sum_pm1);
-    result->pm25 = pm_average(state->sample_count, state->sum_pm25);
     state->is_active = false;
-
-    #ifdef DEBUG_MODE
-        Serial.println("Avg PM1 reading:   " + String(result->pm1));
-        Serial.println("Avg PM2.5 reading: " + String(result->pm25));
-        Serial.println("");
-    #endif
 
     return true;
 }
