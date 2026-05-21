@@ -1,9 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from lora_result import LoRaResult, TResults
+from lora_result import LoRaResult
 from plot_ready.experiment1 import *
 from plot_ready.experiment2 import *
 from plot_ready.experiment3 import *
+from plot_ready.experiment4 import *
+from plot_ready.experiment5 import *
+from plot_ready.experiment6 import *
+
 
 value_plot_configs = {
     "PL": {
@@ -12,16 +16,16 @@ value_plot_configs = {
     },
     "RSSI": {
         "label": "Mean RSSI (dBm)",
-        "y_lim": [0, 100],
+        "y_lim": [-150, 0],
     },
     "SNR": {
         "label": "Mean SNR (dB)",
-        "y_lim": [0, 100],
+        "y_lim": [-20, 20],
     },
 }
 
 
-data: LoRaResult = experiment3_bw250
+data: LoRaResult = experiment6_bw250
 plot_settings = value_plot_configs["PL"]
 
 def main():
