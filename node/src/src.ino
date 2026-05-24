@@ -26,31 +26,21 @@ SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
 void setup() {
     power_down_radios();
-    //setCpuFrequencyMhz(CPU_FREQ_MHZ);
-    delay(5000);
+    delay(1000);
+    
     DEBUG_BEGIN(BAUD);
     delay(1000);
-    DEBUG_PRINTLN("[START]   Entering");
     
-    // Node initialisation
-    // if (needs_initialisation) initialise_node();
-
-    // Initialise sensors
+    DEBUG_PRINTLN("[START]");
+    
     if (particle_sensor.init())  error_handler(-1, true, PS_INIT_ERROR,  "Particle sensor initialisation failed");
     
-    // Data collection
     sample_noise_sensor();
-    // if (!sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
-
-    
     sample_particle_sensor();
     if (!sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
-    //// Update RTC
     boot_count++;
     
-    //// TODO: Power down sensors
-    //// updates the payload
     encode_payload(&payload, &ps_result, &ns_result);
     
     //// send data
@@ -60,14 +50,13 @@ void setup() {
         srand((unsigned int)time(NULL) + node_id);
         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS);
 
-        DEBUG_PRINTLN("[TRANSMIT]   Transmitting payload");
+        DEBUG_PRINTLN("[TRANSMIT] Transmitting payload");
         transmit_payload(&payload);
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));
     }
 
-    //// Sleep
-    DEBUG_PRINTLN("[END]   Entering sleep");
+    DEBUG_PRINTLN("[END]      Entering sleep");
     radio.sleep();
 
     uint32_t time_awake       = millis() * 1000UL;
