@@ -47,8 +47,7 @@ void setup() {
     if (buffering_counter < (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
-        srand((unsigned int)time(NULL) + node_id);
-        delay((rand() % MAX_TX_DELAY_S) * S_TO_mS);
+        random_tx_delay();
 
         DEBUG_PRINTLN("[TRANSMIT] Transmitting payload");
         transmit_payload(&payload);
