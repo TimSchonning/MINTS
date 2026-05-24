@@ -11,11 +11,13 @@ const uint8_t MSG_TYPE_CLEARANCE      = 0xD1;
 const uint8_t MSG_TYPE_ERROR          = 0xE0;
 const uint8_t MSG_TYPE_CONFIG         = 0xF0;
 
+// Types of error messages to throw to the gateway
 const uint8_t UNDEFINED_ERROR = 0x00;
 const uint8_t PS_INIT_ERROR   = 0x01;
 const uint8_t PS_SLEEP_ERROR  = 0x02;
 const uint8_t NS_SLEEP_ERROR  = 0x03;
 const uint8_t NVS_ERROR       = 0x04;
+const uint8_t SLEEPTIME_ERROR = 0x05;
 
 /**
  * @brief Structure for config updates

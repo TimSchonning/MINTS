@@ -33,3 +33,15 @@ bool wake_particle_sensor() {
     digitalWrite(PS_SET_PIN, HIGH);
     return true;
 }
+
+void calculate_sleep_time() {
+    uint32_t time_awake      = millis() * 1000UL;
+    uint32_t wakeup_interval = WAKEUP_INTERVAL_S * S_TO_uS;
+    uint32_t sleep_time      = 900 * S_TO_uS;  // default value
+    
+    if (wakeup_interval > time_awake) {
+        sleep_time = wakeup_interval - time_awake;
+    } else {
+        error_handler(-1, true, SLEEPTIME_ERROR, "wakeup interval too low (underflow). Defaulting the sleep time.");
+    }
+}
