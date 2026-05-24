@@ -1,7 +1,7 @@
 #ifndef SENSOR_LOGIC_H
 #define SENSOR_LOGIC_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <stdbool.h>
 #include <string.h>
 

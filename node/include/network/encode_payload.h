@@ -1,7 +1,7 @@
 #ifndef ENCODE_PAYLOAD_H
 #define ENCODE_PAYLOAD_H
 
-#include <stdint.h>
+#include <cstdint>
 #include "sensor_logic.h"
 #include "protocol.h"
 

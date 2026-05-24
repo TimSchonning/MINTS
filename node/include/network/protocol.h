@@ -1,7 +1,7 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include <stdint.h>
+#include <cstdint>
 
 // Types of messages
 const uint8_t MSG_TYPE_ACK            = 0xA0;
