@@ -47,7 +47,7 @@ bool transmit_payload(payload_t* payload) {
         }
 
         DEBUG_PRINTLN("[WARNING]  ACK missing or invalid. Retrying.");
-        
+        random_tx_delay(5);
     }
 
     DEBUG_PRINTLN("[ERROR]    Max transmit payload retries reached. Transmission failed.");
