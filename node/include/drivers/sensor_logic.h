@@ -6,17 +6,6 @@
 #include <string.h>
 
 /**
- * @brief Stores the running totals and timing state for PM averaging.
- */
-typedef struct {
-    uint32_t start_time, last_sample_time;
-    uint8_t sample_count;
-    bool is_active;
-
-    uint16_t sum_pm1, sum_pm25;
-} ps_state_t;
-
-/**
  * @brief Stores the final calculated averages.
  */
 typedef struct {
@@ -43,14 +32,7 @@ typedef struct {
 } ns_result_t;
 
 /**
- * @brief  Calculates the average PM concentration.
- * @param  sensor_buf: Buffer containing the readings of the sensor. (uint8_t sensor_buf[30];)
- * @param  state: the state/running totals.
- * @param  results: the accumulated totals.
- * @param  duration_ms: duration in ms the sampling runs for.
- * @param  target_samples: number of samples to take.
- * @return is done
- * 
+ * @brief  Records the PM concentration.
  * @note Sensor needs to heat up for about 30s
  * @note
  * HM330X Sensor Data Buffer Mapping (29 Bytes).
@@ -61,7 +43,7 @@ typedef struct {
  * @note| 12-13 | PM2.5 (ATM)   | PM2.5 Atmospheric environment (ug/m3)          |
  * @note| 14-15 | PM10  (ATM)   | PM10  Atmospheric environment (ug/m3)          |
  */
-bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples);
+void ps_parse();
 
 /**
  * @brief  Calculates the average peak to peak sound amplitude

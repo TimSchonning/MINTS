@@ -1,88 +1,38 @@
 #include "master.h"
 
-extern HM330X particle_sensor;
-extern uint8_t ps_sensor_buf[];
-extern ps_state_t ps_state;
+extern HM330X      particle_sensor;
+extern uint8_t     ps_sensor_buf[];
+extern ps_state_t  ps_state;
 extern ps_result_t ps_result;
 
-extern ns_state_t ns_state;
+extern ns_state_t  ns_state;
 extern ns_result_t ns_result;
 
-static uint8_t pm_average(uint8_t count, uint16_t input) {
-    uint16_t average_pm = (input + (count / 2)) / count;
-    if (average_pm > 255) {
-        return 255;
-    }
-    
-    return (uint8_t)average_pm;
-}
+void ps_parse() {
+    memset(result, 0, sizeof(ps_result_t));
 
-bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint16_t duration_ms, uint16_t target_samples) {
-    // uint16_t sample_interval = duration_ms / target_samples;
-    uint32_t now = millis();
-    
-    if (!state->is_active) {
-        memset(state, 0, sizeof(ps_state_t));
-        state->start_time = now;
-        state->is_active = true;
-    }
-
-    if (target_samples != 1) {
-        DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.");
-    }
-
-   // debug_print_raw_ps_data();
-
-    /* Sums the readings over the given time period */
-    // if (state->sample_count < target_samples) {
-    //     if (now - state->last_sample_time >= sample_interval) {
-    //         if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
-
-    //             state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-    //             state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
-
-    //             DEBUG_PRINTLN("PM1 SUM VALUE:  ");
-    //             DEBUG_PRINT(state->sum_pm1);
-    //             DEBUG_PRINTLN("PM25 SUM VALUE: ");
-    //             DEBUG_PRINT(state->sum_pm25);
-
-    //             state->sample_count++;
-    //             state->last_sample_time = now;
-    //         } else {
-    //             DEBUG_PRINTLN("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // /* Calculates the averages */
-    // result->pm1 = pm_average(state->sample_count, state->sum_pm1);
-    // result->pm25 = pm_average(state->sample_count, state->sum_pm25);
-    // state->is_active = false;
-
-    uint16_t error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
+    uint16_t error_code = particle_sensor.read_sensor_value(ps_sensor_buf, 29);
 
     if (error_code == NO_ERROR) {
+        ps_result->pm1  = ((uint16_t)ps_sensor_buf[10] << 8) | ps_sensor_buf[11];
+        ps_result->pm25 = ((uint16_t)ps_sensor_buf[12] << 8) | ps_sensor_buf[13];
 
-        result->pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-        result->pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
-
-        DEBUG_PRINT("PM1 SUM VALUE:  ");
-        DEBUG_PRINTLN( result->pm1);
-        DEBUG_PRINT("PM25 SUM VALUE: ");
-        DEBUG_PRINTLN( result->pm25);
+        DEBUG_PRINT("Measured PM1  : "); DEBUG_PRINTLN(ps_result->pm1);
+        DEBUG_PRINT("Measured PM2.5: "); DEBUG_PRINTLN(ps_result->pm25);
 
     } else {
-        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
-        DEBUG_PRINTLN(error_code);
-        DEBUG_PRINTLN("Writing 255 to both PM values");
-        result->pm1  += 255;
-        result->pm25 += 255;
+        DEBUG_PRINT("[ERROR]    read_sensor_value(sensor_buf, 29) returned error: "); DEBUG_PRINTLN(error_code);
+        DEBUG_PRINTLN("[INFO]    Writing 254 to both PM values");
+        ps_result->pm1  = 254;
+        ps_result->pm25 = 254;
     }
+}
 
-    state->is_active = false;
+void sample_particle_sensor() {
+    wake_particle_sensor();
+    delay(PS_HEAT_UP_TIME_S * S_TO_mS);
 
-    return true;
+    ps_parse();
 }
 
 bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms) {
@@ -95,7 +45,7 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
         state->is_active  = true;
     }
 
-    /* Sums the readings over the given time period */
+    // 1. Sums the readings over the given time period
     if (now - state->start_time < duration_ms) {
         uint16_t sample = analogRead(SENSOR_PIN);
 
@@ -107,24 +57,21 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
         return false;
     }
 
-    // Window finished. Adds the peak-to-peak value to the accumulator
+    // 2. Window finished
+    // Adds the peak-to-peak value to the accumulator
     if (state->signal_max <= state->signal_min) {
-        DEBUG_PRINTLN("[ERROR] ns_parse call failed to detect any sound");
+        DEBUG_PRINTLN("[ERROR]    ns_parse call failed to detect any sound");
         // TODO: this requires some better handling
         state->total_noise_peak += 0;
     } else {
-        state->total_noise_peak += state->signal_max - state->signal_min;
+        uint16_t noise_peak = state->signal_max - state->signal_min
+        DEBUG_PRINT("Measured noise peak: "); DEBUG_PRINTLN(noise_peak);
+        state->total_noise_peak += noise_peak;
     }
 
     state->sample_count++;
 
-    #ifdef DEBUG_MODE
-        Serial.println(__func__);
-        Serial.println("Total noise peak:      " + String(state->total_noise_peak));
-        Serial.println("");
-    #endif
-
-    // Calculates the total average
+    // 3. Calculates the total average
     if (state->sample_count >= NS_TARGET_SAMPLES) {
         result->noise_avg = state->total_noise_peak / NS_TARGET_SAMPLES;
 
@@ -138,28 +85,13 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
     return true;
 }
 
-void sample_particle_sensor() {
-    DEBUG_PRINTLN("[START] Particle sensor sampling");
-    DEBUG_PRINT("Heating particle sensor for (ms): ");
-    DEBUG_PRINTLN(PS_HEAT_UP_TIME_S * S_TO_mS);
-
-    wake_particle_sensor();
-
-    delay(PS_HEAT_UP_TIME_S * S_TO_mS);
-
-    while (!ps_parse(ps_sensor_buf, &ps_state, &ps_result, PS_SAMPLE_TIME_mS - 1, PS_TARGET_SAMPLES)) {
-        // 1ms delay safe guard
-        delay(1);
-    }
-}
-
 void sample_noise_sensor() {
-    DEBUG_PRINTLN("[START] Noise sensor sampling");
+    DEBUG_PRINTLN("[START]    Noise sensor sampling");
 
     // state safe guards
-    ns_state.is_active = false; 
+    ns_state.is_active        = false; 
     ns_state.total_noise_peak = 0;
-    ns_state.sample_count = 0;
+    ns_state.sample_count     = 0;
 
     for (int i = 0; i < NS_TARGET_SAMPLES; i++) {
         while (!ns_parse(NS_PIN, &ns_state, &ns_result, NS_SAMPLE_WINDOW_mS)) {
