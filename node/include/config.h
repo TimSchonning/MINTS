@@ -37,10 +37,10 @@ inline int8_t   POWER            = 14;
 inline uint16_t PREAMBLE_LEN     = 8;
 
 // LoRa pins (check datasheet)
-inline const int PIN_NSS  = 21;
-inline const int PIN_DIO0 = 5;
-inline const int PIN_NRST = 7;
-inline const int PIN_DIO1 = 6;
+inline const int PIN_CS   = 21;
+inline const int PIN_DIO1 = 5;
+inline const int PIN_RST  = 7;
+inline const int PIN_BSY  = 6;
 
 //// Initialisation config
 inline const uint8_t MAX_ID_ATTEMPTS    = 0;

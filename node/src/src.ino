@@ -16,13 +16,11 @@ HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
 ps_state_t  ps_state;
 ps_result_t ps_result;
-
 ns_state_t  ns_state;
 ns_result_t ns_result;
 
 RTC_DATA_ATTR payload_t payload;
-
-SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
+SX1262 radio = new Module(PIN_CS, PIN_DIO1, PIN_RST, PIN_BSY);
 
 void setup() {
     power_down_radios();
