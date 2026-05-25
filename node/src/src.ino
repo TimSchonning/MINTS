@@ -45,7 +45,7 @@ void setup() {
     
     bool send_payload = !(buffering_counter < BUFFERING_THRESHOLD);
     if (send_payload) {
-        random_tx_delay();
+        random_tx_delay(MAX_TX_DELAY_S);
 
         DEBUG_PRINTLN("[TRANSMIT] Transmitting payload");
         transmit_payload(&payload);
