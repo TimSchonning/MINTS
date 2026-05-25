@@ -1,6 +1,5 @@
 #include "master.h"
 
-Preferences prefs;
 extern SX1262 radio;
 
 void config_mode() {

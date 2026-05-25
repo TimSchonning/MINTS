@@ -2,7 +2,7 @@
 
 HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];
-ps_state_t  ps_state;
+
 ps_result_t ps_result;
 ns_state_t  ns_state;
 ns_result_t ns_result;
@@ -44,7 +44,7 @@ void setup() {
 
     radio.sleep();
 
-    sleep_time_ms = calculate_sleep_time();
+    uint32_t sleep_time_ms = calculate_sleep_time();
     DEBUG_PRINT("[END]      Entering sleep for: "); DEBUG_PRINT(sleep_time_ms); DEBUG_PRINTLN(" ms");
     
     esp_sleep_enable_timer_wakeup(sleep_time_ms);

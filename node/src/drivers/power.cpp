@@ -1,6 +1,5 @@
 #include "master.h"
 
-Preferences prefs;
 extern SX1262 radio;
 
 void power_down_radios() {
@@ -21,7 +20,7 @@ bool wake_particle_sensor() {
     return true;
 }
 
-void calculate_sleep_time() {
+uint32_t calculate_sleep_time() {
     uint32_t time_awake      = millis() * 1000UL;
     uint32_t wakeup_interval = WAKEUP_INTERVAL_S * S_TO_uS;
     uint32_t sleep_time      = 900 * S_TO_uS;  // default value
@@ -31,4 +30,6 @@ void calculate_sleep_time() {
     } else {
         error_handler(-1, true, SLEEPTIME_ERROR, "wakeup interval too low (underflow). Defaulting the sleep time.");
     }
+
+    return sleep_time;
 }

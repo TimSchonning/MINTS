@@ -23,7 +23,7 @@
 #include "storage.h"
 
 // Network
-#include "config_handler.h"
+#include "delay.h"
 #include "encode_payload.h"
 #include "protocol.h"
 
@@ -33,5 +33,7 @@
 
 // Configurations
 #include "config.h"
+
+extern Preferences prefs;
 
 #endif

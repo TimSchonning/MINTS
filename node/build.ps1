@@ -1,4 +1,8 @@
 function build ($Src1, $Src2) {
+    if (Test-Path ".\build") {
+        Remove-Item -Path ".\build" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
     if (-not (Test-Path ".\build")) {
         New-Item -ItemType Directory -Path ".\build" -Force | Out-Null
     }

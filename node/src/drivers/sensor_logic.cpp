@@ -2,29 +2,28 @@
 
 extern HM330X      particle_sensor;
 extern uint8_t     ps_sensor_buf[];
-extern ps_state_t  ps_state;
 extern ps_result_t ps_result;
 
 extern ns_state_t  ns_state;
 extern ns_result_t ns_result;
 
 void ps_parse() {
-    memset(result, 0, sizeof(ps_result_t));
+    memset(&ps_result, 0, sizeof(ps_result_t));
 
     uint16_t error_code = particle_sensor.read_sensor_value(ps_sensor_buf, 29);
 
     if (error_code == NO_ERROR) {
-        ps_result->pm1  = ((uint16_t)ps_sensor_buf[10] << 8) | ps_sensor_buf[11];
-        ps_result->pm25 = ((uint16_t)ps_sensor_buf[12] << 8) | ps_sensor_buf[13];
+        ps_result.pm1  = ((uint16_t)ps_sensor_buf[10] << 8) | ps_sensor_buf[11];
+        ps_result.pm25 = ((uint16_t)ps_sensor_buf[12] << 8) | ps_sensor_buf[13];
 
-        DEBUG_PRINT("Measured PM1  : "); DEBUG_PRINTLN(ps_result->pm1);
-        DEBUG_PRINT("Measured PM2.5: "); DEBUG_PRINTLN(ps_result->pm25);
+        DEBUG_PRINT("Measured PM1  : "); DEBUG_PRINTLN(ps_result.pm1);
+        DEBUG_PRINT("Measured PM2.5: "); DEBUG_PRINTLN(ps_result.pm25);
 
     } else {
-        DEBUG_PRINT("[ERROR]    read_sensor_value(sensor_buf, 29) returned error: "); DEBUG_PRINTLN(error_code);
+        error_handler(-1, true, HM3301_READ_ERROR, "read_sensor_value(sensor_buf, 29) returned error: "); DEBUG_PRINTLN(error_code);
         DEBUG_PRINTLN("[INFO]    Writing 254 to both PM values");
-        ps_result->pm1  = 254;
-        ps_result->pm25 = 254;
+        ps_result.pm1  = 254;
+        ps_result.pm25 = 254;
     }
 }
 
@@ -64,7 +63,7 @@ bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t d
         // TODO: this requires some better handling
         state->total_noise_peak += 0;
     } else {
-        uint16_t noise_peak = state->signal_max - state->signal_min
+        uint16_t noise_peak = state->signal_max - state->signal_min;
         DEBUG_PRINT("Measured noise peak: "); DEBUG_PRINTLN(noise_peak);
         state->total_noise_peak += noise_peak;
     }

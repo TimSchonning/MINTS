@@ -1,5 +1,7 @@
 #include "master.h"
 
+Preferences prefs;
+
 static void write_nvs(const char* key, uint8_t data_in) {
     prefs.begin("mints", false);
     if (!prefs.putUChar(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
