@@ -1,3 +1,4 @@
+#include "master.h"
 
 static void write_nvs(const char* key, uint8_t data_in) {
     prefs.begin("mints", false);

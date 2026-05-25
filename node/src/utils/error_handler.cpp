@@ -1,11 +1,4 @@
-#include <cstdint>
-#include <RadioLib.h>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "sensor_logic.h"
-#include "utils.h"
-#include "protocol.h"
+#include "master.h"
 
 extern SX1262 radio;
 

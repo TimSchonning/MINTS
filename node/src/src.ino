@@ -1,16 +1,4 @@
-#include <Seeed_HM330X.h>
-#include <WiFi.h>
-#include <esp_wifi.h>
-#include <esp_bt.h>
-#include <SPI.h>
-#include <RadioLib.h>
-#include <cstdlib>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "sensor_logic.h"
-#include "utils.h"
+#include "master.h"
 
 HM330X particle_sensor;
 uint8_t     ps_sensor_buf[30];

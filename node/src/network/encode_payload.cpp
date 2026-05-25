@@ -1,11 +1,4 @@
-#include "config.h"
-#include "debug_macros.h"
-#include "encode_payload.h"
-#include "sensor_logic.h"
-#include "utils.h"
-
-#include <cstdint>
-#include <RadioLib.h>
+#include "master.h"
 
 extern SX1262 radio;
 
@@ -54,6 +47,7 @@ bool transmit_payload(payload_t* payload) {
         }
 
         DEBUG_PRINTLN("[WARNING]  ACK missing or invalid. Retrying.");
+        
     }
 
     DEBUG_PRINTLN("[ERROR]    Max transmit payload retries reached. Transmission failed.");

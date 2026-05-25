@@ -1,17 +1,4 @@
-#include <cstdint>
-#include <stdio.h>
-#include <RadioLib.h>
-#include <math.h>
-#include <Preferences.h>
-#include <WiFi.h>
-#include <esp_wifi.h>
-#include <esp_bt.h>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "sensor_logic.h"
-#include "utils.h"
-#include "protocol.h"
+#include "master.h"
 
 Preferences prefs;
 extern SX1262 radio;

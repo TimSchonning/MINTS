@@ -1,9 +1,4 @@
-#include <Seeed_HM330X.h>
-
-#include "config.h"
-#include "debug_macros.h"
-#include "sensor_logic.h"
-#include "utils.h"
+#include "master.h"
 
 extern HM330X particle_sensor;
 extern uint8_t ps_sensor_buf[];
