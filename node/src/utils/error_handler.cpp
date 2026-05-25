@@ -10,7 +10,7 @@
 extern SX1262 radio;
 
 bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const char* message) {
-    if (state != RADIOLIB_ERR_NONE) return false;
+    if (state == RADIOLIB_ERR_NONE) return false;
 
     DEBUG_PRINT("[ERROR] "); DEBUG_PRINT(message); DEBUG_PRINT(". Code: "); DEBUG_PRINTLN(state);
     
