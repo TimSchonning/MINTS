@@ -1,3 +1,4 @@
+<!-- Time slider component that prefetches measurement data around the selected time -->
 <script lang="ts">
 	import { shown_date, time_resolution } from '../map_controller';
 
