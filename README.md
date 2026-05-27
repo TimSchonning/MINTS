@@ -161,7 +161,7 @@ LinkedIn: www.linkedin.com/in/davolm/ <br />
 Node and gateway developer <br />
 Email:    timschonning@gmail.com <br />
 Github:   https://github.com/TimSchonning <br />
-LinkedIn: https://se.linkedin.com/in/tim-sch%C3%B6nning <br />
+LinkedIn: https://www.linkedin.com/in/tim-sch%C3%B6nning-29a621226/ <br />
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
