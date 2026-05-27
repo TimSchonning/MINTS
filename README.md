@@ -149,7 +149,7 @@ LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 Frontend and database developer <br />
 Email:   nilssonjennylinnea@gmail.com <br />
 Github:  www.github.com/jeni1263 <br />
-LinkedIn: <br />
+LinkedIn: www.linkedin.com/in/jenny-nilsson-a7ab6a411<br />
 
 **David Olmedo** <br />
 Node and gateway developer <br />
