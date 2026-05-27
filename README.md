@@ -142,26 +142,26 @@ For questions, support, or collaboration, reach out to the team:
 **Filip Hellgren** <br />
 Frontend and database developer <br />
 Email:    filip.hellgren04@gmail.com <br />
-Github:   https://github.com/Filip-Shellbranch <br />
+Github:   www.github.com/Filip-Shellbranch <br />
 LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 
 **Jenny Nilsson** <br />
 Frontend and database developer <br />
 Email:   nilssonjennylinnea@gmail.com <br />
-Github:  https://github.com/jeni1263 <br />
+Github:  www.github.com/jeni1263 <br />
 LinkedIn: <br />
 
 **David Olmedo** <br />
 Node and gateway developer <br />
 Email:    david@olmedo.se <br />
-Github:   https://github.com/DaOl6717 <br />
+Github:   www.github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
 
 **Tim Schönning** <br />
 Node and gateway developer <br />
 Email:    timschonning@gmail.com <br />
-Github:   https://github.com/TimSchonning <br />
-LinkedIn: https://www.linkedin.com/in/tim-sch%C3%B6nning-29a621226/ <br />
+Github:   www.github.com/TimSchonning <br />
+LinkedIn: www.linkedin.com/in/tim-sch%C3%B6nning-29a621226/ <br />
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
