@@ -1,4 +1,4 @@
-Updated 2026/05/24.
+Updated 2026/05/28.
 
 ## Brief
 The full workings of the node can be found within the authors' Bachelor thesis, linked in the main README.
@@ -14,6 +14,23 @@ The nodes core logic:
     6. Send the payload (when the batch is full)
 7. Disable the radio
 9. Sleep
+
+## node/ structure
+
+The project is organized into modular directories separating definitions (`include/`) from execution logic:
+
+### Root Files
+* **`main.cpp`**: The primary application entry point; handles system initialization and the core runtime loop.
+
+### Include Directory (`include/`)
+Contains all header files:
+
+* **`config.h`**: Global configuration settings, pin definitions, constants, and system-wide parameters.
+* **`master.h`**: Top-level header file including all other .h-files.
+* **`drivers/`**: Interface definitions for peripheral hardware and sensor abstractions (e.g., air quality sensors).
+* **`network/`**: Headers for managing connectivity, communication protocols, and data payloads.
+* **`utils/`**: Helper macros, error utilities.
+* **`experimental/`**: Sandbox interfaces and test setups for features currently under development.
 
 ## Initialisation w/ Arduinos IDE
 1. Navigate into node/ and execute the build script:
