@@ -69,20 +69,22 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
 
     if (error_code == NO_ERROR) {
 
-        result->pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-        result->pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
+        uint16_t pm1  = ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+        uint16_t pm25 = ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
+        
+        result->pm1  = (pm1 > 255)  ? 255 : (uint8_t)pm1;
+        result->pm25 = (pm25 > 255) ? 255 : (uint8_t)pm25;
 
-        DEBUG_PRINT("PM1 SUM VALUE:  ");
-        DEBUG_PRINTLN( result->pm1);
-        DEBUG_PRINT("PM25 SUM VALUE: ");
-        DEBUG_PRINTLN( result->pm25);
+        DEBUG_PRINT("[INFO] PM1 VALUE:  ");
+        DEBUG_PRINTLN(pm1);
+        DEBUG_PRINT("[INFO] PM25 VALUE: ");
+        DEBUG_PRINTLN(pm25);
 
     } else {
-        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
-        DEBUG_PRINTLN(error_code);
-        DEBUG_PRINTLN("Writing 255 to both PM values");
-        result->pm1  += 255;
-        result->pm25 += 255;
+        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned error: "); DEBUG_PRINTLN(error_code);
+        DEBUG_PRINTLN("[INFO] Writing 254 to both PM values");
+        result->pm1  += 254;
+        result->pm25 += 254;
     }
 
     state->is_active = false;
