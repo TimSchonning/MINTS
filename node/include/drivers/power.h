@@ -16,12 +16,6 @@ void power_down_radios();
 bool sleep_particle_sensor();
 
 /**
- * @brief Sleeps the sensor.
- * @return success
- */
-bool sleep_noise_sensor();
-
-/**
  * @brief Wakes the sensor.
  * @return success
  */

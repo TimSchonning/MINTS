@@ -1,6 +1,8 @@
 #ifndef CONFIG_HANDLER_H
 #define CONFIG_HANDLER_H
 
+/* EXPERIMENTAL - MOVE WHEN ADDED TO PRODUCTION */
+
 /**
  * @brief Sets the node to config mode - where it can receive updates to state RTC variables.
  * @note Starts and sleeps the radio upon use.

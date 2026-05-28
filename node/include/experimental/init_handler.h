@@ -1,6 +1,8 @@
 #ifndef INIT_HANDLER_H
 #define INIT_HANDLER_H
 
+/* EXPERIMENTAL - MOVE WHEN ADDED TO PRODUCTION */
+
 /**
  * @brief Initializes the LoRa radio and performs a handshake with the gateway
  * to receive a unique node ID.
