@@ -1,3 +1,4 @@
+<!-- Test button component for debugging database operations -->
 <script lang="ts">
 	import {
 		create_station,

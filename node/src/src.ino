@@ -27,10 +27,11 @@ SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 void setup() {
     power_down_radios();
     //setCpuFrequencyMhz(CPU_FREQ_MHZ);
-    delay(1000);
+    delay(5000);
     DEBUG_BEGIN(BAUD);
     delay(1000);
     DEBUG_PRINTLN("[START]   Entering");
+    
     // Node initialisation
     // if (needs_initialisation) initialise_node();
 
@@ -39,10 +40,11 @@ void setup() {
     
     // Data collection
     sample_noise_sensor();
-    // if (sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
+    // if (!sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
 
+    
     sample_particle_sensor();
-    // if (sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
+    if (!sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
     //// Update RTC
     boot_count++;
@@ -52,12 +54,13 @@ void setup() {
     encode_payload(&payload, &ps_result, &ns_result);
     
     //// send data
-    if (buffering_counter <= (BUFFERING_THRESHOLD - 1)) {
+    if (buffering_counter < (BUFFERING_THRESHOLD - 1)) {
         buffering_counter++;
     } else {
         srand((unsigned int)time(NULL) + node_id);
         delay((rand() % MAX_TX_DELAY_S) * S_TO_mS);
 
+        DEBUG_PRINTLN("[TRANSMIT]   Transmitting payload");
         transmit_payload(&payload);
         buffering_counter = 0;
         memset(&payload, 0, sizeof(payload_t));
@@ -66,15 +69,20 @@ void setup() {
     //// Sleep
     DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
-    // calculates the sleep time by subtracting the designated sleep time with the time it took to reach this line
-    uint32_t comp = (millis() * 1000UL);
-    uint32_t sleep_time_us = (TIME_TO_SLEEP_S * S_TO_uS) - comp;
-    DEBUG_PRINTLN("[SLEEP]   sleep times: ");
-    DEBUG_PRINTLN(TIME_TO_SLEEP_S);
-    DEBUG_PRINTLN(S_TO_uS);
-    DEBUG_PRINTLN(comp);
 
-    esp_sleep_enable_timer_wakeup(sleep_time_us);
+    uint32_t time_awake       = millis() * 1000UL;
+    uint32_t wakeup_interval  = WAKEUP_INTERVAL_S * S_TO_uS;
+    uint32_t sleep_time = 900 * S_TO_uS;    //default value - dont change
+    
+    if (wakeup_interval > time_awake) {
+        sleep_time = wakeup_interval - time_awake;
+        DEBUG_PRINT("[SLEEP] Dynamic sleep time (s): ");
+        DEBUG_PRINTLN(sleep_time / S_TO_uS);
+    } else {
+        DEBUG_PRINTLN("[ERROR] WAKEUP_INTERVAL too low (underflow). Defaulting to ~900s");
+    }
+    
+    esp_sleep_enable_timer_wakeup(sleep_time);
     esp_deep_sleep_start();
 }
 

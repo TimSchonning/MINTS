@@ -8,9 +8,9 @@
 #include <iostream>
 #include <string>
 #include <stdint.h>
+#include <chrono>
 
 #include "RadioLib.h"
-#include "DataPacket.h"
 #include "../include/protocol.h"
 #include "../include/config.h"
 #include "modules/SX126x/SX1262.h"
@@ -105,7 +105,7 @@ static void handlePacket(size_t payloadSize) {
     }
 }
 
-int main() { // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
+/* int main() { // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
     LoRaInit();
 
     while (true) {
@@ -131,17 +131,51 @@ int main() { // TODO: Clear gateway simulation and add (modified) main loop from
     }
 
     return 0;
-}
+} */
 
-// bool IdAssignment() {
-//     uint8_t id = 1;     //TODO: ID from db. 1 is placeholder.
-//     // TODO: db error handling
+int main() {
+    LoRaInit();
+
+    auto lastValidPacketTime = std::chrono::steady_clock::now();
     
-//     msg_ack_t idReqACK;
-//     idReqACK.node_id = id;  // The new ID!
-//     idReqACK.ack_for = MSG_TYPE_JOIN_REQ;
+    const std::chrono::minutes MAX_GATEWAY_SILENCE(20); 
 
-//     int state = radio.transmit((uint8_t*)&idReqACK, sizeof(msg_ack_t));
-//     //error_handler(state);  // TODO: error handling
-//     return (state == RADIOLIB_ERR_NONE); // If succeeded return true
-// }
+    while (true) {
+        int state = radio.receive(packetBuffer, sizeof(packetBuffer), 5000);
+        size_t payloadSize = radio.getPacketLength();
+
+        switch (state) {
+            case RADIOLIB_ERR_NONE:
+                if (packetBuffer[0] == MSG_TYPE_PAYLOAD_UPLINK) {
+                    lastValidPacketTime = std::chrono::steady_clock::now();
+                }
+                handlePacket(payloadSize);
+                break;
+
+            case RADIOLIB_ERR_RX_TIMEOUT:
+                break;
+
+            case RADIOLIB_ERR_CRC_MISMATCH:
+                std::cout << "CRC Error!" << std::endl;
+                break;
+
+            default:
+                std::cout << "Radio glitch or timeout state detected: " << (int)state << std::endl;
+                break;
+        }
+
+        auto currentTime = std::chrono::steady_clock::now();
+        if (currentTime - lastValidPacketTime > MAX_GATEWAY_SILENCE) {
+            std::cout << "[WATCHDOG] Gateway silence timeout reached! Forcing SX1262 re-initialization..." << std::endl;
+            
+            radio.standby();
+            hal->delay(100);
+            
+            LoRaInit();
+            
+            lastValidPacketTime = std::chrono::steady_clock::now();
+        }
+    }
+
+    return 0;
+}

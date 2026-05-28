@@ -8,6 +8,7 @@
 		avg_value: number | undefined;
 	}
 
+	// Calculate the severity to be shown in the popup
 	function calc_severity(stats: AvgStats): string | undefined {
 		if (stats.avg_value == undefined) {
 			return;
@@ -35,6 +36,7 @@
 		pm1?: number | undefined; // Added with ? for optional
 	}>();
 
+	// Updates the data in the popup when the date changes
 	$effect(() => {
 		const load_task = async () => {
 			const date = shown_date;
@@ -56,7 +58,6 @@
 						break;
 					}
 				}
-				console.log(`Update popup station: ${station_id}`);
 			}
 		};
 		load_task();

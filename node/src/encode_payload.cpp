@@ -11,8 +11,6 @@ extern SX1262 radio;
 
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result) {
     if (!payload || !ps_result || !ns_result) return false;
-
-    if (buffering_counter >= BUFFERING_THRESHOLD) return false;
     
     payload->type       = MSG_TYPE_PAYLOAD_UPLINK;
     payload->node_id    = node_id;
@@ -25,9 +23,7 @@ bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_
     payload->readings[index + 2] = (uint8_t)((ns_result->noise_avg >> 8) & 0xFF); 
     payload->readings[index + 3] = (uint8_t)(ns_result->noise_avg & 0xFF);
     
-    add_to_nvs(boot_count, ps_result->pm10, ps_result->pm25, ns_result->noise_avg);
-
-    buffering_counter++;
+    add_to_nvs(boot_count, ps_result->pm1, ps_result->pm25, ns_result->noise_avg);
 
     return true;
 }

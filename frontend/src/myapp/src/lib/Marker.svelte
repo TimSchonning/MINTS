@@ -1,3 +1,4 @@
+<!-- The marker component for the map -->
 <script lang="ts">
 	import RadioReceiver from '@lucide/svelte/icons/radio-receiver';
 </script>

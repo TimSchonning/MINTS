@@ -23,18 +23,26 @@ bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const
         DEBUG_PRINT(message);
         DEBUG_PRINT(" Code: ");
         DEBUG_PRINTLN(state);
-        
+    
         if (inform_gateway) {
+            int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN);
+
+            if (state != RADIOLIB_ERR_NONE) {
+                DEBUG_PRINTLN("[ERROR] (error_handler) Cannot transmit because radio init failed.");
+                return true;
+            }
             msg_error_t msg_error;
-            msg_error.node_id = node_id;
+            msg_error.node_id  = node_id;
             msg_error.error_id = error_code;
             
-            state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_ack_t));
+            state = radio.transmit((uint8_t*)&msg_error, sizeof(msg_error_t));
+
+            if (state != RADIOLIB_ERR_NONE) {
+                DEBUG_PRINTLN("[ERROR] (error_handler) Cannot transmit because radio transmit failed.");
+                return true;
+            }
         }
 
-        #ifdef DEBUG_MODE
-            while (1); 
-        #endif
         return true;
     } else {
         return false;
@@ -143,14 +151,13 @@ void initialise_node() {
 }
 
 bool sleep_particle_sensor() {
-    // TODO: set the SET_PIN of the sensor to low.
-    // TODO: return success/fail
+    digitalWrite(PS_SET_PIN, LOW); 
     return true;
 }
 
-bool sleep_noise_sensor() {
-    // TODO: set the SET_PIN of the sensor to low.
-    // TODO: return success/fail
+bool wake_particle_sensor() {
+    pinMode(PS_SET_PIN, OUTPUT);
+    digitalWrite(PS_SET_PIN, HIGH);
     return true;
 }
 
@@ -227,7 +234,7 @@ bool sleep_noise_sensor() {
 //                 memcpy(&CPU_FREQ_MHZ, value_ptr, sizeof(CPU_FREQ_MHZ));
 //                 break;
 //             case TAG_SLEEP_TIME:
-//                 memcpy(&TIME_TO_SLEEP_S, value_ptr, sizeof(TIME_TO_SLEEP_S));
+//                 memcpy(&WAKEUP_INTERVAL_S, value_ptr, sizeof(WAKEUP_INTERVAL_S));
 //                 break;
 //             case TAG_MEASURE_WINDOW:
 //                 memcpy(&MEASUREMENT_WINDOW_S, value_ptr, sizeof(MEASUREMENT_WINDOW_S));
