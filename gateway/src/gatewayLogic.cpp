@@ -95,7 +95,7 @@ static void handlePacket(size_t payloadSize) {
 
         case MSG_TYPE_ERROR: {
             msg_error_t *error_msg = (msg_error_t *)packetBuffer;
-            std::cout << "[ERROR] Node-side node ID: " << error_msg->node_id << " error code: " << error_msg->error_code << std::endl;
+            std::cout << "[ERROR] Node-side node ID: " << (int)error_msg->node_id << " error code: " << (int)error_msg->error_code << std::endl;
             break;
         }
 
@@ -104,34 +104,6 @@ static void handlePacket(size_t payloadSize) {
             break;
     }
 }
-
-/* int main() { // TODO: Clear gateway simulation and add (modified) main loop from LoRa.cpp
-    LoRaInit();
-
-    while (true) {
-        int state = radio.receive(packetBuffer, sizeof(packetBuffer));
-        size_t payloadSize = radio.getPacketLength();
-
-        switch (state) {
-            case RADIOLIB_ERR_NONE:
-                handlePacket(payloadSize);
-                break;
-
-            case RADIOLIB_ERR_RX_TIMEOUT:
-                break;
-
-            case RADIOLIB_ERR_CRC_MISMATCH:
-                std::cout << "CRC Error!" << std::endl;
-                break;
-
-            default:
-                std::cout << "Unknown error: " << (int)state << std::endl;
-                break;
-        }
-    }
-
-    return 0;
-} */
 
 int main() {
     LoRaInit();
