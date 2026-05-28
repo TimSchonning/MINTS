@@ -7,47 +7,22 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
 <!-- ABOUT THE PROJECT -->
 ## About the Project
-***NOTE:** This project was a part of the authors' bachelor's thesis at Uppsala University.* <br>
+**NOTE:** *This project was a part of the authors' bachelor's thesis at Uppsala University.* <br>
 *The thesis can be found at:*
 
-MINTS is a network of small, energy-efficient measurement stations equipped with sensors to monitor ground-level air quality and noise pollution at a local scale. The stations can be placed around a city, where they report data to a central gateway. From the gateway, the data takes a streamlined path to reach the public-facing website, transforming raw numbers into an intuitive, real-time heatmap.
+MINTS is a star topology network of small, ground-level measurement stations equipped with sensors to monitor air quality and noise pollution in a dense, urban environment. The project aims to combat the flaws associated with traditional monitoring systems, which tend to be expensive, few in number, and often mounted on rooftops, farther from the directly affected areas on the ground.
 
-The goal is to create a plug-and-play system that can identify problem areas and reroute traffic to reduce pollution and congestion in local communities. By continually monitoring several streets, it is possible to identify traffic patterns that can be used to better plan future development and improve the quality of life in affected areas.
+The stations have been developed to allow for a plug-and-play system that can identify problematic ground-level areas at a greater scale. By continually monitoring affected areas more densely, it's possible to identify pollution patterns and to pinpoint local hotspots. The pollution data gathered by these stations can then be visualized in real-time on an interactive heatmap.
 
 The primary beneficiaries of this project are the municipalities and the people who are troubled by pollution and traffic-related disturbances. Further, it provides the tools for responsive urbanism, making the day-to-day lives of citizens easier.
 
 ### Key Features
-* **Ground-level measurements:**    measures ground-level PM and noise pollution.
+* **Ground-level Measurements:**    measures ground-level PM and noise pollution.
 * **Real-Time Heatmap Generation:** Real-time visualisations of pollution data.
-* **Low-Cost system:**              ~100 USD per node.
+* **Low-Cost System:**              ~100 USD per node.
+* **Scalability:**                  Support for upp to hundreds of nodes per gateway.
 * **Low-Power LoRa Communication:** Optimised for long-range, battery-efficient data transmissions within an urban, ground-level environment.
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
@@ -63,7 +38,7 @@ The measuring station is designed to be compact, energy-efficient, and easily ex
 
 #### Software Architecture
 The software architecture consists of four parts working together: frontend,
-database, gateway, and node (Figure 8). The goal is to collect data from
+database, gateway, and node. The goal is to collect data from
 the connected sensors, transmit it to the gateway, which uploads it to the
 database, which can be read from the frontend to update the heatmap.
 
@@ -135,43 +110,48 @@ See also the [open issues](https://github.com/TimSchonning/MINTS/issues) for a f
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
-## Authors, Acknowledgements, and Contact Information
+## Authors and Contact Information
 
 For questions, support, or collaboration, reach out to the team:
 
 **Filip Hellgren** <br />
-Frontend and database developer <br />
+*Frontend and database developer* <br />
 Email:    filip.hellgren04@gmail.com <br />
 Github:   www.github.com/Filip-Shellbranch <br />
 LinkedIn: www.linkedin.com/in/filip-hellgren <br />
 
 **Jenny Nilsson** <br />
-Frontend and database developer <br />
+*Frontend and database developer* <br />
 Email:   nilssonjennylinnea@gmail.com <br />
 Github:  www.github.com/jeni1263 <br />
 LinkedIn: www.linkedin.com/in/jenny-nilsson-a7ab6a411<br />
 
 **David Olmedo** <br />
-Node and gateway developer <br />
+*Node and gateway developer* <br />
 Email:    david@olmedo.se <br />
 Github:   www.github.com/DaOl6717 <br />
 LinkedIn: www.linkedin.com/in/davolm/ <br />
 
 **Tim Schönning** <br />
-Node and gateway developer <br />
+*Node and gateway developer* <br />
 Email:    timschonning@gmail.com <br />
 Github:   www.github.com/TimSchonning <br />
 LinkedIn: www.linkedin.com/in/tim-sch%C3%B6nning-29a621226/ <br />
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- SCREENSHOTS AND DEMONSTRATIONS -->
-## Screenshots & Demos
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Special thanks to our thesis advisor, Docent Calkin Suero Montero.
+* We extend our sincere gratitude to the Sustainability InnoCenter for the generous funding and resources that made this project possible.
+
+* Special thanks to Stamatopoulos at Sustainability InnoCenter for his openness to our ideas, encouragement, and role in bringing this project to reality.
+  
+* We are equally grateful to Svante Hagström at Sustainability InnoCenter for his support in managing external connections and facilitating collaboration throughout the process.
+
+* We would also like to express our appreciation to our examiner, Calkin Suero Montero, for her feedback and guidance through multiple revisions, all of which significantly improved the quality of this work.
+
+* Finally, we want to thank our Teaching Assistant, Kahlifa Fumo, for his guidance, technical insight, encouragement, and support throughout this project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
