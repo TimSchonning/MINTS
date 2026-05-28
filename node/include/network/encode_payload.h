@@ -6,10 +6,10 @@
 #include "protocol.h"
 
 /**
- * @brief  Returns the encoded payload.
- * @param  payload: the payload.
- * @param  ps_result: PM results.
- * @param  ns_result: Sound sensor results.
+ * @brief  Encodes the payload.
+ * @param  payload:   the payload.
+ * @param  ps_result: PM results to append to the payload.
+ * @param  ns_result: Sound sensor results to append to the payload.
  * @return Success indicator
  */
 bool encode_payload(payload_t* payload, ps_result_t* ps_result, ns_result_t* ns_result);

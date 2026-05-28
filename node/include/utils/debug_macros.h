@@ -1,7 +1,6 @@
 #ifndef DEBUG_MACROS_H
 #define DEBUG_MACROS_H
 
-
 #define DEBUG_MODE // Comment this to disable debug mode
 
 #ifdef DEBUG_MODE

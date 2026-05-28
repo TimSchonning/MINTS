@@ -4,7 +4,8 @@
 #include "cstdint"
 
 /**
- * @brief Disables all wireless communication.
+ * @brief Disables unused peripherals communication.
+ * @note saves power!
  */
 void power_down_radios();
 

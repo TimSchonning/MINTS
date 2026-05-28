@@ -33,6 +33,8 @@ Contains all header files:
 * **`experimental/`**: Sandbox interfaces and test setups for features currently under development.
 
 ## Initialisation w/ Arduinos IDE
+0. Disable debug mode when in production. Can be done in include/utils/debug_macros.h
+
 1. Navigate into node/ and execute the build script:
 
 ```powershell
