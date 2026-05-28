@@ -51,11 +51,14 @@ def main():
     process = run_lora(cpp_exe_path)
     
     for line in iter(process.stdout.readline, ""): # type: ignore
-        print(f"Line (whole batch): {line}")
-        logging.debug(f"Line (whole batch): {line}")
+        print(f"Line: {line}")
+        logging.debug(f"Line: {line}")
         line = line.strip()
                 
         if line:
+            if line.lower().startswith("[ERROR]"):
+                continue
+
             # Split the CSV data
             try:
                 parts = line.split(",")
