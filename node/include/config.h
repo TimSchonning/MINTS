@@ -17,7 +17,7 @@ inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;  // deprecated
 //// Particle config
 // ps = particle sensor
 // ns = noise sensor
-inline RTC_DATA_ATTR uint8_t  PS_HEAT_UP_TIME_S = 5;  // set to 35 to "guarantee" sufficient heat-up
+inline RTC_DATA_ATTR uint8_t  PS_HEAT_UP_TIME_S = 35;  // set to 35 to "guarantee" sufficient heat-up
 inline RTC_DATA_ATTR uint16_t PS_SAMPLE_TIME_mS = 1000;   // must be > 1
 inline RTC_DATA_ATTR uint16_t PS_TARGET_SAMPLES = 1;
 inline const uint8_t PS_SET_PIN                 = 10;
@@ -52,7 +52,7 @@ inline RTC_DATA_ATTR bool needs_initialisation = true;
 inline RTC_DATA_ATTR uint16_t  boot_count          = 100;
 inline RTC_DATA_ATTR uint8_t  node_id              = 99;
 inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
-inline constexpr uint8_t  BUFFERING_THRESHOLD  = 1;
+inline constexpr uint8_t  BUFFERING_THRESHOLD  = 5; // Batches BUFFERING_THRESHOLD minus 1 readings. So if 5, 4 readings are sent.
 inline RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 
