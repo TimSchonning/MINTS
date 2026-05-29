@@ -289,24 +289,6 @@ void config_mode() {
     }
 }
 
-static void write_nvs(const char* key, uint8_t data_in) {
-    prefs.begin("mints", false);
-    if (!prefs.putUChar(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
-    prefs.end();
-}
-
-static void write_nvs(const char* key, uint16_t data_in) {
-    prefs.begin("mints", false);
-    if (!prefs.putUShort(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
-    prefs.end();
-}
-
-static void write_nvs(const char* key, uint32_t data_in) {
-    prefs.begin("mints", false);
-    if (!prefs.putULong(key, data_in)) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
-    prefs.end();
-}
-
 static void read_nvs(const char* key, uint8_t &data_out) {
     prefs.begin("mints", true);
     data_out = prefs.getUChar(key, 0);
@@ -325,17 +307,20 @@ static void read_nvs(const char* key, uint32_t &data_out) {
     prefs.end();
 }
 
-void add_to_nvs(uint8_t boot_count, uint8_t pm1, uint8_t pm25, uint16_t noise) {
+void add_to_nvs(uint16_t boot_count, uint8_t pm1, uint8_t pm25, uint16_t noise) {
     char key[16];
     
-    snprintf(key, sizeof(key), "i_%u_p1", boot_count);
-    write_nvs(key, pm1);
-    
-    snprintf(key, sizeof(key), "i_%u_p2", boot_count);
-    write_nvs(key, pm25);
-    
-    snprintf(key, sizeof(key), "i_%u_n", boot_count);
-    write_nvs(key, noise);
+    snprintf(key, sizeof(key), "nvs_%u", boot_count);
+
+    uint8_t data[4];
+    data[0] = pm1;
+    data[1] = pm25;
+    data[2] = (noise >> 8) & 0xFF;
+    data[3] = noise & 0xFF;
+
+    prefs.begin("mints", false);
+    if (prefs.putBytes(key, data, sizeof(data_buffer)) == 0) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
+    prefs.end();
 }
 
 
