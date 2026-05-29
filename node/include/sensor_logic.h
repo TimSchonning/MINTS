@@ -28,7 +28,7 @@ typedef struct {
  */
 typedef struct {
     uint32_t start_time;
-    uint16_t signal_max, signal_min;
+    uint16_t db_sample;
     uint32_t total_noise_peak;
     uint8_t  sample_count;
 

@@ -36,26 +36,53 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
         DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.");
     }
 
+   // debug_print_raw_ps_data();
+
+    /* Sums the readings over the given time period */
+    // if (state->sample_count < target_samples) {
+    //     if (now - state->last_sample_time >= sample_interval) {
+    //         if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
+
+    //             state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+    //             state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
+
+    //             DEBUG_PRINTLN("PM1 SUM VALUE:  ");
+    //             DEBUG_PRINT(state->sum_pm1);
+    //             DEBUG_PRINTLN("PM25 SUM VALUE: ");
+    //             DEBUG_PRINT(state->sum_pm25);
+
+    //             state->sample_count++;
+    //             state->last_sample_time = now;
+    //         } else {
+    //             DEBUG_PRINTLN("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // /* Calculates the averages */
+    // result->pm1 = pm_average(state->sample_count, state->sum_pm1);
+    // result->pm25 = pm_average(state->sample_count, state->sum_pm25);
+    // state->is_active = false;
+
     uint16_t error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
 
     if (error_code == NO_ERROR) {
 
-        uint16_t pm1  = ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-        uint16_t pm25 = ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
-        
-        result->pm1  = (pm1 > 255)  ? 255 : (uint8_t)pm1;
-        result->pm25 = (pm25 > 255) ? 255 : (uint8_t)pm25;
+        result->pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
+        result->pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
 
-        DEBUG_PRINT("[INFO] PM1 VALUE:  ");
-        DEBUG_PRINTLN(pm1);
-        DEBUG_PRINT("[INFO] PM25 VALUE: ");
-        DEBUG_PRINTLN(pm25);
+        DEBUG_PRINT("PM1 SUM VALUE:  ");
+        DEBUG_PRINTLN( result->pm1);
+        DEBUG_PRINT("PM25 SUM VALUE: ");
+        DEBUG_PRINTLN( result->pm25);
 
     } else {
-        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned error: "); DEBUG_PRINTLN(error_code);
-        DEBUG_PRINTLN("[INFO] Writing 254 to both PM values");
-        result->pm1  += 254;
-        result->pm25 += 254;
+        DEBUG_PRINT("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
+        DEBUG_PRINTLN(error_code);
+        DEBUG_PRINTLN("Writing 255 to both PM values");
+        result->pm1  += 255;
+        result->pm25 += 255;
     }
 
     state->is_active = false;
@@ -63,48 +90,80 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
     return true;
 }
 
+float db_from_peak_to_peak(int peak_to_peak) {
+    // Converts the peak-to-peak value into dB using a function fitted using manual calibration. 
+    // The functions and calibration data used for this can be found in experiments/results/sound_sensor_calibration
+    // This works pretty well in between 30-70 dB, generally being +-5 dB.
+    // The largest discrepancies are around 50 dB (see CalibrationPlot.png).
+    float a = -13.838529669252635;
+    float b = 10.849420757521935;
+    float db_approx = a+b*log((float)peak_to_peak);
+    return db_approx;
+}
+
+uint16_t sample_approximate_db_reading(int SENSOR_PIN) {
+    unsigned long startMillis = millis();
+
+    long signalMin = ANALOG_MAX;
+    long signalMax = 0;
+
+    while (millis() - startMillis < NS_SAMPLE_DURATION_mS) {
+
+
+        int sample = analogRead(SENSOR_PIN);
+
+        if (sample < signalMin) {
+            signalMin = sample;
+        }
+
+        if (sample > signalMax) {
+            signalMax = sample;
+        }
+    }
+
+    int peakToPeak = signalMax - signalMin;
+    uint16_t db_approx = round(db_from_peak_to_peak(peakToPeak));
+    #ifdef DEBUG_MODE
+        Serial.print("Sampled approximated dB: ");
+        Serial.println(db_approx);
+    #endif
+  
+    return db_approx;
+}
+
 bool ns_parse(int SENSOR_PIN, ns_state_t* state, ns_result_t* result, uint16_t duration_ms) {
     uint32_t now = millis();
     
     if (!state->is_active) {
         state->start_time = now;
-        state->signal_max = 0;
-        state->signal_min = 4096;
+        state->db_sample = 0;
         state->is_active  = true;
     }
 
     /* Sums the readings over the given time period */
     if (now - state->start_time < duration_ms) {
-        uint16_t sample = analogRead(SENSOR_PIN);
-
-        if (sample < 4096) {
-            if (sample > state->signal_max) state->signal_max = sample;
-            if (sample < state->signal_min) state->signal_min = sample;
-        }
+        uint16_t db_sample = sample_approximate_db_reading(SENSOR_PIN);
+        state->db_sample = db_sample;
 
         return false;
     }
 
-    // Window finished. Adds the peak-to-peak value to the accumulator
-    if (state->signal_max <= state->signal_min) {
-        DEBUG_PRINTLN("[ERROR] ns_parse call failed to detect any sound");
-        // TODO: this requires some better handling
-        state->total_noise_peak += 0;
-    } else {
-        state->total_noise_peak += state->signal_max - state->signal_min;
-    }
-
+    state->total_noise_peak += state->db_sample;
     state->sample_count++;
 
     #ifdef DEBUG_MODE
         Serial.println(__func__);
-        Serial.println("Total noise peak:      " + String(state->total_noise_peak));
+        Serial.println("Total noise peak (dB):      " + String(state->total_noise_peak));
         Serial.println("");
     #endif
 
     // Calculates the total average
     if (state->sample_count >= NS_TARGET_SAMPLES) {
         result->noise_avg = state->total_noise_peak / NS_TARGET_SAMPLES;
+        #ifdef DEBUG_MODE
+            Serial.println("Average noise level (dB):      " + String(result->noise_avg));
+            Serial.println("");
+        #endif
 
         // resets the state
         state->total_noise_peak = 0;
