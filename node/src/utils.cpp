@@ -319,7 +319,7 @@ void add_to_nvs(uint16_t boot_count, uint8_t pm1, uint8_t pm25, uint16_t noise) 
     data[3] = noise & 0xFF;
 
     prefs.begin("mints", false);
-    if (prefs.putBytes(key, data, sizeof(data_buffer)) == 0) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
+    if (prefs.putBytes(key, data, sizeof(data)) == 0) error_handler(-1, true, NVS_ERROR, "Failed to write to nvs");
     prefs.end();
 }
 
