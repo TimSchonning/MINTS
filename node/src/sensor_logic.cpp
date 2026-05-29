@@ -27,7 +27,13 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
         DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.");
     }
 
-    uint16_t error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
+    uint16_t error_code;
+
+    for (int i = 0; i < 5; i++) {
+        error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
+        if (error_code == NO_ERROR) { break; }
+        delay(500);
+    }
 
     if (error_code == NO_ERROR) {
 
