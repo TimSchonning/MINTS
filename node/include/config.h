@@ -10,7 +10,7 @@ inline const uint64_t S_TO_mS                   = 1000;
 inline const uint32_t BAUD                      = 115200;
 inline const uint64_t MAX_TX_DELAY_S            = 3;
 inline RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ      = 10;
-inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 60;      //make lowercase, will be calc at runtime
+inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 70;      //make lowercase, will be calc at runtime
 
 inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;  // deprecated
 
