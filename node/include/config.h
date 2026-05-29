@@ -8,9 +8,9 @@
 inline const uint64_t S_TO_uS                   = 1000000;
 inline const uint64_t S_TO_mS                   = 1000;
 inline const uint32_t BAUD                      = 115200;
-inline const uint64_t MAX_TX_DELAY_S            = 3;
+inline const uint64_t MAX_TX_DELAY_S            = 1;
 inline RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ      = 10;
-inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 60;      //make lowercase, will be calc at runtime
+inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 15 * 60;      //make lowercase, will be calc at runtime
 
 inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;  // deprecated
 
@@ -31,11 +31,11 @@ inline const uint8_t NS_PIN                         = 1;
 
 //// LoRa config
 inline float    FREQUENCY        = 868.1;
-inline float    BANDWIDTH        = 125.0;
+inline float    BANDWIDTH        = 62.5;
 inline uint8_t  SPREADING_FACTOR = 12;
 inline uint8_t  CODING_RATE      = 8;
 inline uint8_t  SYNC_WORD        = 0x12;
-inline int8_t   POWER            = 14;
+inline int8_t   POWER            = 13;
 inline uint16_t PREAMBLE_LEN     = 8;
 
 // LoRa pins (check datasheet)
@@ -51,8 +51,8 @@ inline const uint8_t MAX_ID_ATTEMPTS    = 0;
 inline RTC_DATA_ATTR bool needs_initialisation = true;
 inline RTC_DATA_ATTR uint16_t  boot_count          = 200;
 inline RTC_DATA_ATTR uint8_t  node_id              = 1;
-inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
-inline constexpr uint8_t  BUFFERING_THRESHOLD  = 1; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
+inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 1;
+inline constexpr uint8_t  BUFFERING_THRESHOLD  = 4; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
 inline RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 
