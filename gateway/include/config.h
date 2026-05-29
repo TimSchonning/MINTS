@@ -5,7 +5,7 @@
 int CS = 21, DIO1 = 16, BUSY = 20, RST = 18;
 
 float FREQ = 868.1; // Frequency
-float BW = 125.0;   // Bandwidth
+float BW = 62.5;   // Bandwidth
 int SF = 12;         // Spreading Factor
 int CR = 8;         // Coding Rate
 int SYNC = 0x12;    // Sync word
