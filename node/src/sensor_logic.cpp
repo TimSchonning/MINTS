@@ -36,35 +36,6 @@ bool ps_parse(uint8_t* sensor_buf, ps_state_t* state, ps_result_t* result, uint1
         DEBUG_PRINTLN("[WARNING] Target samples inside ps_parse != 1. Undefined behaviour.");
     }
 
-   // debug_print_raw_ps_data();
-
-    /* Sums the readings over the given time period */
-    // if (state->sample_count < target_samples) {
-    //     if (now - state->last_sample_time >= sample_interval) {
-    //         if (particle_sensor.read_sensor_value(sensor_buf, 29) == NO_ERROR) {
-
-    //             state->sum_pm1  += ((uint16_t)sensor_buf[10] << 8) | sensor_buf[11];
-    //             state->sum_pm25  += ((uint16_t)sensor_buf[12] << 8) | sensor_buf[13];
-
-    //             DEBUG_PRINTLN("PM1 SUM VALUE:  ");
-    //             DEBUG_PRINT(state->sum_pm1);
-    //             DEBUG_PRINTLN("PM25 SUM VALUE: ");
-    //             DEBUG_PRINT(state->sum_pm25);
-
-    //             state->sample_count++;
-    //             state->last_sample_time = now;
-    //         } else {
-    //             DEBUG_PRINTLN("[ERROR] particle_sensor.read_sensor_value(sensor_buf, 29) returned an error");
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // /* Calculates the averages */
-    // result->pm1 = pm_average(state->sample_count, state->sum_pm1);
-    // result->pm25 = pm_average(state->sample_count, state->sum_pm25);
-    // state->is_active = false;
-
     uint16_t error_code = particle_sensor.read_sensor_value(sensor_buf, 29);
 
     if (error_code == NO_ERROR) {

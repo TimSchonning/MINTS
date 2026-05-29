@@ -95,7 +95,7 @@ static void handlePacket(size_t payloadSize) {
 
         case MSG_TYPE_ERROR: {
             msg_error_t *error_msg = (msg_error_t *)packetBuffer;
-            std::cout << "[ERROR] Node-side node ID: " << error_msg->node_id << " error code: " << error_msg->error_code << std::endl;
+            std::cout << "[ERROR] Received error status code: " << (int)error_msg->error_code << ". From node ID: " << (int)error_msg->node_id << std::endl;
             break;
         }
 
