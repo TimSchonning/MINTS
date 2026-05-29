@@ -27,15 +27,15 @@ SX1262 radio(mod);
 
 void LoRaInit() {
     int state = radio.begin(FREQ, BW, SF, CR, SYNC, PWR, PRE);
-
+    
     if (state == RADIOLIB_ERR_NONE) {
         state = radio.setDio2AsRfSwitch();
     }
-
+    
     if (state != RADIOLIB_ERR_NONE) {
         std::cout << "Initialisation failed, error code: \n" 
-                  << "For error codes, see: https://jgromes.github.io/RadioLib/group__status__codes.html"
-                  << (int)state << std::endl; // Maybe add some error handling?
+        << "For error codes, see: https://jgromes.github.io/RadioLib/group__status__codes.html"
+        << (int)state << std::endl; // Maybe add some error handling?
     }
 }
 
@@ -47,16 +47,16 @@ void LoRaInit() {
  */
 static void handleSensorReading(payload_t *packet, size_t payloadSize) {
     int payloadOverheadSize = 3;
-    int paylaodReadingSize  = 4;
-    int numberOfReadings = (payloadSize - payloadOverheadSize) / paylaodReadingSize;
-
+    int payloadReadingSize  = 4;
+    int numberOfReadings = (payloadSize - payloadOverheadSize) / payloadReadingSize;
+    
     for (int i = 0; i < numberOfReadings; i++) {
         int set = i * 4;
         std::cout << (int)i                         << "," // is used to calculate the timestamps for each set
-                  << (int)packet->node_id           << ","
-                  << (int)packet->readings[set + 0] << ","
-                  << (int)packet->readings[set + 1] << ","
-                  << (uint16_t) ((packet->readings[set + 2] << 8) | packet->readings[set + 3]) << std::endl;
+        << (int)packet->node_id           << ","
+        << (int)packet->readings[set + 0] << ","
+        << (int)packet->readings[set + 1] << ","
+        << (uint16_t) ((packet->readings[set + 2] << 8) | packet->readings[set + 3]) << std::endl;
         std::cout.flush();
     }
 }
@@ -70,8 +70,32 @@ static void sendAck(uint8_t nodeID, uint8_t ackFor) {
     msg_ack_t msg_packet_ack;
     msg_packet_ack.node_id = nodeID;
     msg_packet_ack.ack_for = ackFor;
-
+    
     radio.transmit((uint8_t *)&msg_packet_ack, sizeof(msg_ack_t));
+}
+
+/**
+ * @brief Checks if a packet already has been received
+ * @return true if a new node ID was seen
+ * @return true if a new node ID and packet ID combination was seen
+ * @return false else
+ * @note only stores the latest seen packet IDs
+ */
+std::vector<std::pair<uint8_t, uint8_t>> latestPackets;
+static bool new_packet(uint8_t node_id, uint8_t reading_id) {
+    auto it = std::find_if(latestPackets.begin(), latestPackets.end(), 
+    [node_id](const auto& pair) { return pair.first == node_id; });
+    
+    // Node exists
+    if (it != latestPackets.end()) {
+        if (it->second == reading_id) return false;
+
+        it->second = reading_id;
+        return true;
+    }
+
+    latestPackets.push_back({node_id, reading_id});
+    return true;
 }
 
 /**
@@ -81,27 +105,32 @@ static void sendAck(uint8_t nodeID, uint8_t ackFor) {
  */
 static void handlePacket(size_t payloadSize) {
     uint8_t signature = packetBuffer[0];
-
+    
     switch (signature) {
         case MSG_TYPE_PAYLOAD_UPLINK: {
-            payload_t *packet = (payload_t *)packetBuffer;
-            handleSensorReading(packet, payloadSize);
-            sendAck(packet->node_id, MSG_TYPE_PAYLOAD_UPLINK);
+            payload_t *packet  = (payload_t *)packetBuffer;
+            uint8_t node_id    = (int)packet->node_id;
+            uint8_t reading_id = (int)packet->reading_id;
+
+            if (new_packet(node_id, reading_id)) {
+                handleSensorReading(packet, payloadSize);
+                sendAck(packet->node_id, MSG_TYPE_PAYLOAD_UPLINK);
+            }
             break;
         }
-
+        
         case MSG_TYPE_ACK:
-            break;
-
+        break;
+        
         case MSG_TYPE_ERROR: {
             msg_error_t *error_msg = (msg_error_t *)packetBuffer;
             std::cout << "[ERROR] Node-side node ID: " << (int)error_msg->node_id << " error code: " << (int)error_msg->error_code << std::endl;
             break;
         }
-
+        
         default:
-            std::cout << "Unknown packet signature: " << signature << std::endl;
-            break;
+        std::cout << "Unknown packet signature: " << signature << std::endl;
+        break;
     }
 }
 
