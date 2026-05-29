@@ -49,8 +49,8 @@ inline const uint8_t MAX_ID_ATTEMPTS    = 0;
 
 //// ESP specific
 inline RTC_DATA_ATTR bool needs_initialisation = true;
-inline RTC_DATA_ATTR uint8_t  boot_count           = 100;
-inline RTC_DATA_ATTR uint8_t  node_id              = 404;
+inline RTC_DATA_ATTR uint16_t  boot_count          = 100;
+inline RTC_DATA_ATTR uint8_t  node_id              = 99;
 inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
 inline constexpr uint8_t  BUFFERING_THRESHOLD  = 1;
 inline RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
