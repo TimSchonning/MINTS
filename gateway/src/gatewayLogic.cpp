@@ -115,6 +115,8 @@ static void handlePacket(size_t payloadSize) {
             if (new_packet(node_id, reading_id)) {
                 handleSensorReading(packet, payloadSize);
                 sendAck(packet->node_id, MSG_TYPE_PAYLOAD_UPLINK);
+            } else {
+                std::cout << "[INFO] Discard packet (duplicate). Node ID: " << node_id << ". Reading ID: " << reading_id << std::endl;
             }
             break;
         }
