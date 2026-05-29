@@ -19,10 +19,8 @@ extern SX1262 radio;
 bool error_handler(int16_t state, bool inform_gateway, uint8_t error_code, const char* message) {
     // RADIOLIB_ERR_NONE is def. as 0;
     if (state != RADIOLIB_ERR_NONE) {
-        DEBUG_PRINT("[ERROR] ");
-        DEBUG_PRINT(message);
-        DEBUG_PRINT(" Code: ");
-        DEBUG_PRINTLN(state);
+        DEBUG_PRINT("[ERROR] "); DEBUG_PRINTLN(message);
+        DEBUG_PRINT("[INFO]  Code: ");DEBUG_PRINTLN(state);
     
         if (inform_gateway) {
             int16_t state = radio.begin(FREQUENCY, BANDWIDTH, SPREADING_FACTOR, CODING_RATE, SYNC_WORD, POWER, PREAMBLE_LEN);

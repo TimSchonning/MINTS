@@ -26,24 +26,20 @@ SX1262 radio = new Module(PIN_NSS, PIN_DIO0, PIN_NRST, PIN_DIO1);
 
 void setup() {
     power_down_radios();
-    //setCpuFrequencyMhz(CPU_FREQ_MHZ);
-    delay(5000);
+
+    delay(5000);        // Needs attention
     DEBUG_BEGIN(BAUD);
     delay(1000);
-    DEBUG_PRINTLN("[START]   Entering");
-    
-    // Node initialisation
-    // if (needs_initialisation) initialise_node();
 
+    DEBUG_PRINTLN("[START]");
+    
     // Initialise sensors
     if (particle_sensor.init())  error_handler(-1, true, PS_INIT_ERROR,  "Particle sensor initialisation failed");
     
     // Data collection
     sample_noise_sensor();
-    // if (!sleep_noise_sensor())    error_handler(-1, true, NS_SLEEP_ERROR, "Failed to put the noise sensor to sleep");
-
-    
     sample_particle_sensor();
+
     if (!sleep_particle_sensor()) error_handler(-1, true, PS_SLEEP_ERROR, "Failed to put the particle sensor to sleep");
 
     //// Update RTC
@@ -67,12 +63,11 @@ void setup() {
     }
 
     //// Sleep
-    DEBUG_PRINTLN("[END]   Entering sleep");
     radio.sleep();
-
-    uint32_t time_awake       = millis() * 1000UL;
-    uint32_t wakeup_interval  = WAKEUP_INTERVAL_S * S_TO_uS;
-    uint32_t sleep_time = 900 * S_TO_uS;    //default value - dont change
+    
+    uint32_t time_awake      = millis() * 1000UL;
+    uint32_t wakeup_interval = WAKEUP_INTERVAL_S * S_TO_uS;
+    uint32_t sleep_time      = 900 * S_TO_uS;    //default value - dont change
     
     if (wakeup_interval > time_awake) {
         sleep_time = wakeup_interval - time_awake;
@@ -81,6 +76,8 @@ void setup() {
     } else {
         DEBUG_PRINTLN("[ERROR] WAKEUP_INTERVAL too low (underflow). Defaulting to ~900s");
     }
+    
+    DEBUG_PRINTLN("[END]   Entering sleep");
     
     esp_sleep_enable_timer_wakeup(sleep_time);
     esp_deep_sleep_start();
