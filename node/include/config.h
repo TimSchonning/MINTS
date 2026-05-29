@@ -10,7 +10,7 @@ inline const uint64_t S_TO_mS                   = 1000;
 inline const uint32_t BAUD                      = 115200;
 inline const uint64_t MAX_TX_DELAY_S            = 3;
 inline RTC_DATA_ATTR uint8_t  CPU_FREQ_MHZ      = 10;
-inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 70;      //make lowercase, will be calc at runtime
+inline RTC_DATA_ATTR uint32_t WAKEUP_INTERVAL_S = 60;      //make lowercase, will be calc at runtime
 
 inline RTC_DATA_ATTR uint32_t MEASUREMENT_WINDOW_S  = 300;  // deprecated
 
@@ -49,10 +49,10 @@ inline const uint8_t MAX_ID_ATTEMPTS    = 0;
 
 //// ESP specific
 inline RTC_DATA_ATTR bool needs_initialisation = true;
-inline RTC_DATA_ATTR uint16_t  boot_count          = 100;
-inline RTC_DATA_ATTR uint8_t  node_id              = 99;
+inline RTC_DATA_ATTR uint16_t  boot_count          = 200;
+inline RTC_DATA_ATTR uint8_t  node_id              = 1;
 inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
-inline constexpr uint8_t  BUFFERING_THRESHOLD  = 4; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
+inline constexpr uint8_t  BUFFERING_THRESHOLD  = 1; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
 inline RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 
