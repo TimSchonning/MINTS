@@ -52,7 +52,7 @@ inline RTC_DATA_ATTR bool needs_initialisation = true;
 inline RTC_DATA_ATTR uint16_t  boot_count          = 100;
 inline RTC_DATA_ATTR uint8_t  node_id              = 99;
 inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 5;
-inline constexpr uint8_t  BUFFERING_THRESHOLD  = 5; // Batches BUFFERING_THRESHOLD minus 1 readings. So if 5, 4 readings are sent.
+inline constexpr uint8_t  BUFFERING_THRESHOLD  = 4; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
 inline RTC_DATA_ATTR uint8_t  buffering_counter    = 0;
 
 
