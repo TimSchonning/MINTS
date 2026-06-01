@@ -31,7 +31,7 @@ inline const uint8_t NS_PIN                         = 1;
 
 //// LoRa config
 inline float    FREQUENCY        = 868.1;
-inline float    BANDWIDTH        = 62.5;
+inline float    BANDWIDTH        = 125;
 inline uint8_t  SPREADING_FACTOR = 12;
 inline uint8_t  CODING_RATE      = 8;
 inline uint8_t  SYNC_WORD        = 0x12;
@@ -49,7 +49,7 @@ inline const uint8_t MAX_ID_ATTEMPTS    = 0;
 
 //// ESP specific
 inline RTC_DATA_ATTR bool needs_initialisation = true;
-inline RTC_DATA_ATTR uint16_t  boot_count          = 200;
+inline RTC_DATA_ATTR uint16_t  boot_count          = 0;
 inline RTC_DATA_ATTR uint8_t  node_id              = 1;
 inline RTC_DATA_ATTR uint8_t  MAX_TX_RETRIES       = 1;
 inline constexpr uint8_t  BUFFERING_THRESHOLD  = 4; // Batches BUFFERING_THRESHOLD readings before sending, example if 4, then 4 readings are sent.
