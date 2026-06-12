@@ -9,7 +9,9 @@ import { TimeLapse } from "./timelapse";
 export const shown_date = new SvelteDate();
 
 /**
- * The time resolution of the heatmap.
+ * The time resolution of the heatmap in minutes, for example if the time selected on the timeline is 16:00
+ * and time resolution is 60 minutes then all readings betweeen 15:30 - 16:30 will be connected to the time 16:00.
+ * This is used to account for readings not being sent at exactly the same times for each station.
  */
 export const time_resolution = 60;
 
