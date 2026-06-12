@@ -2,8 +2,15 @@ import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, Timestamp, updateD
 import { db } from "./database_connection";
 import { SensorType } from "./classes/sensor_type";
 
-const SENSOR_TYPE_COLLECTION = 'SensorTypes';
+const SENSOR_TYPE_COLLECTION = 'SensorTypes'; // The name of the collection in firebase containing sensor type information.
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow creation of documents
+ * from the web application. In the case that the rules are changed this function can be used to create a sensor type.
+ * @param sensor_type_id - the id of the new sensor type.
+ * @param low_value - the low threshold for the sensor type.
+ * @param high_value - the high threshold for the sensor type.
+ */
 export async function create_sensor_type(
     sensor_type_id: string,
     low_value: number,
@@ -23,6 +30,11 @@ export async function create_sensor_type(
     }
 }
 
+/**
+ * Reads a sensor type from the database.
+ * @param sensor_type_id - the id of the sensor type to read.
+ * @returns the found firebase document data or null.
+ */
 export async function read_sensor_type_data(sensor_type_id: string) {
     try {
         const typeRef = doc(db, SENSOR_TYPE_COLLECTION, sensor_type_id);
@@ -40,6 +52,13 @@ export async function read_sensor_type_data(sensor_type_id: string) {
     }
 }
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow creation of documents
+ * from the web application. In the case that the rules are changed this function can be used to update a sensor type.
+ * @param sensor_type_id - the id of the sensor type.
+ * @param low_value - the low threshold for the sensor type.
+ * @param high_value - the high threshold for the sensor type.
+ */
 export async function update_sensor_type_data(
     sensor_type_id: string,
     low_value: number,
@@ -59,6 +78,11 @@ export async function update_sensor_type_data(
     }
 }
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow deleting of documents
+ * from the web application. In the case that the rules are changed this function can be used to delete a sensor type.
+ * @param sensor_type_id - the id of the sensor type.
+ */
 export async function delete_sensor_type(sensor_type_id: string) {
     try {
         const typeRef = doc(db, SENSOR_TYPE_COLLECTION, sensor_type_id);
@@ -70,6 +94,11 @@ export async function delete_sensor_type(sensor_type_id: string) {
     }
 }
 
+/**
+ * Gets a list of all sensor types stored in the database, this function should generally be used once at the start
+ * of the web application.
+ * @returns a promise of an array of sensor types.
+ */
 export async function get_all_sensor_types(): Promise<SensorType[]> {
     try {
         const snapshot = await getDocs(collection(db, SENSOR_TYPE_COLLECTION))

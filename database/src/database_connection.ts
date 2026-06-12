@@ -27,6 +27,10 @@ const app = getApps().length == 0 ? initializeApp(firebaseConfig) : getApp();
 export const db: Firestore = getFirestore(app);
 export const auth: Auth = getAuth(app);
 
+/**
+ * Used by the client web application. Checks if the user is signed in to Firebase.
+ * If the user is not signed in then sign in using anonymous sign in.
+ */
 export async function verifySignedIn() {
 
     if (auth.currentUser == null) {
