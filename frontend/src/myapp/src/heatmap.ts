@@ -9,6 +9,11 @@ type Heatpoint = {
     intensity: number;
 }
 
+/**
+ * Coverts a Heatpoint object to GeoJSON format. 
+ * @param data A Heatpoint object containing the latitude, longitude, and intensity of a point on the heatmap.
+ * @returns A GeoJSON FeatureCollection point.
+ */
 export function toGeoJSON(data: Heatpoint[]): FeatureCollection<Point> {
     return {
         type: 'FeatureCollection',
@@ -28,6 +33,9 @@ export function toGeoJSON(data: Heatpoint[]): FeatureCollection<Point> {
 const sensors = await load_sensor_types();
 const sens_types = Array.from(sensors.keys());
 
+/**
+ * An array of heatpoints that are to be presented on the heatmap. Each heatpoint contains the latitude, longitude, and intensity of a point on the heatmap.
+ */
 export const Data = writable<Heatpoint[]>([]);
 
 export const testData = writable<Heatpoint[]>([
@@ -60,21 +68,11 @@ function create_coordinates_heatmap(lat: number, lng: number, intensity: number)
     return { lat, lng, intensity };
 }
 
-function add_extra_points(data: Heatpoint[]): Heatpoint[] {
-    // add extra points around each point to make the heatmap smoother
-    const extra_points: Heatpoint[] = [];
-    const radius = 0.0005;
-    data.forEach(point => {
-        for (let i = 0; i < 8; i++) {
-            const angle = (i / 8) * 2 * Math.PI;
-            const new_lat = point.lat + radius * Math.sin(angle);
-            const new_lng = point.lng + radius * Math.cos(angle);
-            extra_points.push(create_coordinates_heatmap(new_lat, new_lng, (point.intensity) * 0.5));
-        }
-    });
-    return [...data, ...extra_points];
-}
-
+/**
+ * Processes the stations and their measurements to create heatmap data for a given date, and updates the Data store with the new heatmap data.
+ * @param date The date for which the heatmap should be shown. 
+ * @returns A promise that resolves when the heatmap data has been updated.
+ */
 export async function show_heatmap(date: Date): Promise<void> {
     // Process the stations and their measurements to create heatmap data
     const heatmapData: Heatpoint[] = [];
@@ -92,16 +90,22 @@ export async function show_heatmap(date: Date): Promise<void> {
             }
         });
     });
-    //const expanded_data = add_extra_points(heatmapData);
-    //console.log(heatmapData.length)
     Data.set(heatmapData);
 }
 
+/**
+ * Updates a list which dictates which sensor types should be shown on the heatmap. Then calls the show_heatmap function to update the heatmap with the new list of sensor types.
+ * @param item a string with the name of the sensor type that should be added to the list.
+ */
 export function addLayer(item: string): void {
     sens_types.push(item);
     show_heatmap(shown_date);
 }
 
+/**
+ * Updates a list which dictates which sensor types should be shown on the heatmap. Then calls the show_heatmap function to update the heatmap with the new list of sensor types.
+ * @param item a string with the name of the sensor type that should be removed from the list.
+ */
 export function removeLayer(item: string): void {
     sens_types.splice(sens_types.indexOf(item), 1);
     show_heatmap(shown_date);

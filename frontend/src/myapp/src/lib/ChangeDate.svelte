@@ -3,6 +3,7 @@
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import { shown_date } from '../map_controller';
 
+	// Updates the date shown on the map when the left or right buttons are clicked
 	function handleClickLeft() {
 		shown_date.setDate(shown_date.getDate() - 1);
 	}
@@ -15,6 +16,7 @@
 	}
 </script>
 
+<!-- Html for the date change button -->
 <div class="inline-flex -space-x-px rounded-full shadow-2xs rtl:space-x-reverse">
 	<button
 		onclick={handleClickLeft}

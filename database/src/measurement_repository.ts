@@ -4,8 +4,17 @@ import { Interval } from "./classes/interval";
 import { Station } from "./classes/station";
 import { Measurement } from "./classes/measurement";
 
-const MEASUREMENT_COLLECTION = 'Measurements';
+const MEASUREMENT_COLLECTION = 'Measurements'; // The name of the firebase collection containing measurements.
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow creation of documents
+ * from the web application. In the case that the rules are changed this function can be used to create a measurement.
+ * @param measurement_id - the id of the new measurement.
+ * @param station_id - the id of the station the measurement was taken by.
+ * @param sensor_type_id - the id of the type of measurement type.
+ * @param value - the measurement value.
+ * @param date - the time the measurement was taken.
+ */
 export async function create_measurement(
     measurement_id: string,
     station_id: string,
@@ -29,6 +38,11 @@ export async function create_measurement(
     }
 }
 
+/**
+ * Can be used from the web application. Gets the document for a specific measurement id.
+ * @param measurement_id - the measurement id to read.
+ * @returns promise the firebase document.
+ */
 export async function read_measurement_data(measurement_id: string) {
     try {
         const measurementRef = doc(db, MEASUREMENT_COLLECTION, measurement_id);
@@ -46,6 +60,15 @@ export async function read_measurement_data(measurement_id: string) {
     }
 }
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow updating of documents
+ * from the web application. In the case that the rules are changed this function can be used to update a measurement.
+ * @param measurement_id - the id of the measurement to update.
+ * @param station_id - the id of the station the measurement was taken by.
+ * @param sensor_type_id - the id of the type of measurement type.
+ * @param value - the measurement value.
+ * @param date - the time the measurement was taken.
+ */
 export async function update_measurement_data(
     measurement_id: string,
     station_id: string,
@@ -68,6 +91,11 @@ export async function update_measurement_data(
     }
 }
 
+/**
+ * IMPORTANT: This function can not be used from the web application as Firebase rules does not allow deletion of documents
+ * from the web application. In the case that the rules are changed this function can be used to delete a measurement.
+ * @param measurement_id - the id of the measurement to delete.
+ */
 export async function delete_measurement(measurement_id: string) {
     try {
         const measurementRef = doc(db, MEASUREMENT_COLLECTION, measurement_id);
@@ -79,7 +107,12 @@ export async function delete_measurement(measurement_id: string) {
     }
 }
 
-export async function get_measurements_in_interval(interval: Interval) {
+/**
+ * Gets an array containing all measurements in the database that are within the given time interval.
+ * @param interval - the time interval.
+ * @returns promise of an array of measurements.
+ */
+export async function get_measurements_in_interval(interval: Interval): Promise<Measurement[]> {
     try {
         const q = query(collection(db, MEASUREMENT_COLLECTION),
             where("timestamp", ">=", interval.start),

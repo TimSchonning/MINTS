@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { addLayer, removeLayer } from '../heatmap';
 	import { get_sensor_types } from '../map_controller';
+
+	// Gets all pollution types that should be displayed in the menu, and creates a menu item for each of them
 	const sensor_types = get_sensor_types();
 	let menuItems = sensor_types.map((sensor_type) => {
 		return {
@@ -25,6 +27,7 @@
 	}
 </script>
 
+<!-- the menu with checkboxes component -->
 <div class="menu-wrapper">
 	<button class="content" onclick={handleClick}
 		>{showMenu ? 'Close filter selection' : 'Open filter selection'}

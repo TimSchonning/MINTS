@@ -14,6 +14,7 @@
 		show_heatmap(shown_date);
 	});
 
+	// Initialize the map and the heatmap layer
 	onMount(() => {
 		mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 		map = new mapboxgl.Map({
@@ -25,6 +26,7 @@
 
 		map.addControl(new mapboxgl.NavigationControl());
 
+		// Creating the layer
 		map.on('load', async () => {
 			map.addSource('heat', {
 				type: 'geojson',
@@ -42,6 +44,7 @@
 				}
 			});
 
+			// Subscribing to the data makes the heatmap update whenever the data changes
 			Data.subscribe(async (data) => {
 				const source = map.getSource('heat') as mapboxgl.GeoJSONSource;
 				if (source) {
@@ -49,6 +52,7 @@
 				}
 			});
 
+			// Handles the popup and markers for each station
 			const station_list: Station[] = await get_all_stations();
 			station_list.forEach((station) => {
 				const marker_container = document.createElement('div');

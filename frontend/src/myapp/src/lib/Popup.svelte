@@ -8,6 +8,7 @@
 		avg_value: number | undefined;
 	}
 
+	// Calculate the severity to be shown in the popup
 	function calc_severity(stats: AvgStats): string | undefined {
 		if (stats.avg_value == undefined) {
 			return;
@@ -27,14 +28,15 @@
 
 	const measurement_stats: SvelteMap<string, AvgStats> = new SvelteMap();
 
-	let { station_id, is_open, noise, pm25, pm5 } = $props<{
+	let { station_id, is_open, noise, pm25, pm1 } = $props<{
 		station_id: string | undefined;
 		is_open: boolean;
 		noise?: number | undefined; // Added with ? for optional
 		pm25?: number | undefined; // Added with ? for optional
-		pm5?: number | undefined; // Added with ? for optional
+		pm1?: number | undefined; // Added with ? for optional
 	}>();
 
+	// Updates the data in the popup when the date changes
 	$effect(() => {
 		const load_task = async () => {
 			const date = shown_date;
@@ -56,7 +58,6 @@
 						break;
 					}
 				}
-				console.log(`Update popup station: ${station_id}`);
 			}
 		};
 		load_task();
