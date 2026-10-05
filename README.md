@@ -10,7 +10,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About the Project
 **NOTE:** *This project was a part of the authors' bachelor's thesis at Uppsala University.* <br>
-*The thesis can be found at:*
+[*Click here to access the thesis*][a]
+
+[a]: https://www.diva-portal.org/smash/record.jsf?dswid=-8747&pid=diva2%3A2064597&c=1&searchType=SIMPLE&language=sv&query=Mints&af=%5B%5D&aq=%5B%5B%5D%5D&aq2=%5B%5B%5D%5D&aqe=%5B%5D&noOfRows=50&sortOrder=dateIssued_sort_desc&sortOrder2=title_sort_asc&onlyFullText=false&sf=all
 
 MINTS is a star topology network of small, ground-level measurement stations equipped with sensors to monitor air quality and noise pollution in a dense, urban environment. The project aims to combat the flaws associated with traditional monitoring systems, which tend to be expensive, few in number, and often mounted on rooftops, farther from the directly affected areas on the ground.
 
